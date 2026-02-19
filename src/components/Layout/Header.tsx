@@ -16,7 +16,7 @@ const HeaderContainer = styled.header`
 const Header = () => {
   return (
     <HeaderContainer>
-      뒤로가기
+      뒤로가기 (헤더미완)
     </HeaderContainer>
   );
 };

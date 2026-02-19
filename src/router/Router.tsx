@@ -1,13 +1,26 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HeaderLayout from '@components/Layout/HeaderLayout';
+import FullLayout from '@components/Layout/FullLayout';
 import Splash from '@pages/Splash';
 import Main from '@pages/Main';
+import BoothMap from '@pages/BoothMap';
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Splash />} />
-        <Route path="/main" element={<Main />} />
+
+        {/* 전체 화면 레이아웃 */}
+        <Route element={<FullLayout />}>
+          <Route path="/" element={<Splash />} />
+          <Route path="/main" element={<Main />} />
+        </Route>
+        
+        {/* 헤더 있는 화면 레이아웃 */}
+        <Route element={<HeaderLayout />}>
+          <Route path="/boothmap" element={<BoothMap />} />
+        </Route>
+      
       </Routes>
     </BrowserRouter>
   );

@@ -15,6 +15,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Pretendard', sans-serif; /* TODO : 폰트 설정 */
   }
 
+  /* 모바일 사이즈 규격만 고정해둠 */
   #root {
     width: 100%;
     max-width: 540px;

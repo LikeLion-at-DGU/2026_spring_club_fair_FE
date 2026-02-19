@@ -1,3 +1,4 @@
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -6,18 +7,18 @@ const Wrapper = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.background}; /* 임시 */
+  background-color: ${(props) => props.theme.colors.green50}; /* 임시 */
 `;
 
 const Content = styled.main`
   flex: 1;
 `;
 
-const FullLayout = ({ children }: { children: React.ReactNode, title?: string }) => {
+const FullLayout = () => {
   return (
     <Wrapper>
       <Content>
-        {children}
+        <Outlet /> 
       </Content>
     </Wrapper>
   );

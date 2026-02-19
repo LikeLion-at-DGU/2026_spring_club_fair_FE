@@ -1,3 +1,4 @@
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './Header.tsx';
 
@@ -15,15 +16,15 @@ const Content = styled.main`
   padding: 20px 6%; 
 `;
 
-const Layout = ({ children }: { children: React.ReactNode, title?: string }) => {
+const HeaderLayout = () => {
   return (
     <Wrapper>
       <Header />
       <Content>
-        {children}
+        <Outlet /> 
       </Content>
     </Wrapper>
   );
 };
 
-export default Layout;
+export default HeaderLayout;
