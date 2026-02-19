@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Splash from '../pages/Splash';
-import Main from '../pages/Main';
+import Splash from '@pages/Splash';
+import Main from '@pages/Main';
 
 const Router = () => {
   return (

@@ -5,24 +5,25 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    //border: 1px solid;
   }
 
   body {
     background-color: #f5f5f5;
     display: flex;
     justify-content: center;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Pretendard', sans-serif; /* TODO : 폰트 설정 */
   }
 
   #root {
     width: 100%;
-    max-width: 393px;
+    max-width: 540px;
     min-height: 100vh;
     
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     
-    overflow-x: hidden;
+    overflow-x: hidden; /* TODO : 스크롤 설정 */
     position: relative;
   }
 
