@@ -1,0 +1,8 @@
+* text=auto
+
+# 이미지 파일은 바이너리로 취급 (줄바꿈 변환 방지)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg text
