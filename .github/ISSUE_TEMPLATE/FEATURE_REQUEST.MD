@@ -1,7 +1,7 @@
 ---
 name: "기능 템플릿"
 title: "[FEAT] 구현 기능 요약"
-labels: feat, fix, chore, refactor, docs, design 
+labels: feat
 assignees: ''
 ---
 
