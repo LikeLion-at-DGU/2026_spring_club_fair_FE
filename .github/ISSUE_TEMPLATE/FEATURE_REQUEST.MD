@@ -1,0 +1,18 @@
+---
+name: "기능 템플릿"
+title: "[FEAT] 구현 기능 요약"
+labels: feat, fix, chore, refactor, docs, design 
+assignees: ''
+---
+
+## ✨ 기능 개요
+- 구현하려는 기능에 대해 설명해주세요.
+
+## ✅ 작업 내용
+- [ ]
+
+## 🔗 관련 이슈
+- 
+
+## 📄 참고 사항
+- 

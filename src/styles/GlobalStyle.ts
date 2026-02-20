@@ -1,11 +1,23 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+
+  // ----- 기본 요소 스타일 초기화/설정 ----- //
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     //border: 1px solid;
+  }
+
+  /* 스크롤바 안 보이게 설정 */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   body {
@@ -29,6 +41,9 @@ const GlobalStyle = createGlobalStyle`
     position: relative;
   }
 
+
+  // ----- 기타 요소 스타일 초기화/설정 ----- //
+
   a {
     text-decoration: none;
     color: inherit;
@@ -39,6 +54,8 @@ const GlobalStyle = createGlobalStyle`
     border: none;
     background: none;
   }
+
+  
 `;
 
 export default GlobalStyle;
