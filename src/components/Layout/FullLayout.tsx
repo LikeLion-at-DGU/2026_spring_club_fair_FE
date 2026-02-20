@@ -12,6 +12,8 @@ const Wrapper = styled.div`
 
 const Content = styled.main`
   flex: 1;
+  width:100%;
+  padding: 20px 6%; 
 `;
 
 const FullLayout = () => {

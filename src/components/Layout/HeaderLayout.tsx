@@ -5,15 +5,16 @@ import Header from './Header.tsx';
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 100vh;
+  min-height: 100vh; //
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.white};
 `;
 
 const Content = styled.main`
   flex: 1;
-  padding: 20px 6%; 
+  padding: 20px 6%;
+  overflow-y: auto;
+  background-color: ${(props) => props.theme.colors.green100};
 `;
 
 const HeaderLayout = () => {

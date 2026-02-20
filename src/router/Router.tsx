@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// 레이아웃 컴포넌트
 import HeaderLayout from '@components/Layout/HeaderLayout';
 import FullLayout from '@components/Layout/FullLayout';
+// 페이지 컴포넌트
 import Splash from '@pages/Splash';
 import Main from '@pages/Main';
 import BoothMap from '@pages/BoothMap';

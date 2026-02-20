@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    //border: 1px solid;
+    border: 1px solid;
   }
 
   body {
@@ -24,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     
-    overflow-x: hidden; /* TODO : 스크롤 설정 */
+    overflow: hidden; /* TODO : 스크롤 설정 */
     position: relative;
   }
 
