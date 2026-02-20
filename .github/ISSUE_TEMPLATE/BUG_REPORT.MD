@@ -1,8 +1,10 @@
 ---
-name: "버그 기록/수정 템플릿"
+name: 버그 기록/수정 템플릿
+about: 버그를 기록하고 수정합니다.
 title: "[BUG] 버그 요약"
-labels: bug, fix
+labels: bug
 assignees: ''
+
 ---
 
 ## 🔍 버그 설명
