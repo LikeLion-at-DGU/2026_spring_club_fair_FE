@@ -6,7 +6,7 @@ const Splash = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/main', { replace: true }); // 뒤로가기로 스플래쉬화면 이동 막아둠
+      navigate('/main', { replace: true }); // 뒤로가기로 스플래쉬화면 이동<< 막아둠
     }, 3000);
 
     // 컴포넌트가 언마운트될 때 타이머 정리

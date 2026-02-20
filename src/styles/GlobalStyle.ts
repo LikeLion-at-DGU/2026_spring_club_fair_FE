@@ -15,7 +15,8 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Pretendard', sans-serif; /* TODO : 폰트 설정 */
   }
 
-  /* 모바일 사이즈 규격만 고정해둠 */
+  /* GlobalStyle에서는 모바일 사이즈 외부 규격만 지정해둠
+  페이지 내부 padding 등 여백은 각 레이아웃 컴포넌트에서 지정함*/
   #root {
     width: 100%;
     max-width: 540px;
