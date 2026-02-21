@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Header from '../components/Entity/Header';
+import SearchBar from '@/components/Entity/SearchBar';
 
 const PageContainer = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const BoothMap = () => {
 
       {/* 본문 */}
       <PageContent>
-        <div style={{border: "1px solid"}}>SearchBar</div>
+        <SearchBar/>
         <div style={{border: "1px solid"}}>Map</div>
         <div style={{border: "1px solid"}}>BoothCard List</div>
       </PageContent>
