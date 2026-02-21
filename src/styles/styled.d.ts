@@ -1,4 +1,5 @@
 import 'styled-components';
+import type { RuleSet } from 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -32,6 +33,20 @@ declare module 'styled-components' {
       background: string;
       white: string;
       black: string;
+    };
+    fonts: {
+      BR_B: Record<string, string>;
+      BR_R: Record<string, string>;
+      SB_28: Record<string, string>;
+      SB_24: Record<string, string>;
+      SB_20: Record<string, string>;
+      SB_18: Record<string, string>;
+      SB_16: Record<string, string>;
+      R_20: Record<string, string>;
+      R_16: Record<string, string>;
+      R_14: Record<string, string>;
+      R_12: Record<string, string>;
+      R_10: Record<string, string>;
     };
   }
 }
