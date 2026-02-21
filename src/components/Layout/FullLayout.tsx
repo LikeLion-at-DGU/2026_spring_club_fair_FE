@@ -11,14 +11,14 @@ const Wrapper = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  padding: 20px 6%; 
+  padding: 20px 6%;
 `;
 
 const FullLayout = () => {
   return (
     <Wrapper>
       <Content>
-        <Outlet /> 
+        <Outlet />
       </Content>
     </Wrapper>
   );
