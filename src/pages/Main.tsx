@@ -40,12 +40,15 @@ export default Main;
 export const Wrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(var(--vh, 1vh) * 100);
   flex-direction: column;
   align-items: center;
   background-color: ${(props) => props.theme.colors.green50};
   ${({ theme }) => theme.fonts.BR_B};
   position: relative;
+
+  padding-bottom: 10px;
+  box-sizing: border-box;
 `;
 
 export const HeaderBg = styled.div`
@@ -124,8 +127,11 @@ export const PostIt = styled.div`
 `;
 
 export const MainBtn = styled.button`
+  @media screen and (min-width: 540px) {
+    margin-top: calc(var(--vh, 1vh) * 8);
+  }
   margin-top: calc(var(--vh, 1vh) * 5);
-  margin-bottom: 10px;
+
   z-index: 4;
 
   display: flex;
