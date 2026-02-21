@@ -9,7 +9,7 @@ export const mockBooths: Booth[] = [
         date: "2026-05-12",
         location: "학생회관 앞 광장",
         description: "HTML과 CSS를 활용해 나만의 미니 웹페이지를 만들어보는 체험 부스입니다.",
-        image: "/images/booth/code-x.jpg",
+        image: "https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg",
         recruitment: "상시 모집 (신입 부원 환영 👋)",
         url: "https://instagram.com/codex_official",
     },
