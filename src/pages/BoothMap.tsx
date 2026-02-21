@@ -34,7 +34,7 @@ const BoothMap = () => {
           activeDay={activeDay}
           onTabClick={(id) => setActiveDay(id)}
         />
-        <div style={{border: "1px solid"}}>BoothCard List</div>
+        <div>BoothCard List</div>
       </PageContent>
     </PageContainer>
   );

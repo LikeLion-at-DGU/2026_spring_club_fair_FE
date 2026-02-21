@@ -19,7 +19,7 @@ const TabItem = styled.div<ActiveProps>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 12px 0;
+    padding: 16px 0;
     cursor: pointer;
     position: relative;
 
@@ -30,25 +30,28 @@ const TabItem = styled.div<ActiveProps>`
         bottom: 0;
         width: 100%;
         height: 3px;
-        background-color: ${(props) => (props.$isActive ? "#000000" : "transparent")};
+        background-color: ${(props) => (props.$isActive ? "#121212" : "transparent")};
     }
 `
 
+/* TODO: 폰트 적용 후 위아래 간격 중앙 정렬 확인하기 */
 const DayText = styled.span<ActiveProps>`
     font-size: 16px;
     font-weight: ${(props) => (props.$isActive ? "700" : "400")};
-    color: ${(props) => (props.$isActive ? "#000000" : props.theme.colors.grey400)};
-    margin-right: 8px;
+    color: ${(props) => (props.$isActive ? props.theme.colors.black : props.theme.colors.grey400)};
+    margin-right: 11px;
     user-select: none;
+    line-height: 1;
 `
 
 const Badge = styled.span<ActiveProps>`
-    background-color: ${(props) => (props.$isActive ? "#BADA55" : props.theme.colors.grey400)};
+    background-color: ${(props) => (props.$isActive ? props.theme.colors.green400 : props.theme.colors.grey400)};
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
+    font-size: 12px;
     padding: 4px 8px;
     user-select: none;
     cursor: pointer;
