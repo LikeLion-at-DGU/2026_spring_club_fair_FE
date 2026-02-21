@@ -30,6 +30,6 @@ export const theme: DefaultTheme = {
     primary: '#abbe07',    // green-500
     background: '#f5f5f5',
     white: '#FFFFFF',
-    black: '#49494a',      // grey-900
+    black: '#121212',
   },
 };
