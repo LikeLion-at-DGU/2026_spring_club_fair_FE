@@ -28,16 +28,16 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* GlobalStyle에서는 모바일 사이즈 외부 규격만 지정해둠
-  페이지 내부 padding 등 여백은 각 레이아웃 컴포넌트에서 지정함*/
+  페이지 내부 padding 등 여백은 각 페이지 컴포넌트에서 지정함*/
   #root {
     width: 100%;
     max-width: 540px;
-    min-height: 100vh;
+    height: 100vh;
     
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     
-    overflow: hidden; /* TODO : 스크롤 설정 */
+    overflow: hidden;
     position: relative;
   }
 
