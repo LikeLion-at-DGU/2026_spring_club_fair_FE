@@ -1,26 +1,18 @@
-import { useEffect, useState } from "react";
-import type { Booth } from "@/types/booth";
-import { toBoothCardData } from "@/utils/booth";
+import { useBoothCards } from "@/hooks/useBoothCards";
 import BoothCard from "@/components/Entity/BoothCard";
-import { mockBooths } from "../mocks/mockBooths";
 
 const BoothListPage = () => {
-    const [booths, setBooths] = useState<Booth[]>(mockBooths);
+    const { boothCards, isLoading, error } = useBoothCards({ division: "학술동아리" });
 
-    useEffect(() => {
-        fetch("/api/booths")
-            .then((res) => res.json())
-            .then((data: Booth[]) => {
-                setBooths(data);
-            });
-    }, []);
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error loading booths: {error.message}</div>;
 
     return (
-        <div>
-            {booths.map((booth) => (
+        <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
+            {boothCards.map((booth) => (
                 <BoothCard
                     key={booth.id}
-                    booth={toBoothCardData(booth)}
+                    booth={booth}
                 />
             ))}
         </div>
