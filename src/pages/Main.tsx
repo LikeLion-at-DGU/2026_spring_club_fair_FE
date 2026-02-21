@@ -124,7 +124,7 @@ export const PostIt = styled.div`
 `;
 
 export const MainBtn = styled.button`
-  margin-top: calc(var(--vh, 1vh) * 8);
+  margin-top: calc(var(--vh, 1vh) * 5);
   margin-bottom: 10px;
   z-index: 4;
 
