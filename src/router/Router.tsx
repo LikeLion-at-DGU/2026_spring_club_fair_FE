@@ -8,6 +8,8 @@ import Splash from '@pages/Splash';
 import Main from '@pages/Main';
 import BoothMap from '@pages/BoothMap';
 import Test from '@pages/Test';
+import TestResult from '@pages/TestResult';
+
 
 const Router = () => {
   return (
@@ -24,6 +26,8 @@ const Router = () => {
         <Route element={<HeaderLayout />}>
           <Route path="/boothmap" element={<BoothMap />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/test/result" element={<TestResult />} />
+
         </Route>
 
       </Routes>
