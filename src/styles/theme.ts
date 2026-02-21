@@ -1,5 +1,18 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
+const fontGenerator = (
+  fontFamily = 'PyeojinGothic',
+  fontSize = '1rem',
+  fontWeight = 'normal',
+  lineHeight = 'normal',
+  letterSpacing = 'normal',
+) => ({
+  'font-family': fontFamily,
+  'font-weight': fontWeight,
+  'font-size': fontSize,
+  'line-height': lineHeight,
+  'letter-spacing': letterSpacing,
+});
 export const theme: DefaultTheme = {
   colors: {
     // Green
@@ -26,10 +39,83 @@ export const theme: DefaultTheme = {
     grey800: '#5f6060',
     grey900: '#49494a',
 
-  
-    primary: '#abbe07',    // green-500
+    primary: '#abbe07', // green-500
     background: '#f5f5f5',
     white: '#FFFFFF',
     black: '#121212',
+  },
+  fonts: {
+    BR_B: fontGenerator('BR-B', '64px', '400', 'auto', 'normal'),
+    BR_R: fontGenerator('BR-R', '16px', '400', 'auto', 'normal'),
+    SB_28: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '28px',
+      '600',
+      'auto',
+      'normal',
+    ),
+    SB_24: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '24px',
+      '600',
+      'auto',
+      'normal',
+    ),
+    SB_20: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '20px',
+      '600',
+      'auto',
+      'normal',
+    ),
+    SB_18: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '18px',
+      '600',
+      'auto',
+      'normal',
+    ),
+    SB_16: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '16px',
+      '600',
+      'auto',
+      'normal',
+    ),
+    R_20: fontGenerator(
+      'PyeojinGothic-Regular',
+      '20px',
+      '400',
+      'auto',
+      'normal',
+    ),
+    R_16: fontGenerator(
+      'PyeojinGothic-Regular',
+      '16px',
+      '400',
+      'auto',
+      'normal',
+    ),
+    R_14: fontGenerator(
+      'PyeojinGothic-Regular',
+      '14px',
+      '400',
+      'auto',
+      'normal',
+    ),
+    R_12: fontGenerator(
+      'PyeojinGothic-Regular',
+      '12px',
+      '400',
+      'auto',
+      'normal',
+    ),
+    R_10: fontGenerator(
+      'PyeojinGothic-Regular',
+      '10px',
+      '400',
+      'auto',
+      'normal',
+    ),
   },
 };
