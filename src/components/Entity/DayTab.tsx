@@ -37,7 +37,7 @@ const TabItem = styled.div<ActiveProps>`
 /* TODO: 폰트 적용 후 위아래 간격 중앙 정렬 확인하기 */
 const DayText = styled.span<ActiveProps>`
     font-size: 16px;
-    font-weight: ${(props) => (props.$isActive ? "700" : "400")};
+    font-weight: ${(props) => (props.$isActive ? "600" : "400")};
     color: ${(props) => (props.$isActive ? props.theme.colors.black : props.theme.colors.grey400)};
     margin-right: 11px;
     user-select: none;
