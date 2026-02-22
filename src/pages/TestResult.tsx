@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import Header from '@/components/Entity/Header';
 import BoothCard from '@/components/Entity/BoothCard';
 import { useBoothCards } from '@/hooks/useBoothCards';
+import { flexCenter } from '@/styles/mixins';
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-bottom: 40px;
 `;
 
 const ContentWrapper = styled.div`
@@ -17,18 +17,33 @@ const ContentWrapper = styled.div`
   gap: 20px;
 `;
 
-const ResultTitle = styled.h2`
-  font-family: "Pyeojin Gothic";
-  font-size: 20px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.black};
-  margin-bottom: 10px;
+const ResultContainer = styled.div`
+  ${flexCenter}
+  width: 67.2%;
+  margin: 0 auto;
+  padding-top: 32px;
+  flex-direction: column;
   text-align: center;
+  gap: 32px;
+  #result_title {
+    font-family: "Pyeojin Gothic";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
+  #result_content {
+    width: 100%;
+    font-family: "Pyeojin Gothic";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
 `;
 
 const TestResult = () => {
-    // 결과 페이지이므로 특정 조건에 맞는 부스들을 가져오도록 설정할 수 있습니다.
-    // 여기서는 예시로 전체 부스 카드를 가져옵니다.
     const { boothCards, isLoading, error } = useBoothCards({});
 
     if (isLoading) return <div>결과 로딩 중...</div>;
@@ -36,8 +51,17 @@ const TestResult = () => {
 
     return (
         <>
-            <Header title="결과 보기" />
+            <Header title="결과보기" />
             <PageContainer>
+                <ResultContainer>
+                    <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: "#798705" }}>OO</span> 분과입니다</div>
+                    <div id='result_content'>
+                        무대·발표처럼 사람들 앞에서 에너지를
+                        주고받는 활동에 끌리는 선택이 많았어요.
+                        관객과 함께 호흡하거나 팀으로
+                        공연을 만들어가는 경험이 잘 맞을 타입이에요.
+                    </div>
+                </ResultContainer>
                 <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
                     {boothCards.map((booth) => (
                         <BoothCard

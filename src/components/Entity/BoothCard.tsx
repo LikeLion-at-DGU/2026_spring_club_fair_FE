@@ -13,6 +13,7 @@ const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
     ${flexColumn}
     width: ${props => props.$width}%;
     height: ${props => props.$height}px;
+    margin: 0 auto;
     padding: var(--M, 8px);
     border-radius: var(--XL, 16px);
     border: 1px solid var(--Grey-grey-400, #BDBEBF);
