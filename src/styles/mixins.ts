@@ -12,7 +12,13 @@ export const flexCenter = css`
 export const flexStart = css`
     display: flex;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
+`;
+
+export const flexEnd = css`
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 `;
 
 export const flexColumn = css`

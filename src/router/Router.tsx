@@ -8,6 +8,8 @@ import Splash from '@/pages/Splash';
 import Main from '@pages/Main';
 import BoothMap from '@pages/BoothMap';
 import Test from '@pages/Test';
+import TestResult from '@pages/TestResult';
+
 
 const Router = () => {
   return (
@@ -20,8 +22,10 @@ const Router = () => {
 
         {/* 헤더 있는 화면 레이아웃 */}
         <Route element={<HeaderLayout />}>
+          <Route path="/boothmap" element={<BoothMap />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/test/result" element={<TestResult />} />
           <Route path='/boothmap' element={<BoothMap />} />
-          <Route path='/test' element={<Test />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -44,17 +44,17 @@ const Header = ({ title, showHome = true }: HeaderProps) => {
 
   return (
     <HeaderContainer>
-      <IconBtn 
-        src={arrowleft} 
-        alt="뒤로가기" 
-        onClick={() => navigate(-1)} 
+      <IconBtn
+        src={arrowleft}
+        alt="뒤로가기"
+        onClick={() => navigate(-1)}
       />
       <Title>{title}</Title>
       {showHome && (
-        <IconBtn 
-          src={Home} 
-          alt="홈" 
-          onClick={() => navigate('/main')} 
+        <IconBtn
+          src={Home}
+          alt="홈"
+          onClick={() => navigate('/main')}
         />
       )}
     </HeaderContainer>
