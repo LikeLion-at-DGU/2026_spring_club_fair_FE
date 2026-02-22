@@ -1,7 +1,10 @@
 import type { BoothCardData } from "@/types/booth";
 import arrowRight from "@assets/icons/fi-sr-caret-right.svg";
-import { flexStart, flexColumn, ellipsis } from "@styles/mixins";
+import clock from "@assets/icons/fi-sr-clock.svg";
+import marker from "@assets/icons/fi-sr-marker.svg";
+import { flexStart, flexColumn, ellipsis, flexEnd } from "@styles/mixins";
 import styled from "styled-components";
+import { testResults } from "@/mocks/testResults";
 
 interface Props {
     booth: BoothCardData;
@@ -38,14 +41,21 @@ const BoothImage = styled.img`
 `;
 
 const BoothInfo = styled.div`
+    padding-top: 8px;
+    gap: 4px;
     ${flexColumn}
     flex: 1;
+    height: 100%;
     min-width: 0; /* Necessary for ellipsis to work in flex children */
 `;
 
-const BoothTag = styled.p`
+const BoothDivison = styled.div<{ $bgColor?: string }>`
+    width: fit-content;
+    padding: 4px 8px;
     font-size: 12px;
-    color: var(--Grey-grey-600, #8E8E8E);
+    color: #FFF;
+    background-color: ${props => props.$bgColor || "#E67979"};
+    border-radius: 4px;
     ${ellipsis}
 `;
 
@@ -57,41 +67,79 @@ const BoothTitle = styled.p`
     ${ellipsis}
 `;
 
-const BoothDate = styled.p`
+const BoothDate = styled.div`
     font-size: 14px;
-    color: var(--Grey-grey-700, #616161);
+    font-weight: 400;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.grey600};
     ${ellipsis}
+    gap: 8px;
+    ${flexStart}
+    img{
+    width: 14px;
+    height: 14px;
+    }
+`;
+
+const BoothLocation = styled.div`
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.grey600};
+    ${ellipsis}
+    gap: 8px;
+    ${flexStart}
+    img{
+    width: 14px;
+    height: 14px;
+    }
 `;
 
 const DetailButton = styled.button`
-    ${flexStart}
+    ${flexEnd}
     align-items: center;
     background: none;
     border: none;
-    color: var(--Primary-primary-500, #FF5C00);
-    font-weight: 600;
+    font-size: 14px;
+    color: ${({ theme }) => theme.colors.grey600};
+    font-weight: 400;
     cursor: pointer;
     margin-top: auto;
     padding: 0;
     
     img {
-        width: 16px;
-        height: 16px;
+    margin-top: -2px;
+        width: 14px;
+        height: 14px;
     }
 `;
 
 
 
+const formatDate = (dateStr: string) => {
+    const [, month, day] = dateStr.split("-");
+    return `${Number(month)}월 ${Number(day)}일`;
+};
+
 const BoothCard = ({ booth, width = 91, height = 144 }: Props) => {
+    const divisionInfo = Object.values(testResults).find(res => res.division === booth.division);
+    const bgColor = divisionInfo?.color;
+
     return (
         <BoothCardWrapper $width={width} $height={height}>
             <ContentContainer>
                 <BoothImage src={booth.image} alt={booth.name} />
                 <BoothInfo>
-                    <BoothTag>{booth.type}</BoothTag>
+                    <BoothDivison $bgColor={bgColor} id="booth_division">{booth.division}</BoothDivison>
                     <BoothTitle>{booth.name}</BoothTitle>
-                    <BoothDate>{booth.dates.join(", ")}</BoothDate>
-                    <p>{booth.location}</p>
+                    <BoothDate>
+                        <img src={clock} alt="clock" />
+                        {booth.dates.map(formatDate).join(", ")}
+                    </BoothDate>
+                    <BoothLocation>
+                        <img src={marker} alt="marker" />
+                        {booth.location}
+                    </BoothLocation>
                     <DetailButton>
                         자세히 보기
                         <img src={arrowRight} alt="arrow-right" />

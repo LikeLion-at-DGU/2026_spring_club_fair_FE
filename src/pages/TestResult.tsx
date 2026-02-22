@@ -3,6 +3,8 @@ import Header from '@/components/Entity/Header';
 import BoothCard from '@/components/Entity/BoothCard';
 import { useBoothCards } from '@/hooks/useBoothCards';
 import { flexCenter } from '@/styles/mixins';
+import { useSearchParams } from 'react-router-dom';
+import { testResults } from '@/mocks/testResults';
 
 const PageContainer = styled.div`
   display: flex;
@@ -44,7 +46,11 @@ const ResultContainer = styled.div`
 `;
 
 const TestResult = () => {
-    const { boothCards, isLoading, error } = useBoothCards({});
+    const [searchParams] = useSearchParams();
+    const resultId = Number(searchParams.get("id")) || 1;
+    const result = testResults[resultId] || testResults[1];
+
+    const { boothCards, isLoading, error } = useBoothCards({ division: result.division });
 
     if (isLoading) return <div>결과 로딩 중...</div>;
     if (error) return <div>에러 발생: {error.message}</div>;
@@ -54,13 +60,8 @@ const TestResult = () => {
             <Header title="결과보기" />
             <PageContainer>
                 <ResultContainer>
-                    <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: "#798705" }}>OO</span> 분과입니다</div>
-                    <div id='result_content'>
-                        무대·발표처럼 사람들 앞에서 에너지를
-                        주고받는 활동에 끌리는 선택이 많았어요.
-                        관객과 함께 호흡하거나 팀으로
-                        공연을 만들어가는 경험이 잘 맞을 타입이에요.
-                    </div>
+                    <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: "#798705" }}>{result.division}</span> 분과입니다</div>
+                    <div id='result_content' dangerouslySetInnerHTML={{ __html: result.description }} />
                 </ResultContainer>
                 <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
                     {boothCards.map((booth) => (
