@@ -43,9 +43,8 @@ const BoothMap = () => {
   /* 선택된 분과 상태 */
   const [selectedDivision, setSelectedDivision] = useState<string|null>(null);
 
-      // 가상의 분과 데이터 (실제 부스 데이터에서 추출 예정)
+      // 가상 분과명 (TODO : 실제 부스 데이터에서 추출해서 연결 예정)
       const divisionList = ["공연", "사회", "연구", "예창", "학술", "체육", "봉사"]
-
 
   // 1. 부스 버튼 클릭 핸들러
   const handleBoothCick = () => {
@@ -71,7 +70,8 @@ const BoothMap = () => {
     };
   };
 
-  /****************** */
+
+  // ----- ui ----- //
 
   return (
     <PageContainer>
