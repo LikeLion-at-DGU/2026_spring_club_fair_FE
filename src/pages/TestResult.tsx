@@ -1,0 +1,79 @@
+import styled from 'styled-components';
+import Header from '@/components/Entity/Header';
+import BoothCard from '@/components/Entity/BoothCard';
+import { useBoothCards } from '@/hooks/useBoothCards';
+import { flexCenter } from '@/styles/mixins';
+import { useSearchParams } from 'react-router-dom';
+import { testResults } from '@/mocks/testResults';
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const ContentWrapper = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const ResultContainer = styled.div`
+  ${flexCenter}
+  width: 67.2%;
+  margin: 0 auto;
+  padding-top: 32px;
+  flex-direction: column;
+  text-align: center;
+  gap: 32px;
+  #result_title {
+    font-family: "Pyeojin Gothic";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
+  #result_content {
+    width: 100%;
+    font-family: "Pyeojin Gothic";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
+`;
+
+const TestResult = () => {
+    const [searchParams] = useSearchParams();
+    const resultId = Number(searchParams.get("id")) || 1;
+    const result = testResults[resultId] || testResults[1];
+
+    const { boothCards, isLoading, error } = useBoothCards({ division: result.division });
+
+    if (isLoading) return <div>결과 로딩 중...</div>;
+    if (error) return <div>에러 발생: {error.message}</div>;
+
+    return (
+        <>
+            <Header title="결과보기" />
+            <PageContainer>
+                <ResultContainer>
+                    <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: "#798705" }}>{result.division}</span> 분과입니다</div>
+                    <div id='result_content' dangerouslySetInnerHTML={{ __html: result.description }} />
+                </ResultContainer>
+                <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
+                    {boothCards.map((booth) => (
+                        <BoothCard
+                            key={booth.id}
+                            booth={booth}
+                        />
+                    ))}
+                </div>
+            </PageContainer>
+        </>
+    );
+};
+
+export default TestResult;
