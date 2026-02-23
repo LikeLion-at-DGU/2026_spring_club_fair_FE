@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import { useCategory } from '@/hooks/useCategory';
 import Header from '../components/Entity/Header';
@@ -6,6 +6,7 @@ import SearchBar from '@/components/Entity/SearchBar';
 import DayTab from '@/components/Entity/DayTab';
 import CategoryTab from '@/components/Entity/CategoryTab';
 import BoothCard from '@/components/Entity/BoothCard';
+import Map from '@/components/Entity/Map';
 
 const PageContainer = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const FilterSection = styled.div`
 // ----- ui ----- //
 
 const BoothMap = () => {
+  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>('manhae');
   const [activeDay, setActiveDay] = React.useState(1);
   const {
     activeCategory,
@@ -53,8 +55,10 @@ const BoothMap = () => {
       {/* 본문 */}
       <PageContent>
         <SearchBar/>
-        <div style={{border: "1px solid"}}>Map</div>
-        {/* Map 영역 */}
+        <Map
+          activeLocation={activeLocation}
+          onLocationChange={setActiveLocation}
+        />
         <DayTab
           activeDay={activeDay}
           onTabClick={(id) => setActiveDay(id)}
