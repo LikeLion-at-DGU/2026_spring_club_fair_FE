@@ -1,12 +1,15 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import { useCategory } from '@/hooks/useCategory';
 import Header from '../components/Entity/Header';
 import SearchBar from '@/components/Entity/SearchBar';
 import DayTab from '@/components/Entity/DayTab';
 import CategoryTab from '@/components/Entity/CategoryTab';
 import BoothCard from '@/components/Entity/BoothCard';
 import Map from '@/components/Entity/Map';
+import { useCategory } from '@/hooks/useCategory';
+import { getDivisionFromBooths } from '@/utils/boothUtils';
+import { useBoothCards } from '@/hooks/useBoothCards';
+import { mockBooths } from '@/mocks/mockBooths';
 
 const PageContainer = styled.div`
   display: flex;
@@ -17,20 +20,25 @@ const PageContainer = styled.div`
 
 const PageContent = styled.main`
   flex: 1;
-  //padding: 20px 6%;
+  padding: 0 0 8% 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 `;
 
-const FilterSection = styled.div`
+const CategorySection = styled.div`
     display: flex;
     gap: 12px;
     padding: 16px;
     overflow-x: auto;
     white-space: nowrap;
 `
-
+const CardSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    //overflow-y: scroll;
+`
 
 // ----- ui ----- //
 
@@ -45,15 +53,21 @@ const BoothMap = () => {
     handleFoodTruckClick
   } = useCategory();
 
-  // 가상 분과명 (TODO : 실제 부스 데이터에서 추출해서 연결 예정)
-  const divisionList = ["공연", "사회", "연구", "예창", "학술", "체육", "봉사"]
+  // useBoothCards 호출
+  const { boothCards, isLoading } = useBoothCards({
+    day: String(activeDay),
+    division: selectedDivision || undefined,
+  })
+
+  // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
+  const divisionList = getDivisionFromBooths(mockBooths);
 
   return (
     <PageContainer>
-      {/* 헤더 */}
       <Header title="부스 지도" /> 
-      {/* 본문 */}
+
       <PageContent>
+      
         <SearchBar/>
         <Map
           activeLocation={activeLocation}
@@ -64,15 +78,13 @@ const BoothMap = () => {
           onTabClick={(id) => setActiveDay(id)}
         />
 
-        <FilterSection>
-          {/* 부스 탭 */}
+        <CategorySection>
           <CategoryTab
             text="부스"
             showArrow={true}
             isActive={activeCategory === 'booth'}
             onClick={handleBoothClick}
           />
-          {/* 부스 클릭 시 노출되는 분과들 */}
           {activeCategory === 'booth' && divisionList.map((div) => (
                 <CategoryTab
                   key={div}
@@ -81,18 +93,24 @@ const BoothMap = () => {
                   onClick={() => handleDivisionClick(div)}
                 />
               ))}
-
-          {/* 푸드트럭 탭 */}
           <CategoryTab 
             text="푸드트럭"
             showArrow={false}
             isActive={activeCategory === 'foodtruck'}
             onClick={handleFoodTruckClick}
           />
-        </FilterSection>
+        </CategorySection>
 
-        {/* 부스카드 리스트 영역 */}
-        <div>BoothCard List</div>
+        <CardSection>
+          {isLoading ? (
+            <div>BoothCard List</div>
+          ) : (
+            boothCards.map((booth) => (
+              <BoothCard key={booth.id} booth={booth} />
+            ))
+          )}
+        </CardSection>
+
       </PageContent>
     </PageContainer>
   );
