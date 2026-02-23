@@ -19,11 +19,11 @@ const PageContainer = styled.div`
 `;
 
 const PageContent = styled.main`
-  flex: 1;
   padding: 0 0 8% 0;
-  overflow-y: auto;
   display: flex;
+  height: 100%;
   flex-direction: column;
+  
 `;
 
 const CategorySection = styled.div`
@@ -34,10 +34,12 @@ const CategorySection = styled.div`
     white-space: nowrap;
 `
 const CardSection = styled.div`
+    flex: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    //overflow-y: scroll;
+    overflow-y: scroll;
 `
 
 // ----- ui ----- //
@@ -55,9 +57,10 @@ const BoothMap = () => {
 
   // useBoothCards 호출
   const { boothCards, isLoading } = useBoothCards({
-    day: String(activeDay),
+    day: activeDay === 1 ? "2026-03-04" : "2026-03-05",
     division: selectedDivision || undefined,
-  })
+    type: activeCategory === 'foodtruck' ? 'foodtruck' : undefined 
+  });
 
   // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
   const divisionList = getDivisionFromBooths(mockBooths);
@@ -66,8 +69,7 @@ const BoothMap = () => {
     <PageContainer>
       <Header title="부스 지도" /> 
 
-      <PageContent>
-      
+      <PageContent>      
         <SearchBar/>
         <Map
           activeLocation={activeLocation}
@@ -77,7 +79,7 @@ const BoothMap = () => {
           activeDay={activeDay}
           onTabClick={(id) => setActiveDay(id)}
         />
-
+        {/* 부스/푸드트럭 카테고리 섹션 */}
         <CategorySection>
           <CategoryTab
             text="부스"
@@ -100,17 +102,19 @@ const BoothMap = () => {
             onClick={handleFoodTruckClick}
           />
         </CategorySection>
-
+        {/* 카드 리스트 섹션 */}
         <CardSection>
           {isLoading ? (
-            <div>BoothCard List</div>
+            <div>loading...</div>
           ) : (
             boothCards.map((booth) => (
-              <BoothCard key={booth.id} booth={booth} />
+              <BoothCard
+                  key={booth.id}
+                  booth={booth}
+              />
             ))
           )}
         </CardSection>
-
       </PageContent>
     </PageContainer>
   );
