@@ -17,9 +17,8 @@ const BoothMarker = styled.div<MarkerProps>`
     position: absolute;
     left: ${props => props.$x}%;
     top: ${props => props.$y}%;
-    //transform: translate()(-50%, -50%);
+    transform: translate(-50%, -50%);
     border-radius: 50%;
-    //transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,14 +41,6 @@ const BoothMarker = styled.div<MarkerProps>`
         background-color: ${props.$type === 'booth' ? '#FF7474' : '#FFC005'};
         box-shadow: 0 0 5px 1px ${props.$type === 'booth' ? '#B5C340' : '#FF7327'};
         z-index: 20;
-
-        &::after{
-            content: '';
-            width: 6px;
-            height: 6px;
-            background-color: white;
-            border-radius: 50%;
-        }
     `}
 `;
 

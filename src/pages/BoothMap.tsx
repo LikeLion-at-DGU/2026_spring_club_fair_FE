@@ -47,6 +47,8 @@ const CardSection = styled.div`
 const BoothMap = () => {
   const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>('manhae');
   const [activeDay, setActiveDay] = React.useState(1);
+  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+
   const {
     activeCategory,
     selectedDivision,
@@ -74,6 +76,9 @@ const BoothMap = () => {
         <Map
           activeLocation={activeLocation}
           onLocationChange={setActiveLocation}
+          activeBooths={boothCards} // TODO : 실제 데이터 입력 후 확인 필요
+          selectedBoothId={selectedBoothId}
+          activeDivision={selectedDivision}
         />
         <DayTab
           activeDay={activeDay}
@@ -111,6 +116,8 @@ const BoothMap = () => {
               <BoothCard
                   key={booth.id}
                   booth={booth}
+                  onClick={() => setSelectedBoothId(booth.id)}
+                  isActive={selectedBoothId === booth.id}
               />
             ))
           )}

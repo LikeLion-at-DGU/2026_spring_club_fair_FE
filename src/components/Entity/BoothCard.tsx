@@ -10,6 +10,8 @@ interface Props {
     booth: BoothCardData;
     width?: number;
     height?: number;
+    isActive?: boolean;
+    onClick?: () => void;
 }
 
 const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
