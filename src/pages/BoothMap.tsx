@@ -1,8 +1,15 @@
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import Header from '../components/Entity/Header';
 import SearchBar from '@/components/Entity/SearchBar';
 import DayTab from '@/components/Entity/DayTab';
-import React from 'react';
+import CategoryTab from '@/components/Entity/CategoryTab';
+import BoothCard from '@/components/Entity/BoothCard';
+import Map from '@/components/Entity/Map';
+import { useCategory } from '@/hooks/useCategory';
+import { getDivisionFromBooths } from '@/utils/boothUtils';
+import { useBoothCards } from '@/hooks/useBoothCards';
+import { mockBooths } from '@/mocks/mockBooths';
 
 const PageContainer = styled.div`
   display: flex;
@@ -13,28 +20,97 @@ const PageContainer = styled.div`
 
 const PageContent = styled.main`
   flex: 1;
-  padding: 20px 6%;
+  padding: 0 0 8% 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
 `;
 
+const CategorySection = styled.div`
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+`
+const CardSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    //overflow-y: scroll;
+`
+
+// ----- ui ----- //
+
 const BoothMap = () => {
+  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>('manhae');
   const [activeDay, setActiveDay] = React.useState(1);
+  const {
+    activeCategory,
+    selectedDivision,
+    handleBoothClick,
+    handleDivisionClick,
+    handleFoodTruckClick
+  } = useCategory();
+
+  // useBoothCards 호출
+  const { boothCards, isLoading } = useBoothCards({
+    day: String(activeDay),
+    division: selectedDivision || undefined,
+  })
+
+  // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
+  const divisionList = getDivisionFromBooths(mockBooths);
 
   return (
     <PageContainer>
-      {/* 헤더 */}
       <Header title="부스 지도" /> 
-      {/* 본문 */}
+
       <PageContent>
+      
         <SearchBar/>
-        <div style={{border: "1px solid"}}>Map</div>
+        <Map
+          activeLocation={activeLocation}
+          onLocationChange={setActiveLocation}
+        />
         <DayTab
           activeDay={activeDay}
           onTabClick={(id) => setActiveDay(id)}
         />
-        <div>BoothCard List</div>
+
+        <CategorySection>
+          <CategoryTab
+            text="부스"
+            showArrow={true}
+            isActive={activeCategory === 'booth'}
+            onClick={handleBoothClick}
+          />
+          {activeCategory === 'booth' && divisionList.map((div) => (
+                <CategoryTab
+                  key={div}
+                  text={div}
+                  isActive={selectedDivision === div}
+                  onClick={() => handleDivisionClick(div)}
+                />
+              ))}
+          <CategoryTab 
+            text="푸드트럭"
+            showArrow={false}
+            isActive={activeCategory === 'foodtruck'}
+            onClick={handleFoodTruckClick}
+          />
+        </CategorySection>
+
+        <CardSection>
+          {isLoading ? (
+            <div>BoothCard List</div>
+          ) : (
+            boothCards.map((booth) => (
+              <BoothCard key={booth.id} booth={booth} />
+            ))
+          )}
+        </CardSection>
+
       </PageContent>
     </PageContainer>
   );

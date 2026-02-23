@@ -4,10 +4,10 @@ import search from '@assets/icons/fi-br-search.svg';
 // ----- style ----- //
 
 const Container = styled.div`
-    width: 100%;
     height: 56px;
     display : flex;
     align-items: center;
+    margin: 24px 20px;
     padding: 16px;
     gap: 10px;
     border-radius: 9999px;
