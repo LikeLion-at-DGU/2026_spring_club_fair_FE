@@ -124,6 +124,7 @@ const BoothMap = () => {
                 booth={booth}
                 onClick={() => setSelectedBoothId(booth.id)}
                 isActive={selectedBoothId === booth.id}
+                onDetailClick={() => handleBoothCardClick(booth.id)}
               />
             ))
           )}

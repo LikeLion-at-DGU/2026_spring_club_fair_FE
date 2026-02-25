@@ -12,6 +12,7 @@ interface Props {
   height?: number;
   isActive?: boolean;
   onClick?: () => void;
+  onDetailClick?: () => void;
 }
 
 const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
@@ -126,7 +127,7 @@ const formatDate = (dateStr: string) => {
   return `${Number(month)}월 ${Number(day)}일`;
 };
 
-const BoothCard = ({ booth, width = 91, height = 144, onClick }: Props) => {
+const BoothCard = ({ booth, width = 91, height = 144, onClick, onDetailClick }: Props) => {
   const divisionInfo = Object.values(testResults).find(
     (res) => res.division === booth.division,
   );
@@ -148,7 +149,10 @@ const BoothCard = ({ booth, width = 91, height = 144, onClick }: Props) => {
             <img src={marker} alt='marker' />
             {booth.location}
           </BoothLocation>
-          <DetailButton>
+          <DetailButton onClick={(e) => {
+            e.stopPropagation();
+            onDetailClick && onDetailClick();
+          }}>
             자세히 보기
             <img src={arrowRight} alt='arrow-right' />
           </DetailButton>
