@@ -42,6 +42,7 @@ declare module 'styled-components' {
       SB_20: Record<string, string>;
       SB_18: Record<string, string>;
       SB_16: Record<string, string>;
+      SB_12: Record<string, string>;
       R_20: Record<string, string>;
       R_16: Record<string, string>;
       R_14: Record<string, string>;
