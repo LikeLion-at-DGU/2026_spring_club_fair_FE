@@ -82,6 +82,13 @@ export const theme: DefaultTheme = {
       'auto',
       'normal',
     ),
+    SB_12: fontGenerator(
+      'PyeojinGothic-Semibold',
+      '12px',
+      '600',
+      'auto',
+      'normal',
+    ),
     R_20: fontGenerator(
       'PyeojinGothic-Regular',
       '20px',
