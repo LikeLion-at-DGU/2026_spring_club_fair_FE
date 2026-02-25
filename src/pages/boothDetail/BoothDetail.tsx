@@ -2,10 +2,19 @@ import { useParams } from 'react-router-dom';
 import { mockBooths } from '@/mocks/mockBooths';
 import Header from '@/components/Entity/Header';
 import carrot from '@/assets/icons/fi-sr-carrot.svg';
+import dateIcon from '@assets/icons/cardTimeIcon.svg';
+import placeIcon from '@assets/icons/cardPlaceIcon.svg';
 import * as S from './BoothDetail.styled';
 const BoothDetail = () => {
   const { id } = useParams<{ id: string }>();
   const booth = mockBooths.find((b) => b.id === Number(id));
+
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return '';
+
+    const [, month, day] = dateStr.split('-');
+    return `${Number(month)}월 ${Number(day)}일`;
+  };
 
   if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
 
@@ -24,7 +33,71 @@ const BoothDetail = () => {
 
         <S.BoothInfoCardWrapper>
           <S.InfoCard>
-            <div>{booth.description}</div>
+            <S.CardTitleText>{booth.name}</S.CardTitleText>
+            <S.InfoCardContent>
+              <S.CardSubTitleText>EVENT</S.CardSubTitleText>
+              {booth.event.map((event, index) => (
+                <S.CardBodyText key={index}>• {event}</S.CardBodyText>
+              ))}
+            </S.InfoCardContent>
+
+            <S.InfoCardContent>
+              <S.CardSubTitleText>HERE</S.CardSubTitleText>
+              <S.CardBodyText>
+                <img src={dateIcon} alt='시간 아이콘' />
+                {booth.dates.map((date, index) => (
+                  <div key={index}>{formatDate(date)}</div>
+                ))}
+              </S.CardBodyText>
+              <S.CardBodyText>
+                <img src={placeIcon} alt='위치 아이콘' />
+                {booth.location}
+              </S.CardBodyText>
+            </S.InfoCardContent>
+          </S.InfoCard>
+
+          <S.InfoCard>
+            <S.CardTitleText>{booth.name}을 소개합니다</S.CardTitleText>
+            <S.InfoCardContent>
+              <S.CardBodyText className='black'>
+                {booth.shortdesc}
+              </S.CardBodyText>
+              <S.CardBodyText className='grey800'>
+                {booth.description}
+              </S.CardBodyText>
+            </S.InfoCardContent>
+          </S.InfoCard>
+
+          <S.InfoCard>
+            <S.CardTitleText>{booth.name}과 함께 해주세요!</S.CardTitleText>
+            <S.CardRecruitContents>
+              <S.CardRecruitGap>
+                <S.CardBodyText className='grey500'>모집기간</S.CardBodyText>
+                <S.CardBodyText>
+                  {formatDate(booth.recruitStart)} ~{' '}
+                  {formatDate(booth.recruitEnd)}
+                </S.CardBodyText>
+              </S.CardRecruitGap>
+
+              <S.CardRecruitGap>
+                <S.CardBodyText className='grey500'>신청 방법</S.CardBodyText>
+                {/* api연결시에는 recruit_detail임 */}
+                <S.CardBodyText>{booth.recruitDetail}</S.CardBodyText>
+              </S.CardRecruitGap>
+
+              <S.CardRecruitGap>
+                <S.CardBodyText className='grey500'>인스타그램</S.CardBodyText>
+                {/* 여기도 접근자좀 달라질 수 있음 */}
+                <S.CardBodyText
+                  as='a'
+                  href={`${booth.url}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  @{booth.handle}
+                </S.CardBodyText>
+              </S.CardRecruitGap>
+            </S.CardRecruitContents>
           </S.InfoCard>
         </S.BoothInfoCardWrapper>
       </S.Wrapper>

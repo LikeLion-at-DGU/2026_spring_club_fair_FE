@@ -60,6 +60,10 @@ export const BoothInfoCardWrapper = styled.div`
   gap: 16px;
 
   margin-bottom: 14px;
+
+  margin-top: -97px;
+  position: relative;
+  z-index: 10;
 `;
 export const InfoCard = styled.div`
   display: flex;
@@ -74,4 +78,68 @@ export const InfoCard = styled.div`
 
   background-color: ${(props) => props.theme.colors.grey50};
   gap: 12px;
+`;
+
+export const CardTitleText = styled.div`
+  display: flex;
+  ${({ theme }) => theme.fonts.SB_16};
+  color: ${(props) => props.theme.colors.black};
+`;
+
+export const InfoCardContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+`;
+
+export const CardSubTitleText = styled.div`
+  display: flex;
+  ${({ theme }) => theme.fonts.R_12};
+  color: ${(props) => props.theme.colors.grey500};
+  line-height: 155%;
+`;
+
+export const CardHereText = styled.div`
+  display: flex;
+  ${({ theme }) => theme.fonts.R_14};
+  color: ${(props) => props.theme.colors.black};
+  line-height: 155%;
+  & .grey {
+    color: ${(props) => props.theme.colors.grey800};
+  }
+`;
+
+export const CardRecruitContents = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+export const CardRecruitGap = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+export const CardBodyText = styled.div`
+  display: flex;
+  gap: 8px;
+  ${({ theme }) => theme.fonts.R_14};
+  color: ${(props) => props.theme.colors.grey900};
+  line-height: 155%;
+
+  text-decoration: none;
+  color: inherit;
+
+  &.black {
+    color: ${(props) => props.theme.colors.black};
+  }
+  &.grey800 {
+    color: ${(props) => props.theme.colors.grey800};
+  }
+  &.grey500 {
+    color: ${(props) => props.theme.colors.grey500};
+  }
+  & img {
+    width: 16px;
+    height: 16px;
+  }
 `;
