@@ -17,8 +17,9 @@ export const BoothTag = styled.div`
   gap: 4px;
   width: fit-content;
   padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.8);
-  color: ${(props) => props.theme.colors.green700};
+  background: rgba(200, 201, 201, 0.7);
+  border-radius: 9999px;
+  color: ${(props) => props.theme.colors.green800};
   border-radius: 9999px;
   ${({ theme }) => theme.fonts.SB_12};
 

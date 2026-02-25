@@ -19,6 +19,38 @@ const BoothDetail = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // 👇 1. PC 마우스 드래그를 위한 Ref 추가 (렌더링을 발생시키지 않도록 useRef 사용)
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startScrollLeft = useRef(0);
+  // 👇 1. 마우스를 누를 때: 스냅 기능을 잠시 끕니다.
+  const onDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - scrollRef.current.offsetLeft;
+    startScrollLeft.current = scrollRef.current.scrollLeft;
+
+    // 추가: 드래그 중에는 자유롭게 스크롤되도록 스냅 해제
+    scrollRef.current.style.scrollSnapType = 'none';
+  };
+
+  // 👇 2. 마우스를 뗄 때: 스냅 기능을 다시 켭니다.
+  const onDragEnd = () => {
+    if (!scrollRef.current) return;
+    isDragging.current = false;
+
+    // 추가: 마우스를 떼면 가장 가까운 이미지로 다시 탁! 붙게 설정
+    scrollRef.current.style.scrollSnapType = 'x mandatory';
+  };
+
+  const onDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    scrollRef.current.scrollLeft = startScrollLeft.current - walk;
+  };
+
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
@@ -44,12 +76,20 @@ const BoothDetail = () => {
               : '0/0'}
           </S.BoothImgCount>
 
-          <S.ImageScrollContainer ref={scrollRef} onScroll={handleScroll}>
+          <S.ImageScrollContainer
+            ref={scrollRef}
+            onScroll={handleScroll}
+            onMouseDown={onDragStart}
+            onMouseLeave={onDragEnd}
+            onMouseUp={onDragEnd}
+            onMouseMove={onDragMove}
+          >
             {booth.images.map((image) => (
               <S.BoothImg
                 key={image.order}
                 src={image.image_url}
                 alt={`${booth.name} 사진 ${image.order}`}
+                draggable={false}
               />
             ))}
           </S.ImageScrollContainer>

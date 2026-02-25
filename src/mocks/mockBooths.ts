@@ -27,7 +27,7 @@ export const mockBooths: Booth[] = [
       {
         order: 1,
         image_url:
-          'https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg',
+          'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1000&auto=format&fit=crop',
       },
     ],
   },
