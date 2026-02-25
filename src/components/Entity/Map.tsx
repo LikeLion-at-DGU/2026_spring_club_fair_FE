@@ -2,6 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import ManhaeGround from "@assets/images/만해광장.png";
 import PalJeongDo from "@assets/images/팔정도.png";
+import { MANHAE_COORDS } from '@/constants/mapCoords';
+import { PALJEONGDO_COORDS } from '@/constants/mapCoords';
+import BoothMarker from "./Marker";
+import type { Booth } from "@/types/booth";
+
 
 // ----- style ----- //
 
@@ -52,28 +57,46 @@ const MapImg = styled.img`
   //object-fit: contain; /* TODO : 지도 왜곡 확인 필요 */
 `;
 
-// 임시좌표
-const TempDot = styled.div<{ $x: number; $y: number }>`
-  position: absolute;
-  top: ${(props) => props.$x}%; 
-  left: ${(props) => props.$y}%;
-  width: 12px;
-  height: 12px;
-  background-color: ${(props) => props.theme.colors.green600};
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-`;
-
 
 // ----- ui ----- //
 
 interface MapProps {
     activeLocation: 'manhae' | 'paljeongdo';
     onLocationChange: (loc: 'manhae' | 'paljeongdo') => void;
+    activeBooths: {
+        id: number;
+        locNum: number;
+        type: string;
+        division?: string | null;
+    }[];
+    selectedBoothId: number | null;
+    activeDivision: string | null;
 }
 
-const Map = ({activeLocation, onLocationChange}: MapProps) => {
+const Map = ({
+    activeLocation, 
+    onLocationChange,
+    activeBooths,
+    selectedBoothId,
+    activeDivision,
+}: MapProps) => {
+
+    const currentCoords = activeLocation === 'manhae' ? MANHAE_COORDS : PALJEONGDO_COORDS;
+
+    /**
+     * 좌표 확인용(콘솔용) 함수
+     * 
+     * const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            // 클릭한 위치를 %로 계산
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            console.log(`{ x: ${x.toFixed(1)}, y: ${y.toFixed(1)} },`);
+        };
+     */
+
+
     return (
         <Container>
             <LocationTabSection>
@@ -91,13 +114,34 @@ const Map = ({activeLocation, onLocationChange}: MapProps) => {
                     src={activeLocation === 'manhae' ? ManhaeGround : PalJeongDo}
                     alt={activeLocation === 'manhae' ? "만해광장 지도" : "팔정도 지도"}
                 />
+                {/* 테스트 : 전체 좌표 확인용 */}
+                {Object.entries(currentCoords).map(([num, coord]) => (
+                    <BoothMarker
+                        key={num}
+                        $x={coord.x}
+                        $y={coord.y}
+                        $type="booth"
+                        $status="more"
+                        onClick={() => alert(`부스번호 : ${num}`)}
+                    />
+                ))}
+                {activeBooths.map((booth) => {
+                    const coord = currentCoords[booth.locNum];
+                    if (!coord) return null;
 
-                {/* test Dot */}
-                {activeLocation === 'manhae' ? (
-                    <TempDot $x={30} $y={40} />
-                ) : (
-                    <TempDot $x={60} $y={70} />
-                )}
+                    return (
+                        <BoothMarker
+                            key={booth.id}
+                            $x={coord.x}
+                            $y={coord.y}
+                            $type={booth.type === 'foodtruck' ? 'foodtruck' : 'booth'}
+                            $status={
+                                selectedBoothId === booth.id ? 'activated' :
+                                activeDivision === booth.division ? 'more' : 'default'
+                            }
+                        />                            
+                    );
+                })};
             </MapWrapper>
         </Container>
     );

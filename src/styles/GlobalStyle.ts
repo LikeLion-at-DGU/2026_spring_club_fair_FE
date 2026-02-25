@@ -90,7 +90,7 @@ const GlobalStyle = createGlobalStyle`
   #root {
     width: 100%;
     max-width: 540px;
-	min-height: calc(var(--vh, 1vh) * 100);
+	  min-height: calc(var(--vh, 1vh) * 100);
     
     background-color: #ffffff;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);

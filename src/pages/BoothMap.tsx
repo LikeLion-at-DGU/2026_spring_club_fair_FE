@@ -20,10 +20,9 @@ const PageContainer = styled.div`
 `;
 
 const PageContent = styled.main`
-  flex: 1;
   padding: 0 0 8% 0;
-  overflow-y: auto;
   display: flex;
+  height: 100%;
   flex-direction: column;
 `;
 
@@ -35,10 +34,12 @@ const CategorySection = styled.div`
   white-space: nowrap;
 `;
 const CardSection = styled.div`
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  //overflow-y: scroll;
+  overflow-y: scroll;
 `;
 
 // ----- ui ----- //
@@ -48,6 +49,8 @@ const BoothMap = () => {
     'manhae',
   );
   const [activeDay, setActiveDay] = React.useState(1);
+  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+
   const {
     activeCategory,
     selectedDivision,
@@ -58,8 +61,9 @@ const BoothMap = () => {
 
   // useBoothCards 호출
   const { boothCards, isLoading } = useBoothCards({
-    day: String(activeDay),
+    day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     division: selectedDivision || undefined,
+    type: activeCategory === 'foodtruck' ? 'foodtruck' : undefined,
   });
 
   // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
@@ -80,9 +84,12 @@ const BoothMap = () => {
         <Map
           activeLocation={activeLocation}
           onLocationChange={setActiveLocation}
+          activeBooths={boothCards} // TODO : 실제 데이터 입력 후 확인 필요
+          selectedBoothId={selectedBoothId}
+          activeDivision={selectedDivision}
         />
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
-
+        {/* 부스/푸드트럭 카테고리 섹션 */}
         <CategorySection>
           <CategoryTab
             text='부스'
@@ -106,16 +113,17 @@ const BoothMap = () => {
             onClick={handleFoodTruckClick}
           />
         </CategorySection>
-
+        {/* 카드 리스트 섹션 */}
         <CardSection>
           {isLoading ? (
-            <div>BoothCard List</div>
+            <div>loading...</div>
           ) : (
             boothCards.map((booth) => (
               <BoothCard
                 key={booth.id}
                 booth={booth}
-                onClick={() => handleBoothCardClick(booth.id)}
+                onClick={() => setSelectedBoothId(booth.id)}
+                isActive={selectedBoothId === booth.id}
               />
             ))
           )}
