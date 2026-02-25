@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import Header from '@/components/Entity/Header';
 import BoothCard from '@/components/Entity/BoothCard';
-import { useBoothCards } from '@/hooks/useBoothCards';
 import { flexCenter } from '@/styles/mixins';
-import { useSearchParams } from 'react-router-dom';
-import { testResults } from '@/mocks/testResults';
+import { useLocation } from 'react-router-dom';
+import type { QuizResultResponse } from '@/types/quiz';
 
 const PageContainer = styled.div`
   display: flex;
@@ -45,35 +44,48 @@ const ResultContainer = styled.div`
   }
 `;
 
+import { testResults } from '@/mocks/testResults';
+
 const TestResult = () => {
-    const [searchParams] = useSearchParams();
-    const resultId = Number(searchParams.get("id")) || 1;
-    const result = testResults[resultId] || testResults[1];
+  const location = useLocation();
+  const result = location.state?.result as QuizResultResponse;
 
-    const { boothCards, isLoading, error } = useBoothCards({ division: result.division });
-
-    if (isLoading) return <div>결과 로딩 중...</div>;
-    if (error) return <div>에러 발생: {error.message}</div>;
-
+  if (!result) {
     return (
-        <>
-            <Header title="결과보기" />
-            <PageContainer>
-                <ResultContainer>
-                    <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: "#798705" }}>{result.division}</span> 분과입니다</div>
-                    <div id='result_content' dangerouslySetInnerHTML={{ __html: result.description }} />
-                </ResultContainer>
-                <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
-                    {boothCards.map((booth) => (
-                        <BoothCard
-                            key={booth.id}
-                            booth={booth}
-                        />
-                    ))}
-                </div>
-            </PageContainer>
-        </>
+      <>
+        <Header title="결과보기" />
+        <PageContainer>
+          <ResultContainer>
+            <div id='result_title'>결과가 없습니다.</div>
+            <div id='result_content'>퀴즈를 먼저 진행해주세요.</div>
+          </ResultContainer>
+        </PageContainer>
+      </>
     );
+  }
+
+  const divisionDetail = testResults[result.recommended_division.id] || testResults[9];
+  const titleColor = divisionDetail?.color || "#798705";
+
+  return (
+    <>
+      <Header title="결과보기" />
+      <PageContainer>
+        <ResultContainer>
+          <div id='result_title'>당신과 어울리는 동아리는<br /><span style={{ color: titleColor }}>{result.recommended_division.name}</span> 분과입니다</div>
+          <div id='result_content' dangerouslySetInnerHTML={{ __html: divisionDetail?.description || "추천된 분과와 관련된 동아리 목록입니다." }} />
+        </ResultContainer>
+        <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
+          {result.booths.map((booth) => (
+            <BoothCard
+              key={booth.id}
+              booth={booth}
+            />
+          ))}
+        </div>
+      </PageContainer>
+    </>
+  );
 };
 
 export default TestResult;
