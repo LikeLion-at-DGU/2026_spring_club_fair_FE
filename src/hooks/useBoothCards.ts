@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { BoothCardData, BoothQueryParams } from "../types/booth";
 import { mockBooths } from "../mocks/mockBooths";
+import { api } from "../api/client";
 
 /**
  * /api/booths API를 통해 부스 카드 목록 데이터를 가져옴.
@@ -27,25 +28,10 @@ export const useBoothCards = (params: BoothQueryParams) => {
         const fetchBoothCards = async () => {
             setIsLoading(true);
             try {
-                const query = new URLSearchParams();
-
                 // 기본값 설정 (day가 없을 경우 "2026-03-04")
                 const finalParams = { day: "2026-03-04", ...params };
 
-                Object.entries(finalParams).forEach(([key, value]) => {
-                    if (value !== undefined && value !== null) {
-                        query.append(key, value.toString());
-                    }
-                });
-
-                const response = await fetch(`/api/booths?${query.toString()}`);
-
-                const contentType = response.headers.get("content-type");
-                if (!response.ok || !contentType || !contentType.includes("application/json")) {
-                    throw new Error("API not available or returned non-JSON response");
-                }
-
-                const data: BoothCardData[] = await response.json();
+                const data = await api.get<BoothCardData[]>("/api/booths", finalParams as Record<string, string | number | undefined>);
                 setBoothCards(data);
                 setError(null);
             } catch (err) {
