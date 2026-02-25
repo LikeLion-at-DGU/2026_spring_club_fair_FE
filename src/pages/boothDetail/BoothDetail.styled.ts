@@ -28,19 +28,51 @@ export const BoothTag = styled.div`
   }
 `;
 
+export const BoothImgCount = styled.div`
+  position: absolute;
+  top: 13px;
+  right: 16px;
+  z-index: 10;
+
+  display: flex;
+
+  width: fit-content;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  color: ${(props) => props.theme.colors.grey800};
+
+  ${({ theme }) => theme.fonts.SB_12};
+`;
 export const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 375px;
   overflow: hidden;
 `;
+export const ImageScrollContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto; /* 가로 스크롤 허용 */
+  scroll-snap-type: x mandatory; /* 가로 방향으로 스냅(딱딱 걸림) 활성화 */
+  -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
 
+  /* 스크롤바 숨기기 (깔끔하게) */
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 export const BoothImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top;
   display: block;
+
+  flex-shrink: 0; /* 이미지가 찌그러지지 않고 100% 너비 유지 */
+  scroll-snap-align: center;
 `;
 export const Gradient = styled.div`
   position: absolute;

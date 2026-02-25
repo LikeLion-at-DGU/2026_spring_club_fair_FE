@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import { mockBooths } from '@/mocks/mockBooths';
 import Header from '@/components/Entity/Header';
 import carrot from '@/assets/icons/fi-sr-carrot.svg';
@@ -8,7 +9,7 @@ import * as S from './BoothDetail.styled';
 const BoothDetail = () => {
   const { id } = useParams<{ id: string }>();
   const booth = mockBooths.find((b) => b.id === Number(id));
-
+  if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
   const formatDate = (dateStr?: string | null) => {
     if (!dateStr) return '';
 
@@ -16,8 +17,17 @@ const BoothDetail = () => {
     return `${Number(month)}월 ${Number(day)}일`;
   };
 
-  if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
-
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      // 화면 너비로 나누어 현재 보고 있는 배열의 인덱스(0, 1, 2...)를 구합니다.
+      const newIndex = Math.round(scrollLeft / clientWidth);
+      setCurrentIndex(newIndex);
+    }
+  };
+  const currentOrder = booth.images[currentIndex]?.order ?? 0;
   return (
     <>
       <Header title='부스 상세 정보' />
@@ -27,7 +37,22 @@ const BoothDetail = () => {
             <img src={carrot} alt='당근 아이콘' />
             {booth.name}
           </S.BoothTag>
-          <S.BoothImg src={booth.images} alt={`${booth.name} 사진`} />
+
+          <S.BoothImgCount>
+            {booth.images.length > 0
+              ? `${currentOrder + 1}/${booth.images.length}`
+              : '0/0'}
+          </S.BoothImgCount>
+
+          <S.ImageScrollContainer ref={scrollRef} onScroll={handleScroll}>
+            {booth.images.map((image) => (
+              <S.BoothImg
+                key={image.order}
+                src={image.image_url}
+                alt={`${booth.name} 사진 ${image.order}`}
+              />
+            ))}
+          </S.ImageScrollContainer>
           <S.Gradient />
         </S.ImageWrapper>
 
