@@ -30,7 +30,7 @@ const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
 const ContentContainer = styled.div`
     ${flexStart}
     width: 100%;
-    gap: 10px;
+    gap: 16px;
 `;
 
 const BoothImage = styled.img`
