@@ -30,7 +30,7 @@ export interface BoothCardData {
   dates: string[];
   locNum: number;
   location: string;
-  image: string;
+  image: string
 }
 
 export interface BoothQueryParams {
