@@ -12,7 +12,7 @@ import { getDivisionFromBooths } from '@/utils/boothUtils';
 import { useBoothCards } from '@/hooks/useBoothCards';
 import { useBooths } from '@/hooks/useBooths';
 import { mockBooths } from '@/mocks/mockBooths';
-import { getBooths } from '@/api/booth';
+import { DIVISION_ID_MAP } from '@/utils/boothUtils';
 
 const PageContainer = styled.div`
   display: flex;
@@ -64,7 +64,7 @@ const BoothMap = () => {
   // 부스카드 호출
   const { boothCards, isLoading } = useBoothCards({
     day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
-    division: selectedDivision || undefined,
+    division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
     type: activeCategory === 'foodtruck' ? 'foodtruck' : undefined,
     // locnum (marker 띄우기)
     // q (검색)
