@@ -1,14 +1,11 @@
-import { useBoothCards } from "@/hooks/useBoothCards";
 import Header from "@/components/Entity/Header";
-
 import { useNavigate } from "react-router-dom";
-import { questions } from "@/mocks/questions";
-import { answers } from "@/mocks/answers";
-
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import styled from "styled-components";
 import { flexCenter, flexEnd } from "@/styles/mixins";
 import vegetables from "@assets/icons/vegetables.svg";
+import { api } from "@/api/client";
+import type { QuizQuestion, QuizResultResponse } from "@/types/quiz";
 
 const MainWrapper = styled.div`
     ${flexEnd}
@@ -27,6 +24,7 @@ const ChoiceButton = styled.div`
     border: 1px solid #D9DADA;
     background: #F7F7F7;
     box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
+    cursor: pointer;
     &:hover {
         background-color: ${({ theme }) => theme.colors.green200};
         border: 1px solid ${({ theme }) => theme.colors.green500};
@@ -75,7 +73,7 @@ const ProgressFill = styled.div<{ $width: number }>`
     border-radius: 9px;
     transition: width 0.3s ease-in-out;
 `
-//
+
 const QuestionBox = styled.div`
     ${flexCenter}
     flex-direction: column;
@@ -108,51 +106,60 @@ const ChoiceBox = styled.div`
     }
 `
 
+import { mockQuizQuestions, mockQuizResult } from "@/mocks/mockQuiz";
+
 const BoothListPage = () => {
-    const [progressNumber, setProgressNumber] = useState<number>(1);
-    const { boothCards, isLoading, error } = useBoothCards({ division: "학술동아리" });
+    const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [divisionIds, setDivisionIds] = useState<number[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<Error | null>(null);
     const navigate = useNavigate();
 
-    const handleChoiceSubmit = async (choiceId: number) => {
-        try {
-            const response = await fetch("/api/quiz/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    questionNumber: progressNumber,
-                    choiceId: choiceId,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to submit answer");
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            try {
+                const data = await api.get<QuizQuestion[]>("/api/quiz");
+                setQuestions(data);
+                setError(null);
+            } catch (err) {
+                console.warn("Failed to fetch questions, falling back to mock data:", err);
+                setQuestions(mockQuizQuestions);
+                setError(null);
+            } finally {
+                setIsLoading(false);
             }
+        };
+        fetchQuestions();
+    }, []);
 
-            if (progressNumber < 5) {
-                setProgressNumber(prev => Math.min(prev + 1, 6));
-            } else {
-                // 마지막 질문인 경우 결과 페이지로 이동
-                navigate("/test/result");
-            }
-        } catch (error) {
-            console.error("Error submitting answer:", error);
-            if (progressNumber < 5) {
-                setProgressNumber(prev => Math.min(prev + 1, 6));
-            } else {
-                navigate("/test/result");
+    const handleChoiceClick = async (division: number) => {
+        const updatedDivisionIds = [...divisionIds, division];
+        setDivisionIds(updatedDivisionIds);
+
+        if (currentIndex < questions.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+        } else {
+            // Submit final answers
+            try {
+                const result = await api.post<QuizResultResponse, { division_ids: number[] }>("/api/quiz/submit", {
+                    division_ids: updatedDivisionIds
+                });
+                navigate("/test/result", { state: { result } });
+            } catch (err) {
+                console.warn("Failed to submit quiz, using mock result:", err);
+                navigate("/test/result", { state: { result: mockQuizResult } });
             }
         }
     };
 
+    if (isLoading) return <div>Loading questions...</div>;
+    if (error) return <div>Error loading questions: {error.message}</div>;
+    if (questions.length === 0) return <div>No questions available.</div>;
 
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading booths: {error.message}</div>;
-
-    const currentQuestion = questions[progressNumber as keyof typeof questions];
-    const currentAnswers = answers[progressNumber as keyof typeof answers];
+    const currentQuestion = questions[currentIndex];
+    const progressNumber = currentIndex + 1;
+    const totalQuestions = questions.length;
 
     return (
         <>
@@ -162,20 +169,20 @@ const BoothListPage = () => {
                     <div style={{ gap: "10px", display: "flex", alignItems: "center" }}>
                         <p style={ProgressFont.inProgress}>{progressNumber}</p>
                         <p>/</p>
-                        <p style={ProgressFont.final}>6</p>
+                        <p style={ProgressFont.final}>{totalQuestions}</p>
                     </div>
                     <ProgressBar>
-                        <ProgressFill $width={(progressNumber / 6) * 100} />
+                        <ProgressFill $width={(progressNumber / totalQuestions) * 100} />
                     </ProgressBar>
                 </Progress>
                 <QuestionBox>
                     <img src={vegetables} alt="" />
-                    <div dangerouslySetInnerHTML={{ __html: currentQuestion }} />
+                    <div dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
                 </QuestionBox>
                 <ChoiceBox>
-                    {Object.entries(currentAnswers).map(([id, text]) => (
-                        <ChoiceButton key={id} onClick={() => handleChoiceSubmit(Number(id))}>
-                            {text}
+                    {currentQuestion.options.map((option) => (
+                        <ChoiceButton key={option.id} onClick={() => handleChoiceClick(option.division)}>
+                            {option.answer}
                         </ChoiceButton>
                     ))}
                 </ChoiceBox>
