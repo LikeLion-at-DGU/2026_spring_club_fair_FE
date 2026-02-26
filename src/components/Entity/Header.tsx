@@ -35,19 +35,28 @@ const IconBtn = styled.img`
 interface HeaderProps {
   title: string;
   showHome?: boolean;
+  onBack?: () => void;
 }
 
 // ----- ui ----- //
 
-const Header = ({ title, showHome = true }: HeaderProps) => {
+const Header = ({ title, showHome = true, onBack }: HeaderProps) => {
   const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <HeaderContainer>
       <IconBtn
         src={arrowleft}
         alt="뒤로가기"
-        onClick={() => navigate(-1)}
+        onClick={handleBackClick}
       />
       <Title>{title}</Title>
       {showHome && (

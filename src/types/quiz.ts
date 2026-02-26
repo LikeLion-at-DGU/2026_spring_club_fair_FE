@@ -1,4 +1,4 @@
-import type { BoothCardData } from "./booth";
+import type { BoothAPIResult } from "./api";
 
 export interface QuizOption {
     id: number;
@@ -24,5 +24,5 @@ export interface RecommendedDivision {
 
 export interface QuizResultResponse {
     recommended_division: RecommendedDivision;
-    booths: BoothCardData[];
+    booths: BoothAPIResult[];
 }
