@@ -11,7 +11,7 @@ import BoothMap from '@pages/BoothMap';
 import Test from '@pages/Test';
 import TestResult from '@pages/TestResult';
 import BoothDetail from '@/pages/boothDetail/BoothDetail';
-
+import TimeTable from '@/pages/timeTable/Timetable';
 const Router = () => {
   return (
     <BrowserRouter>
@@ -28,6 +28,7 @@ const Router = () => {
           <Route path='/test/result' element={<TestResult />} />
           <Route path='/boothmap' element={<BoothMap />} />
           <Route path='/booth/:id' element={<BoothDetail />} />
+          <Route path='/timetable' element={<TimeTable />} />
         </Route>
       </Routes>
     </BrowserRouter>
