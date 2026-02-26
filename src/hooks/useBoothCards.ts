@@ -32,6 +32,8 @@ export const useBoothCards = (params: BoothQueryParams) => {
                 const finalParams = { day: "2026-03-04", ...params };
 
                 const data = await api.get<BoothCardData[]>("/api/booths", finalParams as Record<string, string | number | undefined>);
+                
+                console.log("서버에서 준 순수 데이터(raw):", data);
                 setBoothCards(data);
                 setError(null);
             } catch (err) {

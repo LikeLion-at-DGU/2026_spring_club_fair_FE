@@ -125,7 +125,7 @@ const Map = ({
                         onClick={() => alert(`부스번호 : ${num}`)}
                     />
                 ))}
-                {activeBooths.map((booth) => {
+                {Array.isArray(activeBooths) && activeBooths.map((booth) => {
                     const coord = currentCoords[booth.locNum];
                     if (!coord) return null;
 

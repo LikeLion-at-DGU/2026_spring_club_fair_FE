@@ -10,7 +10,9 @@ import Map from '@/components/Entity/Map';
 import { useCategory } from '@/hooks/useCategory';
 import { getDivisionFromBooths } from '@/utils/boothUtils';
 import { useBoothCards } from '@/hooks/useBoothCards';
+import { useBooths } from '@/hooks/useBooths';
 import { mockBooths } from '@/mocks/mockBooths';
+import { getBooths } from '@/api/booth';
 
 const PageContainer = styled.div`
   display: flex;
@@ -59,15 +61,37 @@ const BoothMap = () => {
     handleFoodTruckClick,
   } = useCategory();
 
-  // useBoothCards 호출
+  // 부스카드 호출
   const { boothCards, isLoading } = useBoothCards({
     day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     division: selectedDivision || undefined,
     type: activeCategory === 'foodtruck' ? 'foodtruck' : undefined,
+    // locnum (marker 띄우기)
+    // q (검색)
   });
+  // 부스 호출 (분과명 카테고리로 추출)
+  const allBooths = useBooths();
+  const divisionList = React.useMemo(() => {
+    const dataArray = (allBooths as any).results || allBooths; 
+    return getDivisionFromBooths(dataArray);
+  }, [allBooths]);
+
+
+  /** 참고
+   * export interface BoothCardData {
+     id: number;
+     name: string;
+     type: string;
+     division: string | null;
+     dates: string[];
+     locNum: number;
+     location: string;
+     image: string
+   }
+   */
 
   // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
-  const divisionList = getDivisionFromBooths(mockBooths);
+  
 
   const navigate = useNavigate();
 
@@ -118,7 +142,7 @@ const BoothMap = () => {
           {isLoading ? (
             <div>loading...</div>
           ) : (
-            boothCards.map((booth) => (
+            Array.isArray(boothCards) && boothCards.map((booth) => (
               <BoothCard
                 key={booth.id}
                 booth={booth}

@@ -7,7 +7,7 @@ export const useBooths = () => {
     const [booths, setBooths] = useState<Booth[]>([]);
 
     useEffect(() => {
-        api.get<Booth[]>("/api/booths")
+        api.get<Booth[]>("/api/booths", { day: "2026-03-04" })
             .then(setBooths)
             .catch((err: unknown) => {
                 console.warn("Failed to fetch booths, falling back to mock data:", err);
