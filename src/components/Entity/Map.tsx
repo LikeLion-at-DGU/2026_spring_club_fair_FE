@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import ManhaeGround1 from "@assets/images/만해광장day1.png";
+import ManhaeGround2 from "@assets/images/만해광장day2.png";
 import PalJeongDo from "@assets/images/팔정도.png";
 import { MANHAE_COORDS } from '@/constants/mapCoords';
 import { PALJEONGDO_COORDS } from '@/constants/mapCoords';
@@ -63,6 +64,7 @@ const MapImg = styled.img`
 interface MapProps {
     activeLocation: 'manhae' | 'paljeongdo';
     onLocationChange: (loc: 'manhae' | 'paljeongdo') => void;
+    activeDay: number;
     activeBooths: {
         id: number;
         locNum: number;
@@ -74,8 +76,9 @@ interface MapProps {
 }
 
 const Map = ({
-    activeLocation, 
+    activeLocation,
     onLocationChange,
+    activeDay,
     activeBooths,
     selectedBoothId,
     activeDivision,
@@ -111,30 +114,45 @@ const Map = ({
             </LocationTabSection>
             <MapWrapper>
                 <MapImg
-                    src={activeLocation === 'manhae' ? ManhaeGround1 : PalJeongDo}
-                    alt={activeLocation === 'manhae' ? "만해광장 지도" : "팔정도 지도"}
+                    src={activeLocation === 'manhae' 
+                        ? (activeDay === 1 ? ManhaeGround1 : ManhaeGround2)
+                        : PalJeongDo}
+                    alt={
+                        activeLocation === 'manhae'
+                        ? `만해광장 ${activeDay}일차 지도`
+                        : "팔정도 지도"
+                    }
                 />
-                {/* 테스트 : 전체 좌표 확인용 */}
+                {/* 테스트 : 전체 좌표 확인용
                 {Object.entries(currentCoords).map(([num, coord]) => (
                     <BoothMarker
                         key={num}
                         $x={coord.x}
                         $y={coord.y}
-                        $type="booth"
+                        $type="CLUB"
                         $status="more"
                         onClick={() => alert(`부스번호 : ${num}`)}
                     />
-                ))}
+                ))} */}
+                
+                {/* 실제 부스 데이터 기반 마커 렌더링 */}
                 {Array.isArray(activeBooths) && activeBooths.map((booth) => {
                     const coord = currentCoords[booth.locNum];
-                    if (!coord) return null;
+
+                    // 2일차 만해광장 미운영 부스 예외 처리
+                    const isExcludedInManhaeDay2 =
+                    activeLocation === 'manhae' &&
+                    activeDay === 2 &&
+                    (booth.locNum === 81 || booth.locNum === 82);
+
+                    if (!coord || isExcludedInManhaeDay2) return null;
 
                     return (
                         <BoothMarker
                             key={booth.id}
                             $x={coord.x}
                             $y={coord.y}
-                            $type={booth.type === 'foodtruck' ? 'foodtruck' : 'booth'}
+                            $type={booth.type === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB'}
                             $status={
                                 selectedBoothId === booth.id ? 'activated' :
                                 activeDivision === booth.division ? 'more' : 'default'

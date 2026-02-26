@@ -119,6 +119,7 @@ const BoothMap = () => {
         <Map
           activeLocation={activeLocation}
           onLocationChange={setActiveLocation}
+          activeDay={activeDay}
           activeBooths={boothCards} // TODO : 실제 데이터 입력 후 확인 필요
           selectedBoothId={selectedBoothId}
           activeDivision={selectedDivision}

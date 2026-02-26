@@ -58,7 +58,18 @@ export const MANHAE_COORDS: Record<number, { x: number; y: number }> = {
   47: { x: 68.7, y: 63.5 },
   49: { x: 62.5, y: 39.5 },
   50: { x: 62.5, y: 47.5 },
+
+  // 푸드트럭
+  101: {x: 61.1, y: 8},
+  102: {x: 71.1, y: 8},
+  103: {x: 82.2, y: 8},
+  104: {x: 93.5, y: 8},
+  105: {x: 93.5, y: 21.2},
+  106: {x: 93.5, y: 34.2},
+
 };
+
+
 
 
 export const PALJEONGDO_COORDS: Record<number, { x: number; y: number }> = {
