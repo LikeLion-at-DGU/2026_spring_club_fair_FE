@@ -23,7 +23,6 @@ const PageContent = styled.main`
   display: flex;
   height: 100%;
   flex-direction: column;
-  
 `;
 
 const CategorySection = styled.div`
