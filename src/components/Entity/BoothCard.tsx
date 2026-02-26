@@ -128,17 +128,23 @@ const formatDate = (dateStr: string) => {
 };
 
 const BoothCard = ({ booth, width = 91, height = 144, onClick, onDetailClick }: Props) => {
+
+  const isFoodTruck = booth.type === 'FOODTRUCK';
+  
+  // type = 푸드트럭/부스 기준으로 분리
   const divisionInfo = Object.values(testResults).find(
     (res) => res.division === booth.division,
   );
-  const bgColor = divisionInfo?.color;
+  const bgColor = isFoodTruck ? '#FF823F' : divisionInfo?.color;
+  const labelText = isFoodTruck ? '푸드트럭' : booth.division;
+
   return (
     <BoothCardWrapper $width={width} $height={height} onClick={onClick}>
       <ContentContainer>
         <BoothImage src={booth.image} alt={booth.name} />
         <BoothInfo>
           <BoothDivison $bgColor={bgColor} id='booth_division'>
-            {booth.division}
+            {labelText}
           </BoothDivison>
           <BoothTitle>{booth.name}</BoothTitle>
           <BoothDate>

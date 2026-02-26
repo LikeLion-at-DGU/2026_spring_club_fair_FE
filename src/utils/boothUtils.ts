@@ -33,5 +33,3 @@ export const mapBoothResultToBoothCardData = (result: BoothAPIResult): BoothCard
     location: result.location_name,
     image: result.logo_url,
 });
-
-/* TODO : 실제 부스 데이터 입력 후 BoothMap 카테고리탭에 연결 확인 필요 */
