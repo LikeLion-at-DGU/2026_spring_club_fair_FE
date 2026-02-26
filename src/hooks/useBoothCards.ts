@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { BoothCardData, BoothQueryParams } from "../types/booth";
-import { mockBooths } from "../mocks/mockBooths";
+import { mockQuizResult } from "../mocks/mockQuiz";
 import { api } from "../api/client";
 
 /**
@@ -38,7 +38,7 @@ export const useBoothCards = (params: BoothQueryParams) => {
                 console.warn("API Fetch failed, falling back to mock data:", err);
 
                 //data 없을 시 mock data
-                const fallbackData: BoothCardData[] = mockBooths.map(booth => ({
+                const fallbackData: BoothCardData[] = mockQuizResult.booths.map((booth: BoothCardData) => ({
                     id: booth.id,
                     name: booth.name,
                     type: booth.type,
@@ -46,7 +46,7 @@ export const useBoothCards = (params: BoothQueryParams) => {
                     dates: booth.dates,
                     locNum: booth.locNum,
                     location: booth.location,
-                    image: booth.images
+                    image: booth.image
                 }));
 
                 setBoothCards(fallbackData);
