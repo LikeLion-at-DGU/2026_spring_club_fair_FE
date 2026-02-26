@@ -21,7 +21,7 @@ import { mapBoothResultToBoothCardData } from "@/utils/boothUtils";
  * error - 에러 객체
  */
 
-export const useBoothCards = (params: BoothQueryParams) => {
+export const useBoothCards = (params: any) => {
     const [boothCards, setBoothCards] = useState<BoothCardData[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -35,8 +35,6 @@ export const useBoothCards = (params: BoothQueryParams) => {
                 // 기본값 설정 (day가 없을 경우 "2026-03-04")
                 const finalParams = { day: "2026-03-04", ...params };
                 const data = await api.get<{ results: BoothAPIResult[] }>("/api/booths", finalParams as Record<string, string | number | undefined>);
-                
-                console.log(data);
 
                 if (data.results && data.results.length > 0) {
                     const mappedData = data.results.map(mapBoothResultToBoothCardData);

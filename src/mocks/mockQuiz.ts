@@ -1,4 +1,5 @@
 import type { QuizQuestion, QuizResultResponse } from "../types/quiz";
+import defaultImg from "@/assets/images/default.png";
 
 export const mockQuizQuestions: QuizQuestion[] = [
     {
@@ -75,6 +76,17 @@ export const mockQuizResult: QuizResultResponse = {
         name: "공연"
     },
     booths: [
+            {
+            booth_id: 999,
+            name: "테스트 푸드트럭",
+            booth_type: "FOODTRUCK",
+            division_name: null,
+            dates: ["2026-03-04", "2026-03-05"],
+            location_name: "만해광장",
+            loc_num: 100,
+            logo_url: defaultImg
+            },
+        
         {
             booth_id: 1,
             name: "코딩 동아리 CODE-X",

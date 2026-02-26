@@ -5,6 +5,11 @@
 import type { Booth, BoothCardData } from '@/types/booth';
 import type { BoothAPIResult } from '@/types/api';
 
+export const DIVISION_ID_MAP: Record<string, number> = {
+  "공연": 1, "봉사": 2, "사회": 3, "신규": 4, 
+  "연구": 5, "예창": 6, "체육": 7, "학술": 8, "기타": 9
+};
+
 export const getDivisionFromBooths = (booths:any[]): string[] => {
     
     // 1. 모든 부스 데이터에서 division 값만 추출함
@@ -13,9 +18,9 @@ export const getDivisionFromBooths = (booths:any[]): string[] => {
     // 4. filter(Boolean)으로 null이나 빈 문자열 제거
     // => 전체 부스에서 유효한 분과명 데이터 추출 완료
 
-    return Array.from(new Set(booths.map((booth) => booth.division_name))).filter(
-        (division): division is string => !!division
-    );
+    return Array.from(new Set(booths.map((booth) => booth.division_name)))
+        .filter((division): division is string => !!division)
+        .sort((a, b) => (DIVISION_ID_MAP[a] || 99) - (DIVISION_ID_MAP[b] || 99));
 };
 
 export const mapBoothResultToBoothCardData = (result: BoothAPIResult): BoothCardData => ({
@@ -28,5 +33,3 @@ export const mapBoothResultToBoothCardData = (result: BoothAPIResult): BoothCard
     location: result.location_name,
     image: result.logo_url,
 });
-
-/* TODO : 실제 부스 데이터 입력 후 BoothMap 카테고리탭에 연결 확인 필요 */

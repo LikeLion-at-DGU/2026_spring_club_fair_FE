@@ -12,7 +12,7 @@ import { getDivisionFromBooths } from '@/utils/boothUtils';
 import { useBoothCards } from '@/hooks/useBoothCards';
 import { useBooths } from '@/hooks/useBooths';
 import { mockBooths } from '@/mocks/mockBooths';
-import { getBooths } from '@/api/booth';
+import { DIVISION_ID_MAP } from '@/utils/boothUtils';
 
 const PageContainer = styled.div`
   display: flex;
@@ -64,8 +64,8 @@ const BoothMap = () => {
   // 부스카드 호출
   const { boothCards, isLoading } = useBoothCards({
     day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
-    division: selectedDivision || undefined,
-    type: activeCategory === 'foodtruck' ? 'foodtruck' : undefined,
+    division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
+    booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : undefined,
     // locnum (marker 띄우기)
     // q (검색)
   });
@@ -118,10 +118,10 @@ const BoothMap = () => {
           <CategoryTab
             text='부스'
             showArrow={true}
-            isActive={activeCategory === 'booth'}
+            isActive={activeCategory === 'BOOTH'}
             onClick={handleBoothClick}
           />
-          {activeCategory === 'booth' &&
+          {activeCategory === 'BOOTH' &&
             divisionList.map((div) => (
               <CategoryTab
                 key={div}
@@ -133,7 +133,7 @@ const BoothMap = () => {
           <CategoryTab
             text='푸드트럭'
             showArrow={false}
-            isActive={activeCategory === 'foodtruck'}
+            isActive={activeCategory === 'FOODTRUCK'}
             onClick={handleFoodTruckClick}
           />
         </CategorySection>
