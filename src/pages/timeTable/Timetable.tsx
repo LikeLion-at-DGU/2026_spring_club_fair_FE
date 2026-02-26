@@ -6,7 +6,6 @@ import TimeLineBox from './components/TimeLineBox';
 import { mockDay1Timetable, mockDay2Timetable } from '@/mocks/mockTimeTable';
 const TimeTable = () => {
   const [activeDay, setActiveDay] = useState(1);
-  // 활성화된 타임 index
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 13:00~18:00까지 30분 단위 타임라인 생성
