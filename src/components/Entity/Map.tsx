@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import ManhaeGround from "@assets/images/만해광장.png";
+import ManhaeGround1 from "@assets/images/만해광장day1.png";
 import PalJeongDo from "@assets/images/팔정도.png";
 import { MANHAE_COORDS } from '@/constants/mapCoords';
 import { PALJEONGDO_COORDS } from '@/constants/mapCoords';
@@ -111,7 +111,7 @@ const Map = ({
             </LocationTabSection>
             <MapWrapper>
                 <MapImg
-                    src={activeLocation === 'manhae' ? ManhaeGround : PalJeongDo}
+                    src={activeLocation === 'manhae' ? ManhaeGround1 : PalJeongDo}
                     alt={activeLocation === 'manhae' ? "만해광장 지도" : "팔정도 지도"}
                 />
                 {/* 테스트 : 전체 좌표 확인용 */}
@@ -125,7 +125,7 @@ const Map = ({
                         onClick={() => alert(`부스번호 : ${num}`)}
                     />
                 ))}
-                {activeBooths.map((booth) => {
+                {Array.isArray(activeBooths) && activeBooths.map((booth) => {
                     const coord = currentCoords[booth.locNum];
                     if (!coord) return null;
 

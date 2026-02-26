@@ -35,7 +35,7 @@ export const useBoothCards = (params: BoothQueryParams) => {
                 // 기본값 설정 (day가 없을 경우 "2026-03-04")
                 const finalParams = { day: "2026-03-04", ...params };
                 const data = await api.get<{ results: BoothAPIResult[] }>("/api/booths", finalParams as Record<string, string | number | undefined>);
-
+                
                 console.log(data);
 
                 if (data.results && data.results.length > 0) {
