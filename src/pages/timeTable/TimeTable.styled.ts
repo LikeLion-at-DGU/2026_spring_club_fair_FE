@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import DefaultImg from '@assets/images/boothDefaultImg.png';
 export const Wrapper = styled.div`
   display: flex;
 
@@ -43,7 +43,10 @@ export const TimeTableImgWrapper = styled.div<TimeTableImgWrapperProps>`
   aspect-ratio: 343/156;
   border-radius: 12px;
   overflow: hidden;
-  background: ${({ $img }) => $img ? `url('${$img}') center/cover no-repeat` : `url('https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg') center/cover no-repeat`};
+  background: ${({ $img }) =>
+    $img
+      ? `url('${$img}') center/cover no-repeat`
+      : `url('${DefaultImg}') center/cover no-repeat`};
 
   &::before {
     content: '';
