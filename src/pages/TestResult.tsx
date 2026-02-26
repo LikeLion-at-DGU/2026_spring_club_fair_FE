@@ -4,46 +4,7 @@ import BoothCard from '@/components/Entity/BoothCard';
 import { flexCenter } from '@/styles/mixins';
 import { useLocation } from 'react-router-dom';
 import type { QuizResultResponse } from '@/types/quiz';
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const ContentWrapper = styled.div`
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const ResultContainer = styled.div`
-  ${flexCenter}
-  width: 67.2%;
-  margin: 0 auto;
-  padding-top: 32px;
-  flex-direction: column;
-  text-align: center;
-  gap: 32px;
-  #result_title {
-    font-family: "Pyeojin Gothic";
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    color: ${({ theme }) => theme.colors.black};
-  }
-  #result_content {
-    width: 100%;
-    font-family: "Pyeojin Gothic";
-    font-size: 14px;
-    font-weight: 400;
-    line-height: normal;
-    color: ${({ theme }) => theme.colors.black};
-  }
-`;
-
+import { mapBoothResultToBoothCardData } from '@/utils/boothUtils';
 import { testResults } from '@/mocks/testResults';
 
 const TestResult = () => {
@@ -76,7 +37,7 @@ const TestResult = () => {
           <div id='result_content' dangerouslySetInnerHTML={{ __html: divisionDetail?.description || "추천된 분과와 관련된 동아리 목록입니다." }} />
         </ResultContainer>
         <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
-          {result.booths.map((booth) => (
+          {result.booths.map(mapBoothResultToBoothCardData).map((booth) => (
             <BoothCard
               key={booth.id}
               booth={booth}
@@ -89,3 +50,35 @@ const TestResult = () => {
 };
 
 export default TestResult;
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const ResultContainer = styled.div`
+  ${flexCenter}
+  width: 67.2%;
+  margin: 0 auto;
+  padding-top: 32px;
+  flex-direction: column;
+  text-align: center;
+  gap: 32px;
+  #result_title {
+    font-family: "Pyeojin Gothic";
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
+  #result_content {
+    width: 100%;
+    font-family: "Pyeojin Gothic";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    color: ${({ theme }) => theme.colors.black};
+  }
+`;
