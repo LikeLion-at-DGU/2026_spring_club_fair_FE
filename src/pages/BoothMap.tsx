@@ -47,12 +47,21 @@ const CardSection = styled.div`
 // ----- ui ----- //
 
 const BoothMap = () => {
+  
+  // location
+  const LOCATION_ID_MAP = {
+  manhae: 1,
+  paljeongdo: 2,
+};
   const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>(
     'manhae',
   );
+
+  // day
   const [activeDay, setActiveDay] = React.useState(1);
   const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
 
+  // category
   const {
     activeCategory,
     selectedDivision,
@@ -64,8 +73,10 @@ const BoothMap = () => {
   // 부스카드 호출
   const { boothCards, isLoading } = useBoothCards({
     day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
+    location_id: LOCATION_ID_MAP[activeLocation],
     division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
-    booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : undefined,
+    booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB', 
+    // TODO : 아무 필터도 선택되지 않은 초기 상태일 때 FOODTRUCK과 CLUB을 모두 반환해야 한다면?
     // locnum (marker 띄우기)
     // q (검색)
   });
@@ -108,6 +119,7 @@ const BoothMap = () => {
         <Map
           activeLocation={activeLocation}
           onLocationChange={setActiveLocation}
+          activeDay={activeDay}
           activeBooths={boothCards} // TODO : 실제 데이터 입력 후 확인 필요
           selectedBoothId={selectedBoothId}
           activeDivision={selectedDivision}
