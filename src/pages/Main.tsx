@@ -20,7 +20,7 @@ const Main = () => {
         동아리박람회를 즐겨보자!
       </MainText>
       <PostItWrapper>
-        <PostIt className='first' onClick={() => navigate('/')}>
+        <PostIt className='first' onClick={() => navigate('/timetable')}>
           <img src={mainFair} alt='main fair' />
         </PostIt>
         <PostIt className='second' onClick={() => navigate('/boothmap')}>
