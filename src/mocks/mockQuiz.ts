@@ -76,24 +76,24 @@ export const mockQuizResult: QuizResultResponse = {
     },
     booths: [
         {
-            id: 1,
+            booth_id: 1,
             name: "코딩 동아리 CODE-X",
-            type: "IT / 개발",
-            division: "학술",
+            booth_type: "IT / 개발",
+            division_name: "학술",
             dates: ["2026-03-04", "2026-03-05"],
-            locNum: 1,
-            location: "학생회관 앞 광장",
-            image: "https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg"
+            loc_num: 1,
+            location_name: "학생회관 앞 광장",
+            logo_url: "https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg"
         },
         {
-            id: 3,
+            booth_id: 3,
             name: "밴드 동아리 Resonance",
-            type: "음악 / 밴드",
-            division: "공연",
+            booth_type: "음악 / 밴드",
+            division_name: "공연",
             dates: ["2026-03-05"],
-            locNum: 51,
-            location: "대강당 앞",
-            image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000&auto=format&fit=crop"
+            loc_num: 51,
+            location_name: "대강당 앞",
+            logo_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000&auto=format&fit=crop"
         }
     ]
 };

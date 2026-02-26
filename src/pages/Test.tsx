@@ -1,11 +1,58 @@
 import Header from "@/components/Entity/Header";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import styled from "styled-components";
 import { flexCenter, flexEnd } from "@/styles/mixins";
 import vegetables from "@assets/icons/vegetables.svg";
-import { api } from "@/api/client";
-import type { QuizQuestion, QuizResultResponse } from "@/types/quiz";
+import { useQuiz } from "@/hooks/useQuiz";
+
+const QuizPage = () => {
+    const {
+        isLoading,
+        error,
+        questions,
+        currentQuestion,
+        progressNumber,
+        totalQuestions,
+        progressPercentage,
+        handleChoiceClick,
+        handleBack
+    } = useQuiz();
+
+    if (isLoading) return <div>Loading questions...</div>;
+    if (error) return <div>Error loading questions: {error.message}</div>;
+    if (questions.length === 0) return <div>No questions available.</div>;
+
+    return (
+        <>
+            <Header title={`${progressNumber}번`} onBack={handleBack} />
+            <MainWrapper>
+                <Progress id="progress">
+                    <div style={{ gap: "10px", display: "flex", alignItems: "center" }}>
+                        <p style={ProgressFont.inProgress}>{progressNumber}</p>
+                        <p>/</p>
+                        <p style={ProgressFont.final}>{totalQuestions}</p>
+                    </div>
+                    <ProgressBar>
+                        <ProgressFill $width={progressPercentage} />
+                    </ProgressBar>
+                </Progress>
+                <QuestionBox>
+                    <img src={vegetables} alt="" />
+                    <div dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
+                </QuestionBox>
+                <ChoiceBox>
+                    {currentQuestion.options.map((option) => (
+                        <ChoiceButton key={option.id} onClick={() => handleChoiceClick(option.division)}>
+                            {option.answer}
+                        </ChoiceButton>
+                    ))}
+                </ChoiceBox>
+            </MainWrapper>
+        </>
+    );
+};
+
+export default QuizPage;
 
 const MainWrapper = styled.div`
     ${flexEnd}
@@ -105,90 +152,3 @@ const ChoiceBox = styled.div`
         line-height: normal;
     }
 `
-
-import { mockQuizQuestions, mockQuizResult } from "@/mocks/mockQuiz";
-
-const BoothListPage = () => {
-    const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [divisionIds, setDivisionIds] = useState<number[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            try {
-                const data = await api.get<QuizQuestion[]>("/api/quiz");
-                setQuestions(data);
-                setError(null);
-            } catch (err) {
-                console.warn("Failed to fetch questions, falling back to mock data:", err);
-                setQuestions(mockQuizQuestions);
-                setError(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchQuestions();
-    }, []);
-
-    const handleChoiceClick = async (division: number) => {
-        const updatedDivisionIds = [...divisionIds, division];
-        setDivisionIds(updatedDivisionIds);
-
-        if (currentIndex < questions.length - 1) {
-            setCurrentIndex(prev => prev + 1);
-        } else {
-            // Submit final answers
-            try {
-                const result = await api.post<QuizResultResponse, { division_ids: number[] }>("/api/quiz/submit", {
-                    division_ids: updatedDivisionIds
-                });
-                navigate("/test/result", { state: { result } });
-            } catch (err) {
-                console.warn("Failed to submit quiz, using mock result:", err);
-                navigate("/test/result", { state: { result: mockQuizResult } });
-            }
-        }
-    };
-
-    if (isLoading) return <div>Loading questions...</div>;
-    if (error) return <div>Error loading questions: {error.message}</div>;
-    if (questions.length === 0) return <div>No questions available.</div>;
-
-    const currentQuestion = questions[currentIndex];
-    const progressNumber = currentIndex + 1;
-    const totalQuestions = questions.length;
-
-    return (
-        <>
-            <Header title={`${progressNumber}번`} />
-            <MainWrapper>
-                <Progress id="progress">
-                    <div style={{ gap: "10px", display: "flex", alignItems: "center" }}>
-                        <p style={ProgressFont.inProgress}>{progressNumber}</p>
-                        <p>/</p>
-                        <p style={ProgressFont.final}>{totalQuestions}</p>
-                    </div>
-                    <ProgressBar>
-                        <ProgressFill $width={(progressNumber / totalQuestions) * 100} />
-                    </ProgressBar>
-                </Progress>
-                <QuestionBox>
-                    <img src={vegetables} alt="" />
-                    <div dangerouslySetInnerHTML={{ __html: currentQuestion.question }} />
-                </QuestionBox>
-                <ChoiceBox>
-                    {currentQuestion.options.map((option) => (
-                        <ChoiceButton key={option.id} onClick={() => handleChoiceClick(option.division)}>
-                            {option.answer}
-                        </ChoiceButton>
-                    ))}
-                </ChoiceBox>
-            </MainWrapper>
-        </>
-    );
-};
-
-export default BoothListPage;
