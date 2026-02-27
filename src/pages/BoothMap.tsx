@@ -26,8 +26,15 @@ const CategorySection = styled.div`
   gap: 12px;
   padding: 16px;
   overflow-x: auto;
+  align-items: center;
   white-space: nowrap;
+
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
 `;
+
 const CardSection = styled.div`
   flex: 1;
   overflow-y: auto;
@@ -98,6 +105,29 @@ const BoothMap = () => {
   // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
   
 
+  // 마우스 드래그
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const [isDrag, setIsDrag] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const onDragStart = (e: React.MouseEvent) => {
+    setIsDrag(true);
+    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollRef.current?.scrollLeft || 0);
+  };
+
+  const onDragEnd = () => setIsDrag(false);
+
+  const onDragMove = (e: React.MouseEvent) => {
+    if (!isDrag || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // 스크롤 속도 조절 (2배속)
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  
   const navigate = useNavigate();
 
   const handleBoothCardClick = (id: number) => {
@@ -117,7 +147,13 @@ const BoothMap = () => {
         />
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
         {/* 부스/푸드트럭 카테고리 섹션 */}
-        <CategorySection>
+        <CategorySection
+          ref={scrollRef}
+          onMouseDown={onDragStart}
+          onMouseMove={onDragMove}
+          onMouseUp={onDragEnd}
+          onMouseLeave={onDragEnd}
+        >
           <CategoryTab
             text='부스'
             showArrow={true}

@@ -52,10 +52,16 @@ const MapWrapper = styled.div`
   overflow: hidden;
 `;
 
-const MapImg = styled.img`
+const MapImg = styled.img<{ $isLoaded: boolean }>`
   width: 100%;
   height: 100%;
-  //object-fit: contain; /* TODO : 지도 왜곡 확인 필요 */
+  opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out; // 부드러운 전환
+`;
+
+const MarkerContainer = styled.div<{ $isLoaded: boolean }>`
+  opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
 `;
 
 
@@ -83,6 +89,17 @@ const Map = ({
     selectedBoothId,
     activeDivision,
 }: MapProps) => {
+    
+    const [isLoaded, setIsLoaded] = React.useState(false);
+
+    // 현재 이미지 경로 계산
+    const currentImgSrc = activeLocation === 'manhae' 
+        ? (activeDay === 1 ? ManhaeGround1 : ManhaeGround2)
+        : PalJeongDo;
+    // location/day 변경 시 opacity 0으로 만들기 위함  
+    React.useEffect(() => {
+        setIsLoaded(false);
+    }, [currentImgSrc]);
 
     const currentCoords = activeLocation === 'manhae' ? MANHAE_COORDS : PALJEONGDO_COORDS;
 
@@ -114,14 +131,11 @@ const Map = ({
             </LocationTabSection>
             <MapWrapper>
                 <MapImg
-                    src={activeLocation === 'manhae' 
-                        ? (activeDay === 1 ? ManhaeGround1 : ManhaeGround2)
-                        : PalJeongDo}
-                    alt={
-                        activeLocation === 'manhae'
-                        ? `만해광장 ${activeDay}일차 지도`
-                        : "팔정도 지도"
-                    }
+                    key={currentImgSrc} // 핵심: 경로가 바뀌면 컴포넌트를 새로 그림
+                    src={currentImgSrc}
+                    $isLoaded={isLoaded}
+                    onLoad={() => setIsLoaded(true)} 
+                    alt="Map"
                 />
                 {/* 테스트 : 전체 좌표 확인용
                 {Object.entries(currentCoords).map(([num, coord]) => (
@@ -135,6 +149,7 @@ const Map = ({
                     />
                 ))} */}
                 
+                <MarkerContainer $isLoaded={isLoaded}>
                 {/* 실제 부스 데이터 기반 마커 렌더링 */}
                 {Array.isArray(activeBooths) && activeBooths.map((booth) => {
                     const coord = currentCoords[booth.locNum];
@@ -160,7 +175,10 @@ const Map = ({
                         />                            
                     );
                 })};
+                </MarkerContainer>
+
             </MapWrapper>
+            
         </Container>
     );
 };

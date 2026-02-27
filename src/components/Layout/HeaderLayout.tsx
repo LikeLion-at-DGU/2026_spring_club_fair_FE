@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 
 const HeaderLayout = () => {
