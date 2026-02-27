@@ -6,12 +6,11 @@ import dateIcon from '@assets/icons/cardTimeIcon.svg';
 import placeIcon from '@assets/icons/cardPlaceIcon.svg';
 import defaultImg from '@assets/images/boothDefaultImg.png';
 import * as S from './BoothDetail.styled';
-import { useBoothDetail } from '@/hooks/useBoothDetail';
+import { useClubBoothDetail } from '@/hooks/useClubBoothDetail';
 const BoothDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: booth, isLoading, error } = useBoothDetail(id);
+  const { data: booth, isLoading, error } = useClubBoothDetail(id);
 
-  // 이미지 캐러셀 상태 및 드래그 관련
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
@@ -55,7 +54,6 @@ const BoothDetail = () => {
   if (error) return <div>부스 정보를 불러오지 못했습니다.</div>;
   if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
 
-  // 이미지 캐러셀용 order
   const currentOrder = booth.images?.[currentIndex]?.order ?? 0;
 
   return (

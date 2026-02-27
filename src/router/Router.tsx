@@ -11,6 +11,7 @@ import BoothMap from '@pages/BoothMap';
 import Test from '@pages/Test';
 import TestResult from '@pages/TestResult';
 import BoothDetail from '@/pages/boothDetail/BoothDetail';
+import FoodTruckDetail from '@/pages/boothDetail/FoodTruckDetail';
 import TimeTable from '@/pages/timeTable/Timetable';
 const Router = () => {
   return (
@@ -27,6 +28,7 @@ const Router = () => {
           <Route path='/test/result' element={<TestResult />} />
           <Route path='/boothmap' element={<BoothMap />} />
           <Route path='/booth/:id' element={<BoothDetail />} />
+          <Route path='/foodtruck/:id' element={<FoodTruckDetail />} />
           <Route path='/timetable' element={<TimeTable />} />
         </Route>
       </Routes>
