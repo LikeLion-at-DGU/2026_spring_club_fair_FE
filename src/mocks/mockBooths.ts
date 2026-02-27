@@ -1,6 +1,8 @@
-import type { Booth } from '@/types/booth';
+import type { Booth, FoodTruckBooth } from '@/types/booth';
 
-export const mockBooths: Booth[] = [
+type BoothUnion = Booth | FoodTruckBooth;
+
+export const mockBooths: BoothUnion[] = [
   {
     id: 1,
     name: '코딩 동아리 CODE-X',
@@ -115,6 +117,35 @@ export const mockBooths: Booth[] = [
         order: 1,
         image_url:
           'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1000&auto=format&fit=crop',
+      },
+    ],
+  },
+  // ---- 임시 푸드트럭 mock 데이터 ----
+  {
+    id: 100,
+    name: '윤셰프 푸드트럭',
+    type: 'FOODTRUCK',
+    division: null,
+    dates: ['2026-03-04', '2026-03-05'],
+    locNum: 99,
+    location: '만해광장',
+    description: '달콤한 츄러스와 다양한 길거리 간식을 판매하는 푸드트럭!',
+    menu: [
+      { name: '츄러스', price: '4000' },
+      { name: '아이스크림츄러스', price: '6000' },
+      { name: '회오리감자', price: '5000' },
+    ],
+    // images: null,
+    images: [
+      {
+        order: 0,
+        image_url:
+          'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=1000&auto=format&fit=crop',
+      },
+      {
+        order: 1,
+        image_url:
+          'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000&auto=format&fit=crop',
       },
     ],
   },

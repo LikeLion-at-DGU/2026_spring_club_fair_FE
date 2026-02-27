@@ -14,20 +14,21 @@ const Wrapper = styled.div`
 const ContentArea = styled.div`
   flex: 1;
   overflow-y: auto;
-`
+`;
 
 const HeaderLayout = () => {
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
   // 동적 제목이 필요한 경로 (헤더를 수동으로 넣음)
-  const manualHeaderPaths = ['/test', '/booth/:id'];
-  const isManualHeader = manualHeaderPaths.some(path => 
-    matchPath({ path, end: false}, pathname));
+  const manualHeaderPaths = ['/test', '/booth/:id', '/foodtruck/:id'];
+  const isManualHeader = manualHeaderPaths.some((path) =>
+    matchPath({ path, end: false }, pathname),
+  );
 
   return (
     <Wrapper>
       {!isManualHeader && <Header />}
       <ContentArea>
-        <Outlet /> 
+        <Outlet />
       </ContentArea>
     </Wrapper>
   );

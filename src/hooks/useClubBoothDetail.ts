@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/api/client';
 
-// CLUB 상세 타입 (간단화, 실제 타입은 types/booth.ts에 둘 수 있음)
 export interface ClubBoothDetail {
   booth_id: number;
   name: string;
@@ -23,7 +22,7 @@ export interface ClubBoothDetail {
   images: { order: number; image_url: string }[];
 }
 
-export function useBoothDetail(boothId: number | string | undefined) {
+export function useClubBoothDetail(boothId: number | string | undefined) {
   const [data, setData] = useState<ClubBoothDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -33,7 +32,10 @@ export function useBoothDetail(boothId: number | string | undefined) {
     setIsLoading(true);
     api
       .get<ClubBoothDetail>(`/api/booths/${boothId}`)
-      .then(setData)
+      .then((res) => {
+        if (res.booth_type !== 'CLUB') throw new Error('CLUB 타입이 아닙니다');
+        setData(res);
+      })
       .catch((err) => {
         setError(err);
         setData(null);

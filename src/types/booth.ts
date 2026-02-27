@@ -1,3 +1,21 @@
+// 푸드트럭 상세 데이터 (추가)
+export interface FoodTruckBooth {
+  id: number;
+  name: string;
+  type: 'FOODTRUCK';
+  division: null;
+  dates: string[];
+  locNum: number;
+  location: string;
+  description: string;
+  menu: { name: string; price: string | null }[];
+  images?:
+    | {
+        order: number;
+        image_url: string;
+      }[]
+    | null;
+}
 //부스 상세 데이터
 export interface Booth {
   id: number;
@@ -30,7 +48,7 @@ export interface BoothCardData {
   dates: string[];
   locNum: number;
   location: string;
-  image: string
+  image: string;
 }
 
 export interface BoothQueryParams {

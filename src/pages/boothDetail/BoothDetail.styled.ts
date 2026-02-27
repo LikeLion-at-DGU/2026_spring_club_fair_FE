@@ -54,8 +54,11 @@ export const ImageWrapper = styled.div`
 export const ImageScrollContainer = styled.div`
   display: flex;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 375px;
   min-height: 375px;
+  max-width: 600px;
+  max-height: 600px;
   overflow-x: auto; /* 가로 스크롤 허용 */
   scroll-snap-type: x mandatory; /* 가로 방향으로 스냅(딱딱 걸림) 활성화 */
   -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
