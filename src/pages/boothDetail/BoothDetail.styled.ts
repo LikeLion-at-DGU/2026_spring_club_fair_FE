@@ -174,6 +174,7 @@ export const CardBodyText = styled.div`
   }
   &.grey500 {
     color: ${(props) => props.theme.colors.grey500};
+    flex-shrink: 0;
   }
   & img {
     width: 16px;

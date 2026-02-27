@@ -37,7 +37,6 @@ export const useTimetable = (params: TimetableQueryParams) => {
           '/api/timetable',
           params,
         );
-        console.log('Timetable API response:', data); // 응답 데이터 확인용 로그
         setLocations(data.results || []);
         setError(null);
       } catch (err) {

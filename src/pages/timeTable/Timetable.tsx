@@ -8,10 +8,8 @@ const TimeTable = () => {
   const [activeDay, setActiveDay] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 날짜 문자열 매핑 (예시: 1=3/4, 2=3/5)
   const dayStrings = ['2026-03-04', '2026-03-05'];
 
-  // 현재 날짜와 시간에 따라 자동 활성화
   useEffect(() => {
     const now = new Date();
     // 날짜 비교
