@@ -21,6 +21,54 @@ const PageContent = styled.main`
   flex-direction: column;
 `;
 
+const LocationTabSection = styled.div`
+  height: 35px;
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+
+  button {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+    background-color: ${(props) => props.theme.colors.grey200};
+    font-size: 16px;
+    font-weight: 400;
+    color: ${(props) => props.theme.colors.grey50};
+    cursor: pointer;
+    //transition: all 0.2s; /* TODO : 애니메이션 고민 */
+
+    &.active {
+      background-color: ${(props) => props.theme.colors.green900};
+      color: white;
+      font-weight: 600;
+    }
+  }
+`;
+
+const MapContainer = styled.div<{ $scale: number }>`
+  //flex-shrink: 0;
+  width: 100%;
+  /* 기본 높이 조절 (이미지 비율에 맞춰 350~400px 추천) */
+  height: ${(props) => 310 * props.$scale}px; 
+  transition: height 0.2s ease-out;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start; /* 위쪽을 기준으로 고정되어 축소되는 느낌 */
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.grey50};
+  border-top: 1px solid ${(props) => props.theme.colors.green900};
+  border-bottom: 1px solid ${(props) => props.theme.colors.green900};
+
+  & > div:first-child {
+    transform: scale(${(props) => props.$scale});
+    transform-origin: top center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
+    transition: transform 0.2s ease-out;
+    width: 100%;
+  }
+`;
+
 const CategorySection = styled.div`
   display: flex;
   gap: 12px;
@@ -102,7 +150,15 @@ const BoothMap = () => {
    }
    */
 
-  // (TODO : 실제 부스 데이터에서 추출해서 연결 후 >> 분과 리스트 이상 없는지 확인)
+  // 지도 확대/축소
+  const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    const newScale = Math.max(0.4, 1 - scrollTop / 200); 
+    setMapScale(newScale);
+  };
   
 
   // 마우스 드래그
@@ -137,14 +193,26 @@ const BoothMap = () => {
   return (
       <PageContent>
         <SearchBar />
-        <Map
-          activeLocation={activeLocation}
-          onLocationChange={setActiveLocation}
-          activeDay={activeDay}
-          activeBooths={boothCards} // TODO : 실제 데이터 입력 후 확인 필요
-          selectedBoothId={selectedBoothId}
-          activeDivision={selectedDivision}
-        />
+        <LocationTabSection>
+        <button
+          className={activeLocation === 'manhae' ? 'active' : ''}
+          onClick={() => setActiveLocation('manhae')}
+        >만해광장</button>
+        <button
+          className={activeLocation === 'paljeongdo' ? 'active' : ''}
+          onClick={() => setActiveLocation('paljeongdo')}
+        >팔정도</button>
+      </LocationTabSection>
+        <MapContainer $scale={mapScale}>
+          <Map
+            activeLocation={activeLocation}
+            //onLocationChange={setActiveLocation}
+            activeDay={activeDay}
+            activeBooths={boothCards}
+            selectedBoothId={selectedBoothId}
+            activeDivision={selectedDivision}
+          />
+        </MapContainer>
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
         {/* 부스/푸드트럭 카테고리 섹션 */}
         <CategorySection
@@ -177,7 +245,7 @@ const BoothMap = () => {
           />
         </CategorySection>
         {/* 카드 리스트 섹션 */}
-        <CardSection>
+        <CardSection onScroll={handleScroll}>
           {isLoading ? (
             <div>loading...</div>
           ) : (

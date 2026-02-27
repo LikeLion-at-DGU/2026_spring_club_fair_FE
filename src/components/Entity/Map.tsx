@@ -18,58 +18,32 @@ const Container = styled.div`
   margin-bottom: 24px;
 `;
 
-const LocationTabSection = styled.div`
-  height: 35px;
-  display: flex;
-  gap: 8px;
-  padding: 0 16px;
-
-  button {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
-    background-color: ${(props) => props.theme.colors.grey200};
-    font-size: 16px;
-    font-weight: 400;
-    color: ${(props) => props.theme.colors.grey50};
-    cursor: pointer;
-    //transition: all 0.2s; /* TODO : 애니메이션 고민 */
-
-    &.active {
-      background-color: ${(props) => props.theme.colors.green900};
-      color: white;
-      font-weight: 600;
-    }
-  }
-`;
-
 const MapWrapper = styled.div`
   position: relative; // Dots 좌표 표시용
   width: 100%;
-  //aspect-ratio: 540 / 448; 
+  height: 100%;
+  aspect-ratio: 540 / 448;
   background-color: #ffffff;
-  overflow: hidden;
 `;
 
 const MapImg = styled.img<{ $isLoaded: boolean }>`
   width: 100%;
   height: 100%;
+  object-fit: contain;
   opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
-  transition: opacity 0.3s ease-in-out; // 부드러운 전환
+  transition: opacity 0.5s ease-in-out; // 부드러운 전환
 `;
 
 const MarkerContainer = styled.div<{ $isLoaded: boolean }>`
   opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
 `;
-
 
 // ----- ui ----- //
 
 interface MapProps {
     activeLocation: 'manhae' | 'paljeongdo';
-    onLocationChange: (loc: 'manhae' | 'paljeongdo') => void;
+    //onLocationChange: (loc: 'manhae' | 'paljeongdo') => void;
     activeDay: number;
     activeBooths: {
         id: number;
@@ -81,9 +55,15 @@ interface MapProps {
     activeDivision: string | null;
 }
 
+/* 이미지 미리 로드 (근데 첫 새로고침 오류남 확인 필요)
+[ManhaeGround1, ManhaeGround2, PalJeongDo].forEach(src => {
+  const img = new Image();
+  img.src = src;
+}); */
+
 const Map = ({
     activeLocation,
-    onLocationChange,
+    //onLocationChange,
     activeDay,
     activeBooths,
     selectedBoothId,
@@ -119,17 +99,7 @@ const Map = ({
 
     return (
         <Container>
-            <LocationTabSection>
-                <button
-                    className={activeLocation === 'manhae' ? 'active' : ''}
-                    onClick={() => onLocationChange('manhae')}
-                >만해광장</button>
-                <button
-                    className={activeLocation === 'paljeongdo' ? 'active' : ''}
-                    onClick={() => onLocationChange('paljeongdo')}
-                >팔정도</button>
-            </LocationTabSection>
-            <MapWrapper>
+            <MapWrapper style={{ backgroundColor: '#f9f9f9', minHeight: '300px' }}>
                 <MapImg
                     key={currentImgSrc} // 핵심: 경로가 바뀌면 컴포넌트를 새로 그림
                     src={currentImgSrc}
@@ -149,6 +119,7 @@ const Map = ({
                     />
                 ))} */}
                 
+                {isLoaded && (
                 <MarkerContainer $isLoaded={isLoaded}>
                 {/* 실제 부스 데이터 기반 마커 렌더링 */}
                 {Array.isArray(activeBooths) && activeBooths.map((booth) => {
@@ -174,9 +145,9 @@ const Map = ({
                             }
                         />                            
                     );
-                })};
+                })}
                 </MarkerContainer>
-
+                )}
             </MapWrapper>
             
         </Container>
