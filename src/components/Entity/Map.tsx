@@ -133,9 +133,20 @@ const Map = ({
 
                     if (!coord || isExcludedInManhaeDay2) return null;
 
+                    let status: 'default' | 'more' | 'activated' = 'default';
+
+                    if (selectedBoothId === booth.id) {
+                        status = 'activated';
+                    } else if (activeDivision === booth.division && activeDivision !== null) {
+                        status = 'more';
+                    } else {
+                        status = 'default';
+                    }
+
+
                     return (
                         <BoothMarker
-                            key={booth.id}
+                            key={`marker-${booth.id}`}
                             $x={coord.x}
                             $y={coord.y}
                             $type={booth.type === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB'}
