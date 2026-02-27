@@ -25,7 +25,7 @@ const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
   border: 1px solid var(--Grey-grey-400, #bdbebf);
   background: var(--whie, #fff);
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  //overflow: hidden;
   cursor: pointer;
   transition: box-shadow 0.15s;
   &:hover {

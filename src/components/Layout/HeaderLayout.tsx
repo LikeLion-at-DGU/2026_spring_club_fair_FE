@@ -1,19 +1,34 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, matchPath } from 'react-router-dom';
 import styled from 'styled-components';
+import Header from '../Entity/Header';
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  max-width: 540px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: ${(props) => props.theme.colors.white};
   overflow: hidden;
 `;
 
+const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+`
+
 const HeaderLayout = () => {
+  const {pathname} = useLocation();
+  // 동적 제목이 필요한 경로 (헤더를 수동으로 넣음)
+  const manualHeaderPaths = ['/test', '/booth/:id'];
+  const isManualHeader = manualHeaderPaths.some(path => 
+    matchPath({ path, end: false}, pathname));
+
   return (
     <Wrapper>
-      <Outlet /> 
+      {!isManualHeader && <Header />}
+      <ContentArea>
+        <Outlet /> 
+      </ContentArea>
     </Wrapper>
   );
 };

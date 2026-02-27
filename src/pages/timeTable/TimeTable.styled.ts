@@ -88,6 +88,7 @@ export const TimeLineWrapper = styled.div`
 export const TimeLineCaution = styled.div`
   display: flex;
   width: 100%;
+  padding-bottom: 60px;
   justify-content: center;
   ${({ theme }) => theme.fonts.R_14};
   color: #78716c;
