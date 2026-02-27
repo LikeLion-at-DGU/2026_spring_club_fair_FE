@@ -15,15 +15,18 @@ interface Props {
   onDetailClick?: () => void;
 }
 
-const BoothCardWrapper = styled.div<{ $width?: number; $height?: number }>`
+const BoothCardWrapper = styled.div<{ $width?: number; $height?: number; $isActive? : boolean }>`
   ${flexColumn}
   width: ${(props) => props.$width}%;
   height: ${(props) => props.$height}px;
   margin: 0 auto;
   padding: var(--M, 8px);
   border-radius: var(--XL, 16px);
-  border: 1px solid var(--Grey-grey-400, #bdbebf);
-  background: var(--whie, #fff);
+  border: 1px solid ${(props) => 
+    props.$isActive ? props.theme.colors.green500 : "var(--Grey-grey-400, #bdbebf)"};
+  
+  background: ${(props) => 
+    props.$isActive ? props.theme.colors.green50 : "var(--whie, #fff)"};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   //overflow: hidden;
   cursor: pointer;
@@ -127,7 +130,7 @@ const formatDate = (dateStr: string) => {
   return `${Number(month)}월 ${Number(day)}일`;
 };
 
-const BoothCard = ({ booth, width = 91, height = 144, onClick, onDetailClick }: Props) => {
+const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetailClick }: Props) => {
 
   const isFoodTruck = booth.type === 'FOODTRUCK';
   
@@ -139,7 +142,7 @@ const BoothCard = ({ booth, width = 91, height = 144, onClick, onDetailClick }: 
   const labelText = isFoodTruck ? '푸드트럭' : booth.division;
 
   return (
-    <BoothCardWrapper $width={width} $height={height} onClick={onClick}>
+    <BoothCardWrapper $width={width} $height={height} $isActive={isActive} onClick={onClick}>
       <ContentContainer>
         <BoothImage src={booth.image} alt={booth.name} />
         <BoothInfo>

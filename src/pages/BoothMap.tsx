@@ -50,12 +50,11 @@ const LocationTabSection = styled.div`
 const MapContainer = styled.div<{ $scale: number }>`
   //flex-shrink: 0;
   width: 100%;
-  /* 기본 높이 조절 (이미지 비율에 맞춰 350~400px 추천) */
-  height: ${(props) => 310 * props.$scale}px; 
-  transition: height 0.2s ease-out;
+  height: ${(props) => 500 * props.$scale}px; 
+  transition: height 0.3s ease-out;
   overflow: hidden;
   display: flex;
-  align-items: flex-start; /* 위쪽을 기준으로 고정되어 축소되는 느낌 */
+  align-items: center;
   justify-content: center;
   background-color: ${(props) => props.theme.colors.grey50};
   border-top: 1px solid ${(props) => props.theme.colors.green900};
@@ -63,8 +62,8 @@ const MapContainer = styled.div<{ $scale: number }>`
 
   & > div:first-child {
     transform: scale(${(props) => props.$scale});
-    transform-origin: top center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
-    transition: transform 0.2s ease-out;
+    transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
+    transition: transform 0.3s ease-out;
     width: 100%;
   }
 `;
@@ -108,7 +107,11 @@ const BoothMap = () => {
 
   // day
   const [activeDay, setActiveDay] = React.useState(1);
+  // BOOTH id
   const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+  const handleCardToggle = (id: number) => {
+    setSelectedBoothId((prev) => (prev === id ? null : id));
+  };
 
   // category
   const {
@@ -136,6 +139,25 @@ const BoothMap = () => {
     return getDivisionFromBooths(dataArray);
   }, [allBooths]);
 
+  const boothsByLocation = React.useMemo(() => {
+    const allData = (allBooths as any).results || allBooths || [];
+    
+    // 1. location_name 매칭용 맵
+    const locationNameMap = {
+      manhae: "만해광장",
+      paljeongdo: "팔정도"
+    };
+
+    return allData
+      .filter((b: any) => b.location_name === locationNameMap[activeLocation]) // 장소 필터링
+      .map((b: any) => ({
+        ...b,
+        id: b.booth_id,            // Map 컴포넌트 내부에서 selectedBoothId와 비교용
+        locNum: b.loc_num,         // 핵심: 좌표를 찍기 위한 키 (loc_num -> locNum)
+        division: b.division_name, // 카테고리 강조용
+        type: b.booth_type         // 마커 색상 결정용 (CLUB / FOODTRUCK)
+      }));
+  }, [allBooths, activeLocation]);
 
   /** 참고
    * export interface BoothCardData {
@@ -208,7 +230,7 @@ const BoothMap = () => {
             activeLocation={activeLocation}
             //onLocationChange={setActiveLocation}
             activeDay={activeDay}
-            activeBooths={boothCards}
+            activeBooths={boothsByLocation}
             selectedBoothId={selectedBoothId}
             activeDivision={selectedDivision}
           />
@@ -253,7 +275,7 @@ const BoothMap = () => {
               <BoothCard
                 key={booth.id}
                 booth={booth}
-                onClick={() => setSelectedBoothId(booth.id)}
+                onClick={() => handleCardToggle(booth.id)}
                 isActive={selectedBoothId === booth.id}
                 onDetailClick={() => handleBoothCardClick(booth.id)}
               />
