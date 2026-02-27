@@ -14,15 +14,8 @@ import { useBooths } from '@/hooks/useBooths';
 import { mockBooths } from '@/mocks/mockBooths';
 import { DIVISION_ID_MAP } from '@/utils/boothUtils';
 
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-`;
 
 const PageContent = styled.main`
-  padding: 0 0 8% 0;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -41,6 +34,7 @@ const CardSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-bottom: 40px;
   overflow-y: scroll;
 `;
 
@@ -111,9 +105,6 @@ const BoothMap = () => {
   };
 
   return (
-    <PageContainer>
-      <Header title='부스 지도' />
-
       <PageContent>
         <SearchBar />
         <Map
@@ -166,7 +157,6 @@ const BoothMap = () => {
           )}
         </CardSection>
       </PageContent>
-    </PageContainer>
   );
 };
 

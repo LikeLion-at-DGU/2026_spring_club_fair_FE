@@ -43,7 +43,6 @@ const TimeTable = () => {
 
   return (
     <>
-      <Header title='타임테이블' />
       <S.Wrapper>
         <S.TimeTableTop>
           <S.Title>지금 공연중인 동아리</S.Title>

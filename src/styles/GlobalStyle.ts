@@ -86,7 +86,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   /* GlobalStyle에서는 모바일 사이즈 외부 규격만 지정해둠
-  페이지 내부 padding 등 여백은 각 페이지 컴포넌트에서 지정함*/
+  페이지 내부 padding 등 여백은 각 페이지 컴포넌트에서 지정함 */
   #root {
     width: 100%;
     max-width: 540px;

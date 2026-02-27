@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import arrowleft from '@assets/icons/fi-br-caret-left.svg';
 import Home from '@assets/icons/fi-sr-home.svg';
 
@@ -14,8 +14,6 @@ const HeaderContainer = styled.header`
   gap: 10px;
   background-color: ${(props) => props.theme.colors.white};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
-  position: sticky;
-  top: 0;
   z-index: 100;
 `;
 
@@ -33,15 +31,23 @@ const IconBtn = styled.img`
 // ----- interface ----- //
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   showHome?: boolean;
   onBack?: () => void;
 }
 
 // ----- ui ----- //
 
-const Header = ({ title, showHome = true, onBack }: HeaderProps) => {
+const Header = ({ title: propsTitle, showHome = true, onBack }: HeaderProps) => {
   const navigate = useNavigate();
+  const {pathname} = useLocation();
+
+  const PAGE_TITLES: Record<string, string> = {
+    '/boothmap' : '부스 지도',
+    '/test/result' : '결과 보기',
+    '/timetable' : '타임테이블',
+  };
+  const displayTitle = propsTitle || PAGE_TITLES[pathname] || '뒤로가기';
 
   const handleBackClick = () => {
     if (onBack) {
@@ -58,7 +64,7 @@ const Header = ({ title, showHome = true, onBack }: HeaderProps) => {
         alt="뒤로가기"
         onClick={handleBackClick}
       />
-      <Title>{title}</Title>
+      <Title>{displayTitle}</Title>
       {showHome && (
         <IconBtn
           src={Home}
