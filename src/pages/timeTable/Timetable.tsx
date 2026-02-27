@@ -1,15 +1,32 @@
 import * as S from './TimeTable.styled';
 import { useState } from 'react';
-import Header from '@/components/Entity/Header';
 import DayTab from '@components/Entity/DayTab';
 import TimeLineBox from './components/TimeLineBox';
 import { useTimetable } from '@/hooks/useTimetable';
+import { useEffect } from 'react';
 const TimeTable = () => {
   const [activeDay, setActiveDay] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 날짜 문자열 매핑 (예시: 1=3/4, 2=3/5)
   const dayStrings = ['2026-03-04', '2026-03-05'];
+
+  // 현재 날짜와 시간에 따라 자동 활성화
+  useEffect(() => {
+    const now = new Date();
+    // 날짜 비교
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    // dayStrings에서 오늘 날짜가 있으면 activeDay로 설정
+    const dayIdx = dayStrings.findIndex((d) => d === todayStr);
+    if (dayIdx !== -1) {
+      setActiveDay(dayIdx + 1);
+      // 시간대 자동 활성화
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      // timeSlots에서 현재 시간보다 같거나 큰 첫 번째 인덱스
+      const slotIdx = timeSlots.findIndex((slot) => slot >= currentTime);
+      setActiveIndex(slotIdx === -1 ? 0 : slotIdx);
+    }
+  }, []);
   // location_id는 1(만해광장), 2(팔정도) 등으로 확장 가능. 여기선 1로 고정
   const locationId = 1;
 
@@ -28,15 +45,27 @@ const TimeTable = () => {
     '18:00',
   ];
 
-  // API 연동
-  const { booths, isLoading, error } = useTimetable({
+  // API 연동 (location_id는 useTimetable에서 사용하지 않으므로 제외)
+  const { locations, isLoading, error } = useTimetable({
     day: dayStrings[activeDay - 1],
-    location_id: locationId,
   });
-  console.log('API에서 받아온 부스 정보:', booths); // 받아온 데이터 확인용
-  // API에서 start_time이 없으므로 loc_num 오름차순으로 정렬 후 타임슬롯에 순서대로 매핑 (임시)
-  const sortedBooths = booths.slice().sort((a, b) => a.loc_num - b.loc_num);
-  const getItemForTime = (idx: number) => sortedBooths[idx] || null;
+  // locationId에 해당하는 timetable 데이터만 추출
+  const locationData = locations.find((loc) => loc.location_id === locationId);
+  const items = locationData?.items || [];
+  // 타임슬롯이 공연의 start_time ~ end_time 범위에 포함되면 해당 공연을 보여줌
+  const getItemForTime = (idx: number) => {
+    const slot = timeSlots[idx]; // HH:MM
+    // slot이 item.start_time <= slot < item.end_time 범위에 포함되는지 체크
+    return (
+      items.find((item) => {
+        // HH:MM:SS → HH:MM으로 변환
+        const start = item.start_time.slice(0, 5);
+        const end = item.end_time.slice(0, 5);
+        // 문자열 비교: slot >= start && slot < end
+        return start <= slot && slot < end;
+      }) || null
+    );
+  };
 
   // 활성화된 공연 정보
   const activeItem = getItemForTime(activeIndex);
@@ -46,12 +75,12 @@ const TimeTable = () => {
       <S.Wrapper>
         <S.TimeTableTop>
           <S.Title>지금 공연중인 동아리</S.Title>
-          <S.TimeTableImgWrapper $img={activeItem?.logo_url || undefined}>
+          <S.TimeTableImgWrapper $img={activeItem?.image_url || undefined}>
             <S.ImgTextWrapper>
               <S.ImgText className='category'>
-                {activeItem?.division_name || '-'}
+                {activeItem?.category || '-'}
               </S.ImgText>
-              <S.ImgText>{activeItem?.name || '-'}</S.ImgText>
+              <S.ImgText>{activeItem?.team_name || '-'}</S.ImgText>
             </S.ImgTextWrapper>
           </S.TimeTableImgWrapper>
         </S.TimeTableTop>
@@ -60,7 +89,18 @@ const TimeTable = () => {
           activeDay={activeDay}
           onTabClick={(id) => {
             setActiveDay(id);
-            setActiveIndex(0); // 날짜 바뀌면 첫 타임으로 초기화
+            // 날짜 바뀌면 해당 날짜의 현재 시간에 맞는 타임슬롯으로 자동 이동
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            if (dayStrings[id - 1] === todayStr) {
+              const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+              const slotIdx = timeSlots.findIndex(
+                (slot) => slot >= currentTime,
+              );
+              setActiveIndex(slotIdx === -1 ? 0 : slotIdx);
+            } else {
+              setActiveIndex(0);
+            }
           }}
         />
         <S.TimeLineWrapper>
@@ -76,8 +116,8 @@ const TimeTable = () => {
                 <TimeLineBox
                   key={time}
                   time={time}
-                  team={item?.name || ''}
-                  category={item?.division_name || ''}
+                  team={item?.team_name || ''}
+                  category={item?.category || ''}
                   isActive={isActive}
                   onClick={() => setActiveIndex(idx)}
                 />

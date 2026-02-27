@@ -1,54 +1,54 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/api/client';
 
-interface TimetableBooth {
-  booth_id: number;
-  name: string;
-  booth_type: string;
-  division_name: string | null;
-  dates: string[];
+// timetable API response 타입 정의
+export interface TimetableItem {
+  timetable_id: number;
+  start_time: string;
+  end_time: string;
+  team_name: string;
+  category: string;
+  image_url: string | null;
+}
+
+export interface TimetableLocation {
+  location_id: number;
   location_name: string;
-  loc_num: number;
-  logo_url: string | null;
+  items: TimetableItem[];
 }
 
-interface TimetableAPIResponse {
-  count: number;
-  results: TimetableBooth[];
-}
-
-interface TimetableQueryParams {
+export interface TimetableAPIResponse {
   day: string;
-  location_id?: number;
-  division_id?: number;
-  booth_type?: string;
-  q?: string;
+  results: TimetableLocation[];
 }
+
+export type TimetableQueryParams = Record<string, string | number | undefined>;
 
 export const useTimetable = (params: TimetableQueryParams) => {
-  const [booths, setBooths] = useState<TimetableBooth[]>([]);
+  const [locations, setLocations] = useState<TimetableLocation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const fetchBooths = async () => {
+    const fetchTimetable = async () => {
       setIsLoading(true);
       try {
-        const data = await api.get<TimetableAPIResponse>('/api/booths', {
-          ...params,
-        });
-        setBooths(data.results || []);
-
+        const data = await api.get<TimetableAPIResponse>(
+          '/api/timetable',
+          params,
+        );
+        console.log('Timetable API response:', data); // 응답 데이터 확인용 로그
+        setLocations(data.results || []);
         setError(null);
       } catch (err) {
-        setBooths([]);
+        setLocations([]);
         setError(err as Error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchBooths();
+    fetchTimetable();
   }, [JSON.stringify(params)]);
 
-  return { booths, isLoading, error };
+  return { locations, isLoading, error };
 };
