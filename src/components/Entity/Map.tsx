@@ -123,7 +123,7 @@ const Map = ({
                         : "팔정도 지도"
                     }
                 />
-                {/* 테스트 : 전체 좌표 확인용
+                {/* 테스트 : 전체 좌표 확인용*/}
                 {Object.entries(currentCoords).map(([num, coord]) => (
                     <BoothMarker
                         key={num}
@@ -133,7 +133,7 @@ const Map = ({
                         $status="more"
                         onClick={() => alert(`부스번호 : ${num}`)}
                     />
-                ))} */}
+                ))} 
                 
                 {/* 실제 부스 데이터 기반 마커 렌더링 */}
                 {Array.isArray(activeBooths) && activeBooths.map((booth) => {
