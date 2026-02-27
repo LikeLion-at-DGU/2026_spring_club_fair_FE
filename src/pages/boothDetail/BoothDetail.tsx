@@ -1,48 +1,35 @@
 import { useParams } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import { mockBooths } from '@/mocks/mockBooths';
 import Header from '@/components/Entity/Header';
 import carrot from '@/assets/icons/fi-sr-carrot.svg';
 import dateIcon from '@assets/icons/cardTimeIcon.svg';
 import placeIcon from '@assets/icons/cardPlaceIcon.svg';
+import defaultImg from '@assets/images/boothDefaultImg.png';
 import * as S from './BoothDetail.styled';
+import { useBoothDetail } from '@/hooks/useBoothDetail';
 const BoothDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const booth = mockBooths.find((b) => b.id === Number(id));
-  if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
-  const formatDate = (dateStr?: string | null) => {
-    if (!dateStr) return '';
+  const { data: booth, isLoading, error } = useBoothDetail(id);
 
-    const [, month, day] = dateStr.split('-');
-    return `${Number(month)}월 ${Number(day)}일`;
-  };
-
+  // 이미지 캐러셀 상태 및 드래그 관련
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-  // 👇 1. PC 마우스 드래그를 위한 Ref 추가 (렌더링을 발생시키지 않도록 useRef 사용)
   const isDragging = useRef(false);
   const startX = useRef(0);
   const startScrollLeft = useRef(0);
-  // 👇 1. 마우스를 누를 때: 스냅 기능을 잠시 끕니다.
+
   const onDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollRef.current) return;
     isDragging.current = true;
     startX.current = e.pageX - scrollRef.current.offsetLeft;
     startScrollLeft.current = scrollRef.current.scrollLeft;
-
-    // 추가: 드래그 중에는 자유롭게 스크롤되도록 스냅 해제
     scrollRef.current.style.scrollSnapType = 'none';
   };
-
-  // 👇 2. 마우스를 뗄 때: 스냅 기능을 다시 켭니다.
   const onDragEnd = () => {
     if (!scrollRef.current) return;
     isDragging.current = false;
-
-    // 추가: 마우스를 떼면 가장 가까운 이미지로 다시 탁! 붙게 설정
     scrollRef.current.style.scrollSnapType = 'x mandatory';
   };
-
   const onDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging.current || !scrollRef.current) return;
     e.preventDefault();
@@ -50,32 +37,43 @@ const BoothDetail = () => {
     const walk = (x - startX.current) * 1.5;
     scrollRef.current.scrollLeft = startScrollLeft.current - walk;
   };
-
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
-      // 화면 너비로 나누어 현재 보고 있는 배열의 인덱스(0, 1, 2...)를 구합니다.
       const newIndex = Math.round(scrollLeft / clientWidth);
       setCurrentIndex(newIndex);
     }
   };
-  const currentOrder = booth.images[currentIndex]?.order ?? 0;
+
+  const formatDate = (dateStr?: string | null) => {
+    if (!dateStr) return '';
+    const [, month, day] = dateStr.split('-');
+    return `${Number(month)}월 ${Number(day)}일`;
+  };
+
+  if (isLoading) return <div>로딩중...</div>;
+  if (error) return <div>부스 정보를 불러오지 못했습니다.</div>;
+  if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
+
+  // 이미지 캐러셀용 order
+  const currentOrder = booth.images?.[currentIndex]?.order ?? 0;
+
   return (
     <>
       <Header title='부스 상세 정보' />
       <S.Wrapper>
         <S.ImageWrapper>
-          <S.BoothTag>
-            <img src={carrot} alt='당근 아이콘' />
-            {booth.name}
-          </S.BoothTag>
-
-          <S.BoothImgCount>
-            {booth.images.length > 0
-              ? `${currentOrder + 1}/${booth.images.length}`
-              : '0/0'}
-          </S.BoothImgCount>
-
+          {booth.name && (
+            <S.BoothTag>
+              <img src={carrot} alt='당근 아이콘' />
+              {booth.name}
+            </S.BoothTag>
+          )}
+          {booth.images && booth.images.length > 1 && (
+            <S.BoothImgCount>
+              {`${currentOrder + 1}/${booth.images.length}`}
+            </S.BoothImgCount>
+          )}
           <S.ImageScrollContainer
             ref={scrollRef}
             onScroll={handleScroll}
@@ -84,83 +82,87 @@ const BoothDetail = () => {
             onMouseUp={onDragEnd}
             onMouseMove={onDragMove}
           >
-            {booth.images.map((image) => (
-              <S.BoothImg
-                key={image.order}
-                src={image.image_url}
-                alt={`${booth.name} 사진 ${image.order}`}
-                draggable={false}
-              />
-            ))}
+            {booth.images && booth.images.length > 0
+              ? booth.images.map((image) => (
+                  <S.BoothImg
+                    key={image.order}
+                    src={image.image_url ? image.image_url : defaultImg}
+                    alt={`${booth.name} 사진 ${image.order}`}
+                    draggable={false}
+                  />
+                ))
+              : booth.name && (
+                  <S.BoothImg
+                    src={defaultImg}
+                    alt={`${booth.name} 디폴트 이미지`}
+                    draggable={false}
+                  />
+                )}
           </S.ImageScrollContainer>
           <S.Gradient />
         </S.ImageWrapper>
-
         <S.BoothInfoCardWrapper>
           <S.InfoCard>
             <S.CardTitleText>{booth.name}</S.CardTitleText>
             <S.InfoCardContent>
               <S.CardSubTitleText>EVENT</S.CardSubTitleText>
-              {booth.event.map((event, index) => (
+              {booth.event?.map((event, index) => (
                 <S.CardBodyText key={index}>• {event}</S.CardBodyText>
               ))}
             </S.InfoCardContent>
-
             <S.InfoCardContent>
               <S.CardSubTitleText>HERE</S.CardSubTitleText>
               <S.CardBodyText>
                 <img src={dateIcon} alt='시간 아이콘' />
-                {booth.dates.map((date, index) => (
+                {booth.dates?.map((date, index) => (
                   <div key={index}>{formatDate(date)}</div>
                 ))}
               </S.CardBodyText>
               <S.CardBodyText>
                 <img src={placeIcon} alt='위치 아이콘' />
-                {booth.location}
+                {booth.location_name}
               </S.CardBodyText>
             </S.InfoCardContent>
           </S.InfoCard>
-
           <S.InfoCard>
             <S.CardTitleText>{booth.name}을 소개합니다</S.CardTitleText>
             <S.InfoCardContent>
               <S.CardBodyText className='black'>
-                {booth.shortdesc}
+                {booth.short_description}
               </S.CardBodyText>
               <S.CardBodyText className='grey800'>
                 {booth.description}
               </S.CardBodyText>
             </S.InfoCardContent>
           </S.InfoCard>
-
           <S.InfoCard>
             <S.CardTitleText>{booth.name}과 함께 해주세요!</S.CardTitleText>
             <S.CardRecruitContents>
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>모집기간</S.CardBodyText>
                 <S.CardBodyText>
-                  {formatDate(booth.recruitStart)} ~{' '}
-                  {formatDate(booth.recruitEnd)}
+                  {formatDate(booth.recruit_start)} ~{' '}
+                  {formatDate(booth.recruit_end)}
                 </S.CardBodyText>
               </S.CardRecruitGap>
-
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>신청 방법</S.CardBodyText>
-                {/* api연결시에는 recruit_detail임 */}
-                <S.CardBodyText>{booth.recruitDetail}</S.CardBodyText>
+                <S.CardBodyText>{booth.recruit_detail}</S.CardBodyText>
               </S.CardRecruitGap>
-
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>인스타그램</S.CardBodyText>
-                {/* 여기도 접근자좀 달라질 수 있음 */}
-                <S.CardBodyText
-                  as='a'
-                  href={`${booth.url}`}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  @{booth.handle}
-                </S.CardBodyText>
+                {booth.instagram ? (
+                  <S.CardBodyText
+                    as='a'
+                    href={booth.instagram.url}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    {booth.instagram.handle}
+                  </S.CardBodyText>
+                ) : (
+                  <S.CardBodyText>-</S.CardBodyText>
+                )}
               </S.CardRecruitGap>
             </S.CardRecruitContents>
           </S.InfoCard>

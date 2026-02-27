@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
 `;
 
 export const BoothTag = styled.div`
@@ -48,13 +48,14 @@ export const BoothImgCount = styled.div`
 export const ImageWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 375px;
+  height: 100%;
   overflow: hidden;
 `;
 export const ImageScrollContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  min-height: 375px;
   overflow-x: auto; /* 가로 스크롤 허용 */
   scroll-snap-type: x mandatory; /* 가로 방향으로 스냅(딱딱 걸림) 활성화 */
   -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
