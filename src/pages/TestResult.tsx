@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import Header from '@/components/Entity/Header';
 import BoothCard from '@/components/Entity/BoothCard';
 import { flexCenter } from '@/styles/mixins';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { QuizResultResponse } from '@/types/quiz';
 import { mapBoothResultToBoothCardData } from '@/utils/boothUtils';
 import { testResults } from '@/mocks/testResults';
 
 const TestResult = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const result = location.state?.result as QuizResultResponse;
 
   if (!result) {
@@ -41,6 +42,8 @@ const TestResult = () => {
             <BoothCard
               key={booth.id}
               booth={booth}
+              onClick={() => navigate(`/booth/${booth.id}`)}
+              onDetailClick={() => navigate(`/booth/${booth.id}`)}
             />
           ))}
         </div>
