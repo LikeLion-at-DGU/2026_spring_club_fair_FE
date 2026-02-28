@@ -157,6 +157,7 @@ export const CardRecruitGap = styled.div`
   gap: 16px;
 `;
 export const CardBodyText = styled.div`
+  white-space: pre-wrap;
   display: flex;
   gap: 8px;
   ${({ theme }) => theme.fonts.R_14};

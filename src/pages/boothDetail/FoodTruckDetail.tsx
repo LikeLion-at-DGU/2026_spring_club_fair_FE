@@ -5,19 +5,10 @@ import carrot from '@/assets/icons/fi-sr-carrot.svg';
 import defaultImg from '@assets/images/boothDefaultImg.png';
 import * as S from './BoothDetail.styled';
 import { useFoodTruckDetail } from '@/hooks/useFoodTruckDetail';
-import { mockBooths } from '@/mocks/mockBooths';
-import type { FoodTruckBooth } from '@/types/booth';
 const FoodTruckDetail = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: booth, isLoading, error } = useFoodTruckDetail(id);
-  // fallback: mock 데이터 사용
-  const fallbackBooth =
-    !booth && id
-      ? (mockBooths.find(
-          (b) => b.type === 'FOODTRUCK' && String(b.id) === String(id),
-        ) as FoodTruckBooth | undefined)
-      : undefined;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -52,18 +43,10 @@ const FoodTruckDetail = () => {
     }
   };
 
-  const formatDate = (dateStr?: string | null) => {
-    if (!dateStr) return '';
-    const [, month, day] = dateStr.split('-');
-    return `${Number(month)}월 ${Number(day)}일`;
-  };
-
   if (isLoading) return <div>로딩중...</div>;
-  if (!booth && !fallbackBooth)
-    return <div>푸드트럭 정보를 찾을 수 없습니다.</div>;
-  const boothData = (booth || fallbackBooth) as FoodTruckBooth;
+  if (!booth) return <div>푸드트럭 정보를 찾을 수 없습니다.</div>;
+  const boothData = booth;
 
-  // FoodTruck mock 데이터 임시로 연결
   const images =
     Array.isArray(boothData.images) && boothData.images.length > 0
       ? boothData.images

@@ -139,8 +139,9 @@ const BoothDetail = () => {
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>모집기간</S.CardBodyText>
                 <S.CardBodyText>
-                  {formatDate(booth.recruit_start)} ~{' '}
-                  {formatDate(booth.recruit_end)}
+                  {!booth.recruit_start && !booth.recruit_end
+                    ? '상시모집'
+                    : `${formatDate(booth.recruit_start)} ~ ${formatDate(booth.recruit_end)}`}
                 </S.CardBodyText>
               </S.CardRecruitGap>
               <S.CardRecruitGap>
