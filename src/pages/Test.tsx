@@ -58,6 +58,7 @@ const MainWrapper = styled.div`
     ${flexEnd}
     flex-direction: column;
     width: 91.4%;
+    min-height: calc(var(--vh, 1vh) * 100 - 56px);
     padding: 27px 0 186px 0;
     margin: 0 auto;
     gap: 47px;
