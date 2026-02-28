@@ -34,6 +34,7 @@ export function useClubBoothDetail(boothId: number | string | undefined) {
       .get<ClubBoothDetail>(`/api/booths/${boothId}`)
       .then((res) => {
         if (res.booth_type !== 'CLUB') throw new Error('CLUB 타입이 아닙니다');
+        //console.log('받아온 부스 상세 정보:', res);
         setData(res);
       })
       .catch((err) => {
