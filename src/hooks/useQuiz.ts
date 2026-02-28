@@ -45,9 +45,14 @@ export const useQuiz = () => {
         } else {
             // Submit final answers
             try {
-                const result = await api.post<QuizResultResponse, { division_ids: number[] }>(
+                const now = new Date();
+                const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+                // 축제 기간(3/4, 3/5)이면 해당 날짜 사용, 아니면 3/4 기분값 사용
+                const day = (todayStr === '2026-03-04' || todayStr === '2026-03-05') ? todayStr : '2026-03-04';
+
+                const result = await api.post<QuizResultResponse, { division_ids: number[], day: string }>(
                     "/api/quiz/submit",
-                    { division_ids: updatedDivisionIds }
+                    { division_ids: updatedDivisionIds, day }
                 );
                 navigate("/test/result", { state: { result } });
             } catch (err) {
