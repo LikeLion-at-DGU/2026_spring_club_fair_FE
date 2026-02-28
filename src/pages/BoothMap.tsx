@@ -73,6 +73,7 @@ const CategorySection = styled.div`
   gap: 12px;
   padding: 16px;
   overflow-x: auto;
+  overflow-y: hidden;
   align-items: center;
   white-space: nowrap;
 
@@ -91,6 +92,11 @@ const CardSection = styled.div`
   padding-bottom: 40px;
   overflow-y: scroll;
 `;
+
+const ScollContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 // ----- ui ----- //
 
@@ -226,7 +232,7 @@ const BoothMap = () => {
         >팔정도</button>
       </LocationTabSection>
         <MapContainer $scale={mapScale}>
-          <Map
+          <Map 
             activeLocation={activeLocation}
             //onLocationChange={setActiveLocation}
             activeDay={activeDay}
