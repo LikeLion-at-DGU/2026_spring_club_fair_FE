@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { flexCenter, flexEnd } from "@/styles/mixins";
 import vegetables from "@assets/icons/vegetables.svg";
 import { useQuiz } from "@/hooks/useQuiz";
+import useVh from "@/hooks/useCalcVh";
 
 const QuizPage = () => {
     const {
@@ -17,6 +18,8 @@ const QuizPage = () => {
         handleChoiceClick,
         handleBack
     } = useQuiz();
+
+    useVh();
 
     if (isLoading) return <div>Loading questions...</div>;
     if (error) return <div>Error loading questions: {error.message}</div>;
@@ -58,6 +61,7 @@ const MainWrapper = styled.div`
     ${flexEnd}
     flex-direction: column;
     width: 91.4%;
+    min-height: calc(var(--vh, 1vh) * 100 - 64px); /* 헤더 높이 제외 */
     padding: 27px 0 186px 0;
     margin: 0 auto;
     gap: 47px;
