@@ -6,13 +6,10 @@ import { useLocation } from 'react-router-dom';
 import type { QuizResultResponse } from '@/types/quiz';
 import { mapBoothResultToBoothCardData } from '@/utils/boothUtils';
 import { testResults } from '@/mocks/testResults';
-import useVh from '@/hooks/useCalcVh';
 
 const TestResult = () => {
   const location = useLocation();
   const result = location.state?.result as QuizResultResponse;
-
-  useVh();
 
   if (!result) {
     return (
@@ -58,7 +55,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: calc(var(--vh, 1vh) * 100 - 64px); /* 헤더 높이 제외 */
+  min-height: calc(var(--vh, 1vh) * 100 - 56px);
 `;
 
 const ResultContainer = styled.div`
