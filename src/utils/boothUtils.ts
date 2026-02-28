@@ -30,6 +30,6 @@ export const mapBoothResultToBoothCardData = (result: BoothAPIResult): BoothCard
     division: result.division_name,
     dates: result.dates,
     locNum: result.loc_num,
-    location: result.location_name,
+    location: `${result.location_name} ${result.loc_num}번`,
     image: result.logo_url,
 });
