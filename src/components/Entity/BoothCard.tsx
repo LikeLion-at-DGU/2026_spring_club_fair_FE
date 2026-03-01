@@ -52,7 +52,8 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
           {booth.hasDetail && (
             <DetailButton onClick={(e) => {
               e.stopPropagation();
-              onDetailClick && onDetailClick();
+              const handleDetail = onDetailClick || onClick;
+              handleDetail?.();
             }}>
               자세히 보기
               <img src={arrowRight} alt='arrow-right' />
@@ -80,7 +81,7 @@ const BoothCardWrapper = styled.div<{ $width?: number; $height?: number; $isActi
     props.$isActive ? props.theme.colors.green50 : "var(--whie, #fff)"};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   //overflow: hidden;
-  cursor: pointer;
+  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
   transition: box-shadow 0.15s;
   &:hover {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.18);
