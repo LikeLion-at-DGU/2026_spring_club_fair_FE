@@ -60,6 +60,10 @@ const MapContainer = styled.div<{ $scale: number }>`
   border-top: 1px solid ${(props) => props.theme.colors.green900};
   border-bottom: 1px solid ${(props) => props.theme.colors.green900};
 
+  @media (max-width: 410px) {
+    height: ${(props) => 350 * props.$scale}px;
+  }
+  
   & > div:first-child {
     transform: scale(${(props) => props.$scale});
     transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
