@@ -38,7 +38,8 @@ const TestResult = () => {
           <div id='result_content' dangerouslySetInnerHTML={{ __html: divisionDetail?.description || "추천된 분과와 관련된 동아리 목록입니다." }} />
         </ResultContainer>
         <div style={{ padding: "20px", display: "grid", gap: "20px" }}>
-          {result.booths.map(mapBoothResultToBoothCardData).map((booth) => (
+          {
+          result.booths.map(mapBoothResultToBoothCardData).map((booth) => (
             <BoothCard
               key={booth.id}
               booth={booth}

@@ -1,5 +1,6 @@
 import type { BoothCardData } from '@/types/booth';
 import arrowRight from '@assets/icons/fi-sr-caret-right.svg';
+import lion from '@assets/images/lion.png';
 import clock from '@assets/icons/fi-sr-clock.svg';
 import marker from '@assets/icons/fi-sr-marker.svg';
 import { flexStart, flexColumn, ellipsis, flexEnd } from '@styles/mixins';
@@ -14,6 +15,54 @@ interface Props {
   onClick?: () => void;
   onDetailClick?: () => void;
 }
+
+const formatDate = (dateStr: string) => {
+  const [, month, day] = dateStr.split('-');
+  return `${Number(month)}월 ${Number(day)}일`;
+};
+
+const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetailClick }: Props) => {
+
+  const isFoodTruck = booth.type === 'FOODTRUCK';
+  
+  // type = 푸드트럭/부스 기준으로 분리
+  const divisionInfo = Object.values(testResults).find(
+    (res) => res.division === booth.division,
+  );
+  const bgColor = isFoodTruck ? '#FF823F' : divisionInfo?.color;
+  const labelText = isFoodTruck ? '푸드트럭' : booth.division;
+
+  return (
+    <BoothCardWrapper $width={width} $height={height} $isActive={isActive} onClick={onClick}>
+      <ContentContainer>
+        <BoothImage src={booth.image || lion} alt={booth.name} />
+        <BoothInfo>
+          <BoothDivison $bgColor={bgColor} id='booth_division'>
+            {labelText}
+          </BoothDivison>
+          <BoothTitle>{booth.name}</BoothTitle>
+          <BoothDate>
+            <img src={clock} alt='clock' />
+            {booth.dates.map(formatDate).join(', ')}
+          </BoothDate>
+          <BoothLocation>
+            <img src={marker} alt='marker' />
+            {booth.location}
+          </BoothLocation>
+          <DetailButton onClick={(e) => {
+            e.stopPropagation();
+            onDetailClick && onDetailClick();
+          }}>
+            자세히 보기
+            <img src={arrowRight} alt='arrow-right' />
+          </DetailButton>
+        </BoothInfo>
+      </ContentContainer>
+    </BoothCardWrapper>
+  );
+};
+
+export default BoothCard;
 
 const BoothCardWrapper = styled.div<{ $width?: number; $height?: number; $isActive? : boolean }>`
   ${flexColumn}
@@ -124,51 +173,3 @@ const DetailButton = styled.button`
     height: 14px;
   }
 `;
-
-const formatDate = (dateStr: string) => {
-  const [, month, day] = dateStr.split('-');
-  return `${Number(month)}월 ${Number(day)}일`;
-};
-
-const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetailClick }: Props) => {
-
-  const isFoodTruck = booth.type === 'FOODTRUCK';
-  
-  // type = 푸드트럭/부스 기준으로 분리
-  const divisionInfo = Object.values(testResults).find(
-    (res) => res.division === booth.division,
-  );
-  const bgColor = isFoodTruck ? '#FF823F' : divisionInfo?.color;
-  const labelText = isFoodTruck ? '푸드트럭' : booth.division;
-
-  return (
-    <BoothCardWrapper $width={width} $height={height} $isActive={isActive} onClick={onClick}>
-      <ContentContainer>
-        <BoothImage src={booth.image} alt={booth.name} />
-        <BoothInfo>
-          <BoothDivison $bgColor={bgColor} id='booth_division'>
-            {labelText}
-          </BoothDivison>
-          <BoothTitle>{booth.name}</BoothTitle>
-          <BoothDate>
-            <img src={clock} alt='clock' />
-            {booth.dates.map(formatDate).join(', ')}
-          </BoothDate>
-          <BoothLocation>
-            <img src={marker} alt='marker' />
-            {booth.location}
-          </BoothLocation>
-          <DetailButton onClick={(e) => {
-            e.stopPropagation();
-            onDetailClick && onDetailClick();
-          }}>
-            자세히 보기
-            <img src={arrowRight} alt='arrow-right' />
-          </DetailButton>
-        </BoothInfo>
-      </ContentContainer>
-    </BoothCardWrapper>
-  );
-};
-
-export default BoothCard;
