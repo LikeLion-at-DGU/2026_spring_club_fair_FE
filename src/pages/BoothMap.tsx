@@ -52,15 +52,22 @@ const MapContainer = styled.div<{ $scale: number }>`
   width: 100%;
   height: ${(props) => 500 * props.$scale}px; 
   transition: height 0.3s ease-out;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 30px;
+  overflow: hidden;
   background-color: ${(props) => props.theme.colors.grey50};
   border-top: 1px solid ${(props) => props.theme.colors.green900};
   border-bottom: 1px solid ${(props) => props.theme.colors.green900};
 
+  @media (max-width: 450px) {
+    height: ${(props) => 350 * props.$scale}px;
+  }
+  
   & > div:first-child {
+    flex-shrink: 0;
+
     transform: scale(${(props) => props.$scale});
     transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
     transition: transform 0.3s ease-out;
@@ -73,6 +80,7 @@ const CategorySection = styled.div`
   gap: 12px;
   padding: 16px;
   overflow-x: auto;
+  overflow-y: hidden;
   align-items: center;
   white-space: nowrap;
 
@@ -92,6 +100,18 @@ const CardSection = styled.div`
   overflow-y: scroll;
 `;
 
+const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: ${(props) => props.theme.colors.grey600};
+  font-size: 16px;
+  text-align: center;
+  line-height: 1.5;
+`;
+
 // ----- ui ----- //
 
 const BoothMap = () => {
@@ -104,6 +124,7 @@ const BoothMap = () => {
   const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>(
     'manhae',
   );
+  const isPaljeongdo = activeLocation === 'paljeongdo';
 
   // day
   const [activeDay, setActiveDay] = React.useState(1);
@@ -226,7 +247,7 @@ const BoothMap = () => {
         >팔정도</button>
       </LocationTabSection>
         <MapContainer $scale={mapScale}>
-          <Map
+          <Map 
             activeLocation={activeLocation}
             //onLocationChange={setActiveLocation}
             activeDay={activeDay}
@@ -263,15 +284,18 @@ const BoothMap = () => {
             text='푸드트럭'
             showArrow={false}
             isActive={activeCategory === 'FOODTRUCK'}
-            onClick={handleFoodTruckClick}
+            disabled={isPaljeongdo}
+            onClick={() => {
+              if (!isPaljeongdo) handleFoodTruckClick();
+            }}
           />
         </CategorySection>
         {/* 카드 리스트 섹션 */}
         <CardSection onScroll={handleScroll}>
           {isLoading ? (
             <div>loading...</div>
-          ) : (
-            Array.isArray(boothCards) && boothCards.map((booth) => (
+          ) : boothCards.length > 0? (
+            boothCards.map((booth) => (
               <BoothCard
                 key={booth.id}
                 booth={booth}
@@ -280,6 +304,10 @@ const BoothMap = () => {
                 onDetailClick={() => handleBoothCardClick(booth.id)}
               />
             ))
+          ) : (
+            <EmptyState>
+              해당 요일에 해당하는 부스가 없습니다.
+            </EmptyState>
           )}
         </CardSection>
       </PageContent>

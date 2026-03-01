@@ -41,14 +41,14 @@ export const useBoothCards = (params: any) => {
                     setBoothCards(mappedData);
                 } else {
                     console.warn("API returned empty results, falling back to mock data");
-                    setBoothCards(fallbackData);
+                    setBoothCards([]);
                 }
                 setError(null);
             } catch (err) {
                 console.warn("API Fetch failed, falling back to mock data:", err);
 
                 //data 없을 시 mock data
-                setBoothCards(fallbackData);
+                setBoothCards([]);
                 setError(null);
             } finally {
                 setIsLoading(false);
