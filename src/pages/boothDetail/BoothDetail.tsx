@@ -7,6 +7,7 @@ import placeIcon from '@assets/icons/cardPlaceIcon.svg';
 import defaultImg from '@assets/images/boothDefaultImg.png';
 import * as S from './BoothDetail.styled';
 import { useClubBoothDetail } from '@/hooks/useClubBoothDetail';
+import { useKoreanParticle } from '@/hooks/useKoreanParticle';
 const BoothDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data: booth, isLoading, error } = useClubBoothDetail(id);
@@ -50,11 +51,15 @@ const BoothDetail = () => {
     return `${Number(month)}월 ${Number(day)}일`;
   };
 
+  const boothName = booth?.name ?? '이름없음';
+  const objectParticle = useKoreanParticle(boothName, 'object');
+  const withParticle = useKoreanParticle(boothName, 'with');
+
   if (isLoading) return <div>로딩중...</div>;
   if (error) return <div>부스 정보를 불러오지 못했습니다.</div>;
   if (!booth) return <div>부스 정보를 찾을 수 없습니다.</div>;
 
-  const currentOrder = booth.images?.[currentIndex]?.order ?? 0;
+  const currentOrder = booth?.images?.[currentIndex]?.order ?? 0;
 
   return (
     <>
@@ -123,7 +128,10 @@ const BoothDetail = () => {
             </S.InfoCardContent>
           </S.InfoCard>
           <S.InfoCard>
-            <S.CardTitleText>{booth.name}을 소개합니다</S.CardTitleText>
+            <S.CardTitleText>
+              {booth.name}
+              {objectParticle} 소개합니다
+            </S.CardTitleText>
             <S.InfoCardContent>
               <S.CardBodyText className='black'>
                 {booth.short_description}
@@ -134,7 +142,10 @@ const BoothDetail = () => {
             </S.InfoCardContent>
           </S.InfoCard>
           <S.InfoCard>
-            <S.CardTitleText>{booth.name}과 함께 해주세요!</S.CardTitleText>
+            <S.CardTitleText>
+              {booth.name}
+              {withParticle} 함께 해주세요!
+            </S.CardTitleText>
             <S.CardRecruitContents>
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>모집기간</S.CardBodyText>
