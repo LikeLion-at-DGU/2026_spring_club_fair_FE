@@ -100,10 +100,17 @@ const CardSection = styled.div`
   overflow-y: scroll;
 `;
 
-const ScollContainer = styled.div`
+const EmptyState = styled.div`
   display: flex;
   flex-direction: column;
-`
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: ${(props) => props.theme.colors.grey600};
+  font-size: 16px;
+  text-align: center;
+  line-height: 1.5;
+`;
 
 // ----- ui ----- //
 
@@ -287,8 +294,8 @@ const BoothMap = () => {
         <CardSection onScroll={handleScroll}>
           {isLoading ? (
             <div>loading...</div>
-          ) : (
-            Array.isArray(boothCards) && boothCards.map((booth) => (
+          ) : boothCards.length > 0? (
+            boothCards.map((booth) => (
               <BoothCard
                 key={booth.id}
                 booth={booth}
@@ -297,6 +304,10 @@ const BoothMap = () => {
                 onDetailClick={() => handleBoothCardClick(booth.id)}
               />
             ))
+          ) : (
+            <EmptyState>
+              해당 요일에 해당하는 부스가 없습니다.
+            </EmptyState>
           )}
         </CardSection>
       </PageContent>
