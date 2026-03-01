@@ -161,6 +161,7 @@ const DetailButton = styled.button`
   align-items: center;
   background: none;
   border: none;
+  margin: 8px;
   ${({ theme }) => theme.fonts.R_12};
   color: ${({ theme }) => theme.colors.grey600};
   cursor: pointer;
@@ -168,7 +169,6 @@ const DetailButton = styled.button`
   padding: 0;
 
   img {
-    margin-top: -2px;
     width: 14px;
     height: 14px;
   }
