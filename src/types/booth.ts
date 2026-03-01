@@ -49,6 +49,7 @@ export interface BoothCardData {
   locNum: number;
   location: string;
   image: string;
+  hasDetail: boolean;
 }
 
 export interface BoothQueryParams {
