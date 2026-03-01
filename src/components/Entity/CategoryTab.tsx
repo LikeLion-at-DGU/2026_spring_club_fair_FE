@@ -38,8 +38,7 @@ const TabWrapper = styled.div<TabProps & { $disabled?: boolean }>`
 `;
 
 const TabText = styled.span<TabProps>`
-  font-size: 14px;
-  font-weight: 500;
+  ${({ theme }) => theme.fonts.R_16};
 `;
 
 const StyledIcon = styled.img`

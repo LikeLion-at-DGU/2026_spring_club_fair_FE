@@ -22,6 +22,7 @@ const Title = styled.span`
   font-size: 16px;
   font-weight: 600;
   color: ${(props) => props.theme.colors.grey800};
+  ${({ theme }) => theme.fonts.SB_16};
 `;
 
 const IconBtn = styled.img`

@@ -33,16 +33,15 @@ const LocationTabSection = styled.div`
     padding: 8px 12px;
     border-radius: 8px 8px 0 0;
     background-color: ${(props) => props.theme.colors.grey200};
-    font-size: 16px;
-    font-weight: 400;
     color: ${(props) => props.theme.colors.grey50};
+    ${({ theme }) => theme.fonts.R_16};
     cursor: pointer;
     //transition: all 0.2s; /* TODO : 애니메이션 고민 */
 
     &.active {
       background-color: ${(props) => props.theme.colors.green900};
       color: white;
-      font-weight: 600;
+      ${({ theme }) => theme.fonts.SB_16};
     }
   }
 `;
@@ -298,7 +297,7 @@ const BoothMap = () => {
         {/* 카드 리스트 섹션 */}
         <CardSection onScroll={handleScroll}>
           {isLoading ? (
-            <div>loading...</div>
+            <EmptyState>loading...</EmptyState>
           ) : boothCards.length > 0? (
             boothCards.map((booth) => (
               <BoothCard
