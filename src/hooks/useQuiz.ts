@@ -49,7 +49,7 @@ export const useQuiz = () => {
                     "/api/quiz/submit",
                     { division_ids: updatedDivisionIds }
                 );
-                //console.log(result);
+                console.log(result);
                 navigate("/test/result", { state: { result } });
             } catch (err) {
                 console.warn("Failed to submit quiz, using mock result:", err);

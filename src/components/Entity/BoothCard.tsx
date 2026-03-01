@@ -49,13 +49,15 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
             <img src={marker} alt='marker' />
             {booth.location}
           </BoothLocation>
-          <DetailButton onClick={(e) => {
-            e.stopPropagation();
-            onDetailClick && onDetailClick();
-          }}>
-            자세히 보기
-            <img src={arrowRight} alt='arrow-right' />
-          </DetailButton>
+          {booth.hasDetail && (
+            <DetailButton onClick={(e) => {
+              e.stopPropagation();
+              onDetailClick && onDetailClick();
+            }}>
+              자세히 보기
+              <img src={arrowRight} alt='arrow-right' />
+            </DetailButton>
+          )}
         </BoothInfo>
       </ContentContainer>
     </BoothCardWrapper>
