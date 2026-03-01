@@ -43,8 +43,7 @@ const TestResult = () => {
             <BoothCard
               key={booth.id}
               booth={booth}
-              onClick={() => navigate(`/booth/${booth.id}`)}
-              onDetailClick={() => navigate(`/booth/${booth.id}`)}
+              onClick={booth.hasDetail ? () => navigate(`/booth/${booth.id}`) : undefined}
             />
           ))}
         </div>

@@ -84,7 +84,8 @@ export const mockQuizResult: QuizResultResponse = {
             dates: ["2026-03-04", "2026-03-05"],
             location_name: "만해광장",
             loc_num: 100,
-            logo_url: defaultImg
+            logo_url: defaultImg,
+            has_detail: false
             },
         
         {
@@ -95,7 +96,8 @@ export const mockQuizResult: QuizResultResponse = {
             dates: ["2026-03-04", "2026-03-05"],
             loc_num: 1,
             location_name: "학생회관 앞 광장",
-            logo_url: "https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg"
+            logo_url: "https://cf-tabs-image.campuspick.com/clubrecruit/1686551931804562.jpg",
+            has_detail: true
         },
         {
             booth_id: 3,
@@ -105,7 +107,8 @@ export const mockQuizResult: QuizResultResponse = {
             dates: ["2026-03-05"],
             loc_num: 51,
             location_name: "대강당 앞",
-            logo_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000&auto=format&fit=crop"
+            logo_url: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1000&auto=format&fit=crop",
+            has_detail: true
         }
     ]
 };

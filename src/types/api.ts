@@ -7,4 +7,5 @@ export interface BoothAPIResult {
     location_name: string;
     loc_num: number;
     logo_url: string;
+    has_detail: boolean;
 }
