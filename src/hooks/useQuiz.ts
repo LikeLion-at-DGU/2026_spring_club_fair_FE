@@ -16,7 +16,7 @@ export const useQuiz = () => {
         const fetchQuestions = async () => {
             try {
                 const data = await api.get<QuizQuestion[]>("/api/quiz");
-                console.log("Quiz Questions API Response:", data);
+                //console.log("Quiz Questions API Response:", data);
 
                 if (data && data.length > 0) {
                     setQuestions(data);
@@ -45,15 +45,11 @@ export const useQuiz = () => {
         } else {
             // Submit final answers
             try {
-                const now = new Date();
-                const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-                // 축제 기간(3/4, 3/5)이면 해당 날짜 사용, 아니면 3/4 기분값 사용
-                const day = (todayStr === '2026-03-04' || todayStr === '2026-03-05') ? todayStr : '2026-03-04';
-
-                const result = await api.post<QuizResultResponse, { division_ids: number[], day: string }>(
+                const result = await api.post<QuizResultResponse, { division_ids: number[] }>(
                     "/api/quiz/submit",
-                    { division_ids: updatedDivisionIds, day }
+                    { division_ids: updatedDivisionIds }
                 );
+                //console.log(result);
                 navigate("/test/result", { state: { result } });
             } catch (err) {
                 console.warn("Failed to submit quiz, using mock result:", err);
