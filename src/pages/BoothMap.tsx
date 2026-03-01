@@ -254,6 +254,7 @@ const BoothMap = () => {
             activeBooths={boothsByLocation}
             selectedBoothId={selectedBoothId}
             activeDivision={selectedDivision}
+            activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
         </MapContainer>
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />

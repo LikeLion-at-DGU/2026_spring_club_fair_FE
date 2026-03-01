@@ -31,14 +31,14 @@ const BoothMarker = styled.div<MarkerProps>`
     /* 2. more 상태 */
     ${props => props.$status === 'more' && css`
         border: 1px solid var(--whie, #FFF);
-        background-color: ${props.$type === 'CLUB' ? '#ABBE07' : '#FF782F'};
+        background-color: ${props.$type === 'CLUB' ? '#ABBE07' : '#FFC005'};
         box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
     `}
 
     /* 3. activated 상태 */
     ${props => props.$status === 'activated' && css`
         border: 1px solid var(--whie, #FFF);
-        background-color: ${props.$type === 'CLUB' ? '#FF7474' : '#FFC005'};
+        background-color: ${props.$type === 'CLUB' ? '#FF7474' : '#FF782F'};
         box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
         z-index: 20;
     `}
