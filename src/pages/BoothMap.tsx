@@ -52,19 +52,22 @@ const MapContainer = styled.div<{ $scale: number }>`
   width: 100%;
   height: ${(props) => 500 * props.$scale}px; 
   transition: height 0.3s ease-out;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 30px;
+  overflow: hidden;
   background-color: ${(props) => props.theme.colors.grey50};
   border-top: 1px solid ${(props) => props.theme.colors.green900};
   border-bottom: 1px solid ${(props) => props.theme.colors.green900};
 
-  @media (max-width: 410px) {
+  @media (max-width: 450px) {
     height: ${(props) => 350 * props.$scale}px;
   }
   
   & > div:first-child {
+    flex-shrink: 0;
+
     transform: scale(${(props) => props.$scale});
     transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
     transition: transform 0.3s ease-out;

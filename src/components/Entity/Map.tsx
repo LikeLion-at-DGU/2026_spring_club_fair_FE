@@ -29,7 +29,7 @@ const MapWrapper = styled.div`
 const MapImg = styled.img<{ $isLoaded: boolean }>`
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  //object-fit: contain;
   opacity: ${(props) => (props.$isLoaded ? 1 : 0)};
   transition: opacity 0.5s ease-in-out; // 부드러운 전환
 `;
