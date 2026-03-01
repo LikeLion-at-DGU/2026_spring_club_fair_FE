@@ -22,6 +22,7 @@ const Input = styled.input`
     font-size: 16px;
     font-weight: 400;
     color: ${(props) => props.theme.colors.black};
+    ${({ theme }) => theme.fonts.R_16};
 `
 
 const IconBtn = styled.img`

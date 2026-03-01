@@ -98,7 +98,7 @@ const BoothImage = styled.img`
   width: 95px;
   height: 126px;
   border-radius: var(--M, 8px);
-  background: var(--Grey-grey-500, #adaeaf);
+  background: var(--Grey-grey-500, #ffffff);
   object-fit: cover;
   flex-shrink: 0;
 `;
@@ -115,7 +115,7 @@ const BoothInfo = styled.div`
 const BoothDivison = styled.div<{ $bgColor?: string }>`
   width: fit-content;
   padding: 4px 8px;
-  font-size: 12px;
+  ${({ theme }) => theme.fonts.R_12};
   color: #fff;
   background-color: ${(props) => props.$bgColor || '#E67979'};
   border-radius: 4px;
@@ -124,15 +124,14 @@ const BoothDivison = styled.div<{ $bgColor?: string }>`
 
 const BoothTitle = styled.p`
   color: var(--black, #121212);
-  font-family: 'Pyeojin Gothic';
+  ${({ theme }) => theme.fonts.SB_18};
   font-size: 18px;
   font-weight: 600;
   ${ellipsis}
 `;
 
 const BoothDate = styled.div`
-  font-size: 14px;
-  font-weight: 400;
+  ${({ theme }) => theme.fonts.R_14};
   line-height: normal;
   color: ${({ theme }) => theme.colors.grey600};
   ${ellipsis}
@@ -145,8 +144,7 @@ const BoothDate = styled.div`
 `;
 
 const BoothLocation = styled.div`
-  font-size: 14px;
-  font-weight: 400;
+  ${({ theme }) => theme.fonts.R_14};
   line-height: normal;
   color: ${({ theme }) => theme.colors.grey600};
   ${ellipsis}
@@ -163,9 +161,8 @@ const DetailButton = styled.button`
   align-items: center;
   background: none;
   border: none;
-  font-size: 14px;
+  ${({ theme }) => theme.fonts.R_12};
   color: ${({ theme }) => theme.colors.grey600};
-  font-weight: 400;
   cursor: pointer;
   margin-top: auto;
   padding: 0;
