@@ -53,6 +53,7 @@ interface MapProps {
     }[];
     selectedBoothId: number | null;
     activeDivision: string | null;
+    activeCategory: 'BOOTH' | 'FOODTRUCK';
 }
 
 /* 이미지 미리 로드 (근데 첫 새로고침 오류남 확인 필요)
@@ -68,6 +69,7 @@ const Map = ({
     activeBooths,
     selectedBoothId,
     activeDivision,
+    activeCategory,
 }: MapProps) => {
     
     const [isLoaded, setIsLoaded] = React.useState(false);
@@ -135,10 +137,18 @@ const Map = ({
 
                     let status: 'default' | 'more' | 'activated' = 'default';
 
+                    // 1. 카드 클릭 시 (activated)
                     if (selectedBoothId === booth.id) {
                         status = 'activated';
-                    } else if (activeDivision === booth.division && activeDivision !== null) {
+                    } else if (
+                    // 2. 카테고리 선택 시 (more)
+                        // if 'CLUB'
+                        (activeCategory === 'BOOTH' && activeDivision === booth.division && activeDivision !== null) ||
+                        // if 'FOODTRUCK'
+                        (activeCategory === 'FOODTRUCK' && booth.type === 'FOODTRUCK')
+                    ) {
                         status = 'more';
+                    // 3. 기타
                     } else {
                         status = 'default';
                     }
@@ -150,10 +160,7 @@ const Map = ({
                             $x={coord.x}
                             $y={coord.y}
                             $type={booth.type === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB'}
-                            $status={
-                                selectedBoothId === booth.id ? 'activated' :
-                                activeDivision === booth.division ? 'more' : 'default'
-                            }
+                            $status={status}
                         />                            
                     );
                 })}

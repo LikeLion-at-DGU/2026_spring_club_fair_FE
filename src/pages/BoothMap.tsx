@@ -229,8 +229,12 @@ const BoothMap = () => {
   
   const navigate = useNavigate();
 
-  const handleBoothCardClick = (id: number) => {
-    navigate(`/booth/${id}`);
+  const handleBoothCardClick = (id: number, type: string) => {
+    if (type === 'FOODTRUCK') {
+      navigate(`/foodtruck/${id}`);
+    } else {
+      navigate(`/booth/${id}`);
+    }
   };
 
   return (
@@ -254,6 +258,7 @@ const BoothMap = () => {
             activeBooths={boothsByLocation}
             selectedBoothId={selectedBoothId}
             activeDivision={selectedDivision}
+            activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
         </MapContainer>
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
@@ -301,7 +306,7 @@ const BoothMap = () => {
                 booth={booth}
                 onClick={() => handleCardToggle(booth.id)}
                 isActive={selectedBoothId === booth.id}
-                onDetailClick={() => handleBoothCardClick(booth.id)}
+                onDetailClick={() => handleBoothCardClick(booth.id, booth.type)}
               />
             ))
           ) : (
