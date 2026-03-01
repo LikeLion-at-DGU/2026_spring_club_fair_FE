@@ -160,10 +160,7 @@ const Map = ({
                             $x={coord.x}
                             $y={coord.y}
                             $type={booth.type === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB'}
-                            $status={
-                                selectedBoothId === booth.id ? 'activated' :
-                                activeDivision === booth.division ? 'more' : 'default'
-                            }
+                            $status={status}
                         />                            
                     );
                 })}

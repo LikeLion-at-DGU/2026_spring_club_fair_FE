@@ -33,6 +33,7 @@ const BoothMarker = styled.div<MarkerProps>`
         border: 1px solid var(--whie, #FFF);
         background-color: ${props.$type === 'CLUB' ? '#ABBE07' : '#FFC005'};
         box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
+        z-index: 10;
     `}
 
     /* 3. activated 상태 */
