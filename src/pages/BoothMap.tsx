@@ -117,6 +117,7 @@ const BoothMap = () => {
   const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>(
     'manhae',
   );
+  const isPaljeongdo = activeLocation === 'paljeongdo';
 
   // day
   const [activeDay, setActiveDay] = React.useState(1);
@@ -276,7 +277,10 @@ const BoothMap = () => {
             text='푸드트럭'
             showArrow={false}
             isActive={activeCategory === 'FOODTRUCK'}
-            onClick={handleFoodTruckClick}
+            disabled={isPaljeongdo}
+            onClick={() => {
+              if (!isPaljeongdo) handleFoodTruckClick();
+            }}
           />
         </CategorySection>
         {/* 카드 리스트 섹션 */}
