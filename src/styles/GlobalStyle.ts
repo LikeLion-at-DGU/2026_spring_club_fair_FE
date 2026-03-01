@@ -97,6 +97,7 @@ const GlobalStyle = createGlobalStyle`
     
     overflow: hidden;
     position: relative;
+    user-select: none;
   }
 
 

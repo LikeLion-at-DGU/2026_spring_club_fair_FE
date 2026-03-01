@@ -116,24 +116,19 @@ const EmptyState = styled.div`
 const BoothMap = () => {
   
   // location
-  const LOCATION_ID_MAP = {
-  manhae: 1,
-  paljeongdo: 2,
-};
-  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>(
-    'manhae',
-  );
+  const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,}; 
+  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>( 'manhae' );
   const isPaljeongdo = activeLocation === 'paljeongdo';
-
   // day
   const [activeDay, setActiveDay] = React.useState(1);
   // BOOTH id
   const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+  
   const handleCardToggle = (id: number) => {
     setSelectedBoothId((prev) => (prev === id ? null : id));
   };
 
-  // category
+  // category 훅
   const {
     activeCategory,
     selectedDivision,
@@ -141,6 +136,9 @@ const BoothMap = () => {
     handleDivisionClick,
     handleFoodTruckClick,
   } = useCategory();
+
+  const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
+  const allBooths = useBooths(currentDayStr);
 
   // 부스카드 호출
   const { boothCards, isLoading } = useBoothCards({
@@ -153,23 +151,48 @@ const BoothMap = () => {
     // q (검색)
   });
   // 부스 호출 (분과명 카테고리로 추출)
-  const allBooths = useBooths();
   const divisionList = React.useMemo(() => {
     const dataArray = (allBooths as any).results || allBooths; 
     return getDivisionFromBooths(dataArray);
   }, [allBooths]);
 
+  /*
+// allBooth 응답 기준
+const boothsByLocation = React.useMemo(() => {
+  if (!boothCards) return [];
+
+  // boothCards는 useBoothCards 훅에서 이미 
+  // 1. 해당 날짜(activeDay)
+  // 2. 해당 장소(activeLocation)
+  // 3. 해당 카테고리(selectedDivision)
+  // 로 필터링되어 넘어온 "정확한" 데이터입니다.
+  
+  return boothCards.map((b: any) => ({
+    ...b,
+    id: b.id,        // useBoothCards에서 이미 booth_id -> id로 변환됨
+    locNum: b.locNum, // 이미 loc_num -> locNum으로 변환됨
+    division: b.division,
+    type: b.type
+  }));
+}, [boothCards]); // boothCards가 바뀔 때마다 마커도 100% 동기화됨*/
+
+
+
+
+
   const boothsByLocation = React.useMemo(() => {
-    const allData = (allBooths as any).results || allBooths || [];
+    const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
     
     // 1. location_name 매칭용 맵
     const locationNameMap = {
       manhae: "만해광장",
       paljeongdo: "팔정도"
     };
-
+    
     return allData
-      .filter((b: any) => b.location_name === locationNameMap[activeLocation]) // 장소 필터링
+      .filter((b: any) => 
+        b.location_name === locationNameMap[activeLocation] && // 장소 필터링
+        b.dates.includes(currentDayStr)) // 날짜 필터링
       .map((b: any) => ({
         ...b,
         id: b.booth_id,            // Map 컴포넌트 내부에서 selectedBoothId와 비교용
@@ -177,7 +200,8 @@ const BoothMap = () => {
         division: b.division_name, // 카테고리 강조용
         type: b.booth_type         // 마커 색상 결정용 (CLUB / FOODTRUCK)
       }));
-  }, [allBooths, activeLocation]);
+  }, [allBooths, activeLocation, activeDay]);
+
 
   /** 참고
    * export interface BoothCardData {
@@ -235,6 +259,14 @@ const BoothMap = () => {
       navigate(`/booth/${id}`);
     }
   };
+
+  const cardSectionRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    // activated 해제 관련
+    setSelectedBoothId(null);
+    
+  }, [activeLocation, activeDay, selectedDivision]);
+  
 
   return (
       <PageContent>

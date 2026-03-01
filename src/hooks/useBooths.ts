@@ -15,7 +15,7 @@ export const useBooths = (day: string = '2026-03-04') => {
         console.warn('Failed to fetch booths, falling back to mock data:', err);
         setBooths(mockBooths);
       });
-  }, []);
+  }, [day]);
 
   return booths;
 };

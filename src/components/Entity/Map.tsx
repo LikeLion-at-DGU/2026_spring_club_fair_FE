@@ -156,7 +156,7 @@ const Map = ({
 
                     return (
                         <BoothMarker
-                            key={`marker-${booth.id}`}
+                            key={`marker-${activeDay}-${booth.id}`}
                             $x={coord.x}
                             $y={coord.y}
                             $type={booth.type === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB'}
