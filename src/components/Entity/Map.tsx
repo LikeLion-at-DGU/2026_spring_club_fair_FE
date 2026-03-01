@@ -138,7 +138,7 @@ const Map = ({
                     let status: 'default' | 'more' | 'activated' = 'default';
 
                     // 1. 카드 클릭 시 (activated)
-                    if (selectedBoothId === booth.id) {
+                    if (selectedBoothId === booth.id && booth.type !== 'FOODTRUCK') {
                         status = 'activated';
                     } else if (
                     // 2. 카테고리 선택 시 (more)
