@@ -169,6 +169,8 @@ export const CardBodyText = styled.div`
   text-decoration: none;
   color: inherit;
 
+  word-break: break-all;
+
   &.black {
     color: ${(props) => props.theme.colors.black};
   }
