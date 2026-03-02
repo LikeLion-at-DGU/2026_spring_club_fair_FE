@@ -9,25 +9,6 @@ const TimeTable = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const dayStrings = ['2026-03-04', '2026-03-05'];
-
-  useEffect(() => {
-    const now = new Date();
-    // 날짜 비교
-    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-    // dayStrings에서 오늘 날짜가 있으면 activeDay로 설정
-    const dayIdx = dayStrings.findIndex((d) => d === todayStr);
-    if (dayIdx !== -1) {
-      setActiveDay(dayIdx + 1);
-      // 시간대 자동 활성화
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      // timeSlots에서 현재 시간보다 같거나 큰 첫 번째 인덱스
-      const slotIdx = timeSlots.findIndex((slot) => slot >= currentTime);
-      setActiveIndex(slotIdx === -1 ? 0 : slotIdx);
-    }
-  }, []);
-  // location_id는 1(만해광장), 2(팔정도) 등으로 확장 가능. 여기선 1로 고정
-  const locationId = 1;
-
   // 13:00~18:00까지 30분 단위 타임라인 생성
   const timeSlots = [
     '13:00',
@@ -42,6 +23,33 @@ const TimeTable = () => {
     '17:30',
     '18:00',
   ];
+
+  useEffect(() => {
+    const now = new Date();
+    // 날짜 비교
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    // dayStrings에서 오늘 날짜가 있으면 activeDay로 설정
+    const dayIdx = dayStrings.findIndex((d) => d === todayStr);
+    if (dayIdx !== -1) {
+      setActiveDay(dayIdx + 1);
+      // 시간대 자동 활성화
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      // (예: 14:15 이면 14:00의 인덱스 반환)
+      const slotIdx = [...timeSlots]
+        .reverse()
+        .findIndex((slot) => slot <= currentTime);
+
+      if (slotIdx !== -1) {
+        // reverse()를 했기 때문에 원래 인덱스로 복원
+        setActiveIndex(timeSlots.length - 1 - slotIdx);
+      } else {
+        // 13:00 이전이거나 에러 상황이면 0(첫 타임)으로 설정
+        setActiveIndex(0);
+      }
+    }
+  }, []);
+  // location_id는 1(만해광장), 2(팔정도) 등으로 확장 가능. 여기선 1로 고정
+  const locationId = 1;
 
   // API 연동 (location_id는 useTimetable에서 사용하지 않으므로 제외)
   const { locations, isLoading, error } = useTimetable({
@@ -92,10 +100,15 @@ const TimeTable = () => {
             const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             if (dayStrings[id - 1] === todayStr) {
               const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-              const slotIdx = timeSlots.findIndex(
-                (slot) => slot >= currentTime,
-              );
-              setActiveIndex(slotIdx === -1 ? 0 : slotIdx);
+              const slotIdx = [...timeSlots]
+                .reverse()
+                .findIndex((slot) => slot <= currentTime);
+
+              if (slotIdx !== -1) {
+                setActiveIndex(timeSlots.length - 1 - slotIdx);
+              } else {
+                setActiveIndex(0);
+              }
             } else {
               setActiveIndex(0);
             }
