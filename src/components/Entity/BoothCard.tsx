@@ -22,7 +22,6 @@ const formatDate = (dateStr: string) => {
 };
 
 const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetailClick }: Props) => {
-
   const isFoodTruck = booth.type === 'FOODTRUCK';
   
   // type = 푸드트럭/부스 기준으로 분리
@@ -45,10 +44,17 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
             <img src={clock} alt='clock' />
             {booth.dates.map(formatDate).join(', ')}
           </BoothDate>
+
           <BoothLocation>
             <img src={marker} alt='marker' />
-            {booth.location}
+            {isFoodTruck ? (
+              // 임시로 .. TODO
+              booth.location.split(' ')[0] 
+            ) : (
+              booth.location
+            )}
           </BoothLocation>
+          
           {booth.hasDetail && (
             <DetailButton onClick={(e) => {
               e.stopPropagation();
