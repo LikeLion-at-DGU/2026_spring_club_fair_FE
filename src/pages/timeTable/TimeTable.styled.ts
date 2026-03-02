@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import DefaultImg from '@assets/images/boothDefaultImg.png';
+import DefaultImg from '@assets/images/timetableDefaultImg.png';
 export const Wrapper = styled.div`
   display: flex;
 
