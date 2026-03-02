@@ -97,6 +97,7 @@ const CardSection = styled.div`
   gap: 8px;
   padding-bottom: 40px;
   overflow-y: scroll;
+  padding: 10px 0 100px;;
 `;
 
 const EmptyState = styled.div`
@@ -119,14 +120,14 @@ const EmptyState = styled.div`
     overflow-y: auto;
   `
 
-  const ResultItem = styled.div`
+  const ItemContainer = styled.div`
     padding: 16px 0;
     border-bottom: 1px solid ${(props) => props.theme.colors.grey100};
     ${({ theme }) => theme.fonts.R_16};
     cursor: pointer;
     
-    span {
-      color: ${(props) => props.theme.colors.green900}; /* 검색어 강조색 */
+    span.highlight {
+      color: ${(props) => props.theme.colors.green500};
       font-weight: bold;
     }
   `;
@@ -145,6 +146,26 @@ const BoothMap = () => {
   // 검색 관련 상태
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const HighlightedText = ({text, highlight}: {text: string, highlight: string}) => {
+    if (!highlight.trim()) {
+      return<>{text}</>
+    }
+  
+  const regex = new RegExp(`(${highlight})`, 'gi');
+  const parts = text.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        regex.test(part) ? (
+          <span key={index} className="highlight">{part}</span>
+        ) : (
+          part
+        )
+      )}
+    </>
+    );
+  };
   
   // location
   const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,}; 
@@ -186,28 +207,6 @@ const BoothMap = () => {
     const dataArray = (allBooths as any).results || allBooths; 
     return getDivisionFromBooths(dataArray);
   }, [allBooths]);
-
-  /*
-// allBooth 응답 기준
-const boothsByLocation = React.useMemo(() => {
-  if (!boothCards) return [];
-
-  // boothCards는 useBoothCards 훅에서 이미 
-  // 1. 해당 날짜(activeDay)
-  // 2. 해당 장소(activeLocation)
-  // 3. 해당 카테고리(selectedDivision)
-  // 로 필터링되어 넘어온 "정확한" 데이터입니다.
-  
-  return boothCards.map((b: any) => ({
-    ...b,
-    id: b.id,        // useBoothCards에서 이미 booth_id -> id로 변환됨
-    locNum: b.locNum, // 이미 loc_num -> locNum으로 변환됨
-    division: b.division,
-    type: b.type
-  }));
-}, [boothCards]); // boothCards가 바뀔 때마다 마커도 100% 동기화됨*/
-
-
 
   const boothsByLocation = React.useMemo(() => {
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
@@ -280,6 +279,7 @@ const boothsByLocation = React.useMemo(() => {
     // 2. 장소 동기화
     const locationKey = booth.location_name === "팔정도" ? 'paljeongdo' : 'manhae' ;
     setActiveLocation(locationKey);
+
     // 3. 날짜 동기화    
     if (booth.dates && booth.dates.length > 0) {
       const firstDate = booth.dates[0];
@@ -290,18 +290,10 @@ const boothsByLocation = React.useMemo(() => {
     if (booth.booth_type === 'FOODTRUCK') {
       handleFoodTruckClick();
     } else{
-      //handleBoothClick;
-      //handleBoothCardClick;
+      handleBoothClick();
     }
     setSelectedBoothId(booth.booth_id);
   }
-
-  React.useEffect(() => {
-    if (!isInternalChange) {
-      setSelectedBoothId(null);
-    }
-    setIsInternalChange(false);
-  }, [activeLocation, activeDay, selectedDivision]);
 
   
   // 마우스 드래그
@@ -360,15 +352,15 @@ const boothsByLocation = React.useMemo(() => {
             <ResultLabel>검색 결과</ResultLabel>
             {SearchResults.length > 0 ? (
               SearchResults.map((result: any) => (
-                <ResultItem 
+                <ItemContainer
                   key={result.booth_id} 
                   onClick={() => handleSearchResultClick(result)}
                 >
-                  {result.name}
-                </ResultItem>
+                  <HighlightedText text={result.name} highlight={searchTerm} />
+                </ItemContainer>
               ))
             ) : (
-              <EmptyState>검색 결과가 없습니다.</EmptyState>
+              <EmptyState>해당 요일에 일치하는 검색 결과가 없습니다.</EmptyState>
             )}
           </SearchResultOverlay>
         ) : (
