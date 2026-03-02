@@ -30,6 +30,7 @@ const TabItem = styled.div<ActiveProps>`
         bottom: 0;
         width: 100%;
         height: 3px;
+        transition: all 0.2s;
         background-color: ${(props) => (props.$isActive ? "#121212" : "transparent")};
     }
 `

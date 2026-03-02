@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import Header from '../components/Entity/Header';
+import Header from '../../components/Entity/Header';
 import SearchBar from '@/components/Entity/SearchBar';
 import DayTab from '@/components/Entity/DayTab';
 import CategoryTab from '@/components/Entity/CategoryTab';
@@ -11,149 +10,45 @@ import { useCategory } from '@/hooks/useCategory';
 import { getDivisionFromBooths } from '@/utils/boothUtils';
 import { useBoothCards } from '@/hooks/useBoothCards';
 import { useBooths } from '@/hooks/useBooths';
-import { mockBooths } from '@/mocks/mockBooths';
 import { DIVISION_ID_MAP } from '@/utils/boothUtils';
-
-
-const PageContent = styled.main`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-`;
-
-const LocationTabSection = styled.div`
-  height: 35px;
-  display: flex;
-  gap: 8px;
-  padding: 0 16px;
-
-  button {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
-    background-color: ${(props) => props.theme.colors.grey200};
-    color: ${(props) => props.theme.colors.grey50};
-    ${({ theme }) => theme.fonts.R_16};
-    cursor: pointer;
-    //transition: all 0.2s; /* TODO : 애니메이션 고민 */
-
-    &.active {
-      background-color: ${(props) => props.theme.colors.green900};
-      color: white;
-      ${({ theme }) => theme.fonts.SB_16};
-    }
-  }
-`;
-
-const MapContainer = styled.div<{ $scale: number }>`
-  //flex-shrink: 0;
-  width: 100%;
-  height: ${(props) => 500 * props.$scale}px; 
-  transition: height 0.3s ease-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 30px;
-  overflow: hidden;
-  background-color: ${(props) => props.theme.colors.grey50};
-  border-top: 1px solid ${(props) => props.theme.colors.green900};
-  border-bottom: 1px solid ${(props) => props.theme.colors.green900};
-
-  @media (max-width: 450px) {
-    height: ${(props) => 350 * props.$scale}px;
-  }
-  
-  & > div:first-child {
-    flex-shrink: 0;
-
-    transform: scale(${(props) => props.$scale});
-    transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
-    transition: transform 0.3s ease-out;
-    width: 100%;
-  }
-`;
-
-const CategorySection = styled.div`
-  display: flex;
-  gap: 12px;
-  padding: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  align-items: center;
-  white-space: nowrap;
-
-  cursor: grab;
-  &:active {
-    cursor: grabbing;
-  }
-`;
-
-const CardSection = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-bottom: 40px;
-  overflow-y: scroll;
-  padding: 10px 0 100px;;
-`;
-
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  color: ${(props) => props.theme.colors.grey600};
-  font-size: 16px;
-  text-align: center;
-  line-height: 1.5;
-`;
-
- const SearchResultOverlay = styled.div`
-    flex: 1;
-    background-color: ${(props) => props.theme.colors.white};
-    z-index: 50;
-    padding: 0 16px;
-    overflow-y: auto;
-  `
-
-  const ItemContainer = styled.div`
-    padding: 16px 0;
-    border-bottom: 1px solid ${(props) => props.theme.colors.grey100};
-    ${({ theme }) => theme.fonts.R_16};
-    cursor: pointer;
-    
-    span.highlight {
-      color: ${(props) => props.theme.colors.green500};
-      font-weight: bold;
-    }
-  `;
-
-  const ResultLabel = styled.div`
-    padding-top: 20px;
-    padding-bottom: 8px;
-    color: ${(props) => props.theme.colors.grey600};
-    ${({ theme }) => theme.fonts.SB_16};
-  `;
-
-// ----- ui ----- //
+import * as S from './BoothMap.styled';
+import { useAllBooths } from '@/hooks/useAllBooths';
 
 const BoothMap = () => {
 
-  // 검색 관련 상태
-  const [isSearchMode, setIsSearchMode] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const HighlightedText = ({text, highlight}: {text: string, highlight: string}) => {
+
+  /** 주요 데이터 흐름 요약 ***************************************************************
+   * 
+   * 1. 검색 처리 
+   *    - 사용자가 탭을 클릭하여 상태 변경
+   *    - activeDay, activeLocation, activeCategory
+   * 
+   * 2. 필터 선택
+   *    - allBooths에서 현재 장소와 날짜에 맞는 부스만 필터링하여 marker로 전달
+   *    - boothByLocation
+   * 
+   * 3. 데이터 매칭
+   *    - 필터링된 조건으로 API 호출하여 하단 카드 섹션 구성
+   *    - boothCards
+   * 
+   * 4. 리스트 로드
+   *    - 검색 결과 클릭 시 해당 부스의 day,loc,cat 상태를 강제로 동기화하고 지도의 포커스 이동
+   *    - handleSearchResultClick
+   * 
+   **************************************************************************************/
+
+
+  /**
+   * 검색 시 UI 모드 관리
+   */
+  const [isSearchMode, setIsSearchMode] = useState(false); // 검색 모드 || 지도 모드 결정
+  const [searchTerm, setSearchTerm] = useState(""); // 검색창에 입력한 텍스트값
+  const HighlightedText = ({text, highlight}: {text: string, highlight: string}) => { // 검색어 하이라이팅
     if (!highlight.trim()) {
       return<>{text}</>
     }
-  
   const regex = new RegExp(`(${highlight})`, 'gi');
   const parts = text.split(regex);
-
   return (
     <>
       {parts.map((part, index) =>
@@ -165,22 +60,23 @@ const BoothMap = () => {
       )}
     </>
     );
-  };
-  
-  // location
-  const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,}; 
-  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>( 'manhae' );
-  const isPaljeongdo = activeLocation === 'paljeongdo';
-  // day
-  const [activeDay, setActiveDay] = React.useState(1);
-  // BOOTH id
-  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
-  
-  const handleCardToggle = (id: number) => {
-    setSelectedBoothId((prev) => (prev === id ? null : id));
-  };
+  };  
 
-  // category 훅
+  /**
+   * 위치 및 날짜 필터링
+   * - activeDay
+   * - activeLocation
+   */
+  const [activeDay, setActiveDay] = React.useState(1); // 현재 선택된 날짜
+  const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>( 'manhae' ); // 현재 선택된 장소
+  const isPaljeongdo = activeLocation === 'paljeongdo';
+  const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,};
+  
+  /**
+   * 카테고리 필터링
+   * : 부스/푸드트럭 카테고리 탭 전환 + 분과 선택 상태 관리
+   * - activeCategory (useCategory)
+   */
   const {
     activeCategory,
     selectedDivision,
@@ -189,25 +85,38 @@ const BoothMap = () => {
     handleFoodTruckClick,
   } = useCategory();
 
-  const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
-  const allBooths = useBooths(currentDayStr);
-
-  // 부스카드 호출
+  /**
+   * useBoothCards
+   * - 현재 선택된 필터(loc,day,div,q)에 맞는 카드 리스트 데이터 호출
+   */
   const { boothCards, isLoading } = useBoothCards({
-    day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     location_id: LOCATION_ID_MAP[activeLocation],
+    day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
     booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB', 
     q: searchTerm,
-    // TODO : 아무 필터도 선택되지 않은 초기 상태일 때 FOODTRUCK과 CLUB을 모두 반환해야 한다면?
-    // locnum (marker 띄우기)
+    // locnum (marker 띄우기) ㄴㄴ
   });
-  // 부스 호출 (분과명 카테고리로 추출)
-  const divisionList = React.useMemo(() => {
+
+  /**
+   * useBooth
+   * : 모든 부스 데이터 호출
+   */
+  const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
+  const allBooths = useBooths(currentDayStr);
+  const totalBooths = useAllBooths(); // day 관계없이 검색 결과 띄울 용도
+
+  /**
+   * 분과명 추출 (카테고리화)
+   */
+  const divisionList = React.useMemo(() => { 
     const dataArray = (allBooths as any).results || allBooths; 
     return getDivisionFromBooths(dataArray);
   }, [allBooths]);
 
+  /**
+   * 
+   */
   const boothsByLocation = React.useMemo(() => {
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
     
@@ -224,39 +133,23 @@ const BoothMap = () => {
       .map((b: any) => ({
         ...b,
         id: b.booth_id,            // Map 컴포넌트 내부에서 selectedBoothId와 비교용
+        name:b.name,
         locNum: b.loc_num,         // 핵심: 좌표를 찍기 위한 키 (loc_num -> locNum)
         division: b.division_name, // 카테고리 강조용
         type: b.booth_type         // 마커 색상 결정용 (CLUB / FOODTRUCK)
       }));
   }, [allBooths, activeLocation, activeDay]);
 
-
-  /** 참고
-   * export interface BoothCardData {
-     id: number;
-     name: string;
-     type: string;
-     division: string | null;
-     dates: string[];
-     locNum: number;
-     location: string;
-     image: string
-   }
-   */
-
-  // 지도 확대/축소
-  const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
-    // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
-    const newScale = Math.max(0.4, 1 - scrollTop / 200); 
-    setMapScale(newScale);
-  };
-
-  // 검색
+  
+/****************
+ * 검색 기능 관련
+ ****************/
   const [isInternalChange, setIsInternalChange] = useState(false);
+  const [pendingBoothId, setPendingBoothId] = useState<number | null>(null);
 
+  /**
+   * 검색 필드 초기화
+   */
   const handleClear = () => {
     setIsInternalChange(true);
     setSearchTerm("");
@@ -264,54 +157,89 @@ const BoothMap = () => {
     setIsSearchMode(false);
   };
 
+  /**
+   * 검색 결과
+   * (allBooths 전체 데이터에서 searchTerm이 포함된 부스만 필터링한 결과)
+   * (totalBooths: useAllBooths에서 이미 중복 제거와 날짜 우선순위가 처리된 데이터)
+   */
   const SearchResults = React.useMemo(() => {
-    if (!searchTerm) return [];
-    const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
-    
-    return allData.filter((b: any) => 
-      b.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [searchTerm, allBooths]);
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+    if (!normalizedSearchTerm) return [];
 
+    return totalBooths.filter((b: any) => 
+      b.name.toLowerCase().includes(normalizedSearchTerm)
+    );
+  }, [searchTerm, totalBooths]); // totalBooths를 의존성에 추가
+
+  /**
+   * 검색 결과 클릭 시
+   * @param booth
+   */
   const handleSearchResultClick = (booth: any) => {
     // 1. 검색어 상태 업데이트 (useBoothCards의 q 파라미터로 전달)
     setIsInternalChange(true);
     setSearchTerm(booth.name);
     setIsSearchMode(false);
 
-    // 2. 장소 동기화
+    // 2. loc, day 동기화
     const locationKey = booth.location_name === "팔정도" ? 'paljeongdo' : 'manhae' ;
+    const dayNum = booth.dates?.includes('2026-03-04') ? 1 : 2;
     setActiveLocation(locationKey);
-
-    // 3. 날짜 동기화    
-    if (booth.dates && booth.dates.length > 0) {
-      const firstDate = booth.dates[0];
-      setActiveDay(firstDate === '2026-03-04' ? 1 : 2);
-    }
+    setActiveDay(dayNum);
     
-    // 4. 카테고리 동기화
+    // 3. 카테고리 동기화
     if (booth.booth_type === 'FOODTRUCK') {
       handleFoodTruckClick();
     } else{
       handleBoothClick();
     }
-    setSelectedBoothId(booth.booth_id);
+    setSelectedBoothName(booth.name);
   }
 
   
-  // 마우스 드래그
+  /**********************************
+   * Interaction (상호작용 및 시각효과)
+   **********************************/
+  
+  /**
+   * 카드 클릭 시 강조(card,marker) 로직
+   * - BoothId 기반
+   */
+  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+  const [selectedBoothName, setSelectedBoothName] = useState<string | null>(null);
+  /*const handleCardToggle = (id: number) => {
+    setSelectedBoothId((prev) => (prev === id ? null : id));
+  };*/
+  const handleCardToggle = (name: string) => {
+  setSelectedBoothName((prev) => (prev === name ? null : name));
+};
+
+  /**
+   * 지도 확대/축소 로직
+   * - CardSection을 아래로 스크롤하면 지도가 축소되는 효과 관리
+   * - 스크롤 양에 따라 1.0에서 0.4까지 축소
+   */
+  const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    const newScale = Math.max(0.4, 1 - scrollTop / 200); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    setMapScale(newScale);
+  };
+  
+  /**
+   * isDrag 관련 상태
+   * : 마우스 드래그 (카테고리 가로 탭)
+   */
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
   const onDragStart = (e: React.MouseEvent) => {
     setIsDrag(true);
     setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
     setScrollLeft(scrollRef.current?.scrollLeft || 0);
   };
-
   const onDragEnd = () => setIsDrag(false);
-
   const onDragMove = (e: React.MouseEvent) => {
     if (!isDrag || !scrollRef.current) return;
     e.preventDefault();
@@ -320,9 +248,10 @@ const BoothMap = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  
+  /**
+   * 부스카드 상세이동 연결 로직
+   */
   const navigate = useNavigate();
-
   const handleBoothCardClick = (id: number, type: string) => {
     if (type === 'FOODTRUCK') {
       navigate(`/foodtruck/${id}`);
@@ -331,16 +260,25 @@ const BoothMap = () => {
     }
   };
 
-  const cardSectionRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    // activated 해제 관련
-    setSelectedBoothId(null);
-    
-  }, [activeLocation, activeDay, selectedDivision]);
+  // 1. 만약 검색 클릭으로 인한 변경(isInternalChange가 true)이라면,
+  //    ID를 초기화하지 않고 그냥 넘어감
+  if (isInternalChange) {
+    setIsInternalChange(false); // 다음 번을 위해 다시 false로 돌려놓기
+    return; 
+  }
+  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
+  setSelectedBoothName(null);  
+}, [selectedDivision]); 
+// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO ?)
+// isInternalChange는 의존성 배열에 넣지 않거나, 
+// 넣더라도 로직 내부에서 위와 같이 분기 처리를 해야 함
   
 
+  // ======================== return ============================ //
+
   return (
-      <PageContent>
+      <S.PageContent>
         <SearchBar
           value={searchTerm}
           isSearchMode={isSearchMode}
@@ -350,31 +288,31 @@ const BoothMap = () => {
         />
         {isSearchMode ? (
           /* 2. 검색 모드 UI (왼쪽 화면) */
-          <SearchResultOverlay>
+          <S.SearchResultOverlay>
             {searchTerm.trim() !== "" ? (
               <>
               
-            <ResultLabel>검색 결과</ResultLabel>
+            <S.ResultLabel>검색 결과</S.ResultLabel>
             {SearchResults.length > 0 ? (
               SearchResults.map((result: any) => (
-                <ItemContainer
+                <S.ItemContainer
                   key={result.booth_id} 
                   onClick={() => handleSearchResultClick(result)}
                 >
                   <HighlightedText text={result.name} highlight={searchTerm} />
-                </ItemContainer>
+                </S.ItemContainer>
               ))
             ) : (
-              <EmptyState>해당 요일에 일치하는 검색 결과가 없습니다.</EmptyState>
+              <S.EmptyState>해당 요일에 일치하는 검색 결과가 없습니다.</S.EmptyState>
             )}
             </>
             ) : (
-              <EmptyState></EmptyState>
+              <S.EmptyState></S.EmptyState>
             )}
-          </SearchResultOverlay>
+          </S.SearchResultOverlay>
         ) : (
           <>
-        <LocationTabSection>
+        <S.LocationTabSection>
         <button
           className={activeLocation === 'manhae' ? 'active' : ''}
           onClick={() => setActiveLocation('manhae')}
@@ -383,21 +321,22 @@ const BoothMap = () => {
           className={activeLocation === 'paljeongdo' ? 'active' : ''}
           onClick={() => setActiveLocation('paljeongdo')}
         >팔정도</button>
-      </LocationTabSection>
-        <MapContainer $scale={mapScale}>
+      </S.LocationTabSection>
+        <S.MapContainer $scale={mapScale}>
           <Map 
             activeLocation={activeLocation}
             //onLocationChange={setActiveLocation}
             activeDay={activeDay}
             activeBooths={boothsByLocation}
             selectedBoothId={selectedBoothId}
+            selectedBoothName={selectedBoothName}
             activeDivision={selectedDivision}
             activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
-        </MapContainer>
+        </S.MapContainer>
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
         {/* 부스/푸드트럭 카테고리 섹션 */}
-        <CategorySection
+        <S.CategorySection
           ref={scrollRef}
           onMouseDown={onDragStart}
           onMouseMove={onDragMove}
@@ -428,29 +367,29 @@ const BoothMap = () => {
               if (!isPaljeongdo) handleFoodTruckClick();
             }}
           />
-        </CategorySection>
+        </S.CategorySection>
         {/* 카드 리스트 섹션 */}
-        <CardSection onScroll={handleScroll}>
+        <S.CardSection onScroll={handleScroll}>
           {isLoading ? (
-            <EmptyState>loading...</EmptyState>
+            <S.EmptyState>loading...</S.EmptyState>
           ) : boothCards.length > 0? (
             boothCards.map((booth) => (
               <BoothCard
                 key={booth.id}
                 booth={booth}
-                onClick={() => handleCardToggle(booth.id)}
-                isActive={selectedBoothId === booth.id}
+                onClick={() => handleCardToggle(booth.name)}
+                isActive={selectedBoothName === booth.name}
                 onDetailClick={() => handleBoothCardClick(booth.id, booth.type)}
               />
             ))
           ) : (
-            <EmptyState>
+            <S.EmptyState>
               해당 요일에 해당하는 부스가 없습니다.
-            </EmptyState>
+            </S.EmptyState>
           )}
-        </CardSection>
+        </S.CardSection>
         </>)}
-      </PageContent>
+      </S.PageContent>
   );
 };
 

@@ -40,7 +40,6 @@ const BoothMarker = styled.div<MarkerProps>`
     border: 1px solid ${props => props.$type === 'CLUB' ? '#BCCB39' : '#FF9A64'};
     background-color: var(--whie, #FFF);
     box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
-    transition: all 0.3s ease-in-out;
 
     /* 2. more 상태 */
     ${props => props.$status === 'more' && css`
@@ -49,6 +48,7 @@ const BoothMarker = styled.div<MarkerProps>`
         box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
         z-index: 10;
         animation: ${pulse} 2s infinite ease-in-out;
+        transition: all 0.3s ease-in-out;
     `}
 
     /* 3. activated 상태 */

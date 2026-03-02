@@ -47,10 +47,12 @@ interface MapProps {
     activeDay: number;
     activeBooths: {
         id: number;
+        name: string;
         locNum: number;
         type: string;
         division?: string | null;
     }[];
+    selectedBoothName: string | null;
     selectedBoothId: number | null;
     activeDivision: string | null;
     activeCategory: 'BOOTH' | 'FOODTRUCK';
@@ -67,6 +69,7 @@ const Map = ({
     //onLocationChange,
     activeDay,
     activeBooths,
+    selectedBoothName,
     selectedBoothId,
     activeDivision,
     activeCategory,
@@ -138,7 +141,7 @@ const Map = ({
                     let status: 'default' | 'more' | 'activated' = 'default';
 
                     // 1. 카드 클릭 시 (activated)
-                    if (selectedBoothId === booth.id && booth.type !== 'FOODTRUCK') {
+                    if (selectedBoothName === booth.name && booth.type !== 'FOODTRUCK') {
                         status = 'activated';
                     } else if (
                     // 2. 카테고리 선택 시 (more)
