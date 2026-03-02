@@ -18,7 +18,7 @@ const TimeLineBox = ({
   return (
     <Wrapper onClick={onClick} style={{ cursor: 'pointer' }}>
       <TimeSection $active={isActive}>{time}</TimeSection>
-      <InfoSection>
+      <InfoSection $active={isActive}>
         {team ? (
           <InfoText $active={isActive}>{team}</InfoText>
         ) : (
@@ -54,23 +54,29 @@ export const TimeSection = styled.div<{ $active?: boolean }>`
   display: flex;
   width: 41px;
   height: 100%;
-  align-items: flex-start;
+  //align-items: flex-start;
+  align-items: center;
   justify-content: center;
   ${({ theme }) => theme.fonts.R_16};
   color: ${(props) =>
     props.$active ? props.theme.colors.black : props.theme.colors.grey700};
   line-height: 155%;
 `;
-export const InfoSection = styled.div`
+export const InfoSection = styled.div<{ $active?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 6px;
   width: 100%;
   height: 100%;
-  /* background-color: ${(props) => props.theme.colors.grey100}; */
+  background-color: ${(props) =>
+    props.$active ? props.theme.colors.green100 : props.theme.colors.white};
 
+  /* border-top: 2px dashed
+    ${(props) =>
+    props.$active ? props.theme.colors.black : props.theme.colors.grey300}; */
   border-top: 2px dashed ${(props) => props.theme.colors.grey300};
+  //margin-top: 10px;
 `;
 
 export const InfoText = styled.div<{ $active?: boolean }>`
