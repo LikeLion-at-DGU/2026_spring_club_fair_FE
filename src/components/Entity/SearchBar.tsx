@@ -4,7 +4,7 @@ import clear from '@assets/icons/X.svg';
 
 // ----- style ----- //
 
-const Container = styled.div`
+const Container = styled.div<{$isHighlighted: boolean}>`
     height: 56px;
     display : flex;
     align-items: center;
@@ -12,8 +12,21 @@ const Container = styled.div`
     padding: 16px;
     gap: 10px;
     border-radius: 9999px;
-    border: 1px solid ${(props) => props.theme.colors.grey100};
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
+    border: 1px solid ${(props) =>
+        props.$isHighlighted
+        ? props.theme.colors.green400
+        : props.theme.colors.grey100};
+    box-shadow: ${(props) => 
+        props.$isHighlighted 
+            ? '0 1px 8px 0 rgba(0, 143, 0, 0.2)' 
+            : '0 1px 6px 0 rgba(0, 0, 0, 0.10)'
+    };
+    background-color: ${(props) => 
+        props.$isHighlighted 
+            ? '#fafff7'
+            : props.theme.colors.white
+    };
+    transition: all 0.2s ease-in-out;
 
 `
 const Input = styled.input`
@@ -22,6 +35,7 @@ const Input = styled.input`
     outline: none;
     font-size: 16px;
     font-weight: 400;
+    background: transparent;
     color: ${(props) => props.theme.colors.black};
     ${({ theme }) => theme.fonts.R_16};
 `
@@ -55,9 +69,10 @@ interface SearchBarProps {
 
 const SearchBar = ({value, isSearchMode, onChange, onFocus, onClear}: SearchBarProps) => {
     const showClearBtn = isSearchMode || value.length > 0;
+    const isHighlighted = value.length > 0 && !isSearchMode;
 
     return (
-        <Container>
+        <Container $isHighlighted={isHighlighted}>
             <Input 
                 placeholder="찾고 싶은 동아리를 입력하세요"
                 value={value}

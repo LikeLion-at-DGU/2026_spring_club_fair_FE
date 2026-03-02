@@ -267,7 +267,9 @@ const BoothMap = () => {
   const SearchResults = React.useMemo(() => {
     if (!searchTerm) return [];
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
-    return allData.filter((b: any) => b.name.includes(searchTerm));
+    
+    return allData.filter((b: any) => 
+      b.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [searchTerm, allBooths]);
 
   const handleSearchResultClick = (booth: any) => {
