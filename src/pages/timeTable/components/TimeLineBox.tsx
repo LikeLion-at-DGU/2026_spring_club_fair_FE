@@ -54,8 +54,8 @@ export const TimeSection = styled.div<{ $active?: boolean }>`
   display: flex;
   width: 41px;
   height: 100%;
-  align-items: flex-start;
-  //align-items: center;
+  //align-items: flex-start;
+  align-items: center;
   justify-content: center;
   ${({ theme }) => theme.fonts.R_16};
   color: ${(props) =>
@@ -69,13 +69,14 @@ export const InfoSection = styled.div<{ $active?: boolean }>`
   gap: 6px;
   width: 100%;
   height: 100%;
-  /* background-color: ${(props) => props.theme.colors.grey100}; */
+  background-color: ${(props) =>
+    props.$active ? props.theme.colors.green100 : props.theme.colors.white};
 
-  border-top: 2px dashed
+  /* border-top: 2px dashed
     ${(props) =>
-      props.$active ? props.theme.colors.black : props.theme.colors.grey300};
-  //border-top: 2px dashed ${(props) => props.theme.colors.grey300};
-  margin-top: 10px;
+    props.$active ? props.theme.colors.black : props.theme.colors.grey300}; */
+  border-top: 2px dashed ${(props) => props.theme.colors.grey300};
+  //margin-top: 10px;
 `;
 
 export const InfoText = styled.div<{ $active?: boolean }>`
