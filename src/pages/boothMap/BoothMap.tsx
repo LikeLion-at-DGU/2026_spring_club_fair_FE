@@ -133,6 +133,7 @@ const BoothMap = () => {
       .map((b: any) => ({
         ...b,
         id: b.booth_id,            // Map 컴포넌트 내부에서 selectedBoothId와 비교용
+        name:b.name,
         locNum: b.loc_num,         // 핵심: 좌표를 찍기 위한 키 (loc_num -> locNum)
         division: b.division_name, // 카테고리 강조용
         type: b.booth_type         // 마커 색상 결정용 (CLUB / FOODTRUCK)
@@ -192,7 +193,7 @@ const BoothMap = () => {
     } else{
       handleBoothClick();
     }
-    setSelectedBoothId(booth.booth_id);
+    setSelectedBoothName(booth.name);
   }
 
   
@@ -205,9 +206,13 @@ const BoothMap = () => {
    * - BoothId 기반
    */
   const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
-  const handleCardToggle = (id: number) => {
+  const [selectedBoothName, setSelectedBoothName] = useState<string | null>(null);
+  /*const handleCardToggle = (id: number) => {
     setSelectedBoothId((prev) => (prev === id ? null : id));
-  };
+  };*/
+  const handleCardToggle = (name: string) => {
+  setSelectedBoothName((prev) => (prev === name ? null : name));
+};
 
   /**
    * 지도 확대/축소 로직
@@ -263,7 +268,7 @@ const BoothMap = () => {
     return; 
   }
   // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
-  setSelectedBoothId(null);  
+  setSelectedBoothName(null);  
 }, [selectedDivision]); 
 // 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO ?)
 // isInternalChange는 의존성 배열에 넣지 않거나, 
@@ -324,6 +329,7 @@ const BoothMap = () => {
             activeDay={activeDay}
             activeBooths={boothsByLocation}
             selectedBoothId={selectedBoothId}
+            selectedBoothName={selectedBoothName}
             activeDivision={selectedDivision}
             activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
@@ -371,8 +377,8 @@ const BoothMap = () => {
               <BoothCard
                 key={booth.id}
                 booth={booth}
-                onClick={() => handleCardToggle(booth.id)}
-                isActive={selectedBoothId === booth.id}
+                onClick={() => handleCardToggle(booth.name)}
+                isActive={selectedBoothName === booth.name}
                 onDetailClick={() => handleBoothCardClick(booth.id, booth.type)}
               />
             ))
