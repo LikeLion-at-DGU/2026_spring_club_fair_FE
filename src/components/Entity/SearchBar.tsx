@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import search from '@assets/icons/fi-br-search.svg';
+import clear from '@assets/icons/X.svg';
 
 // ----- style ----- //
 
@@ -25,19 +26,61 @@ const Input = styled.input`
     ${({ theme }) => theme.fonts.R_16};
 `
 
+const ActionBtn = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+`
+
 const IconBtn = styled.img`
+    cursor: pointer;
+`
+
+const ClearBtn = styled.button`
     cursor: pointer;
 `
 
 // ----- ui ----- //
 
-const SearchBar = () => {
+interface SearchBarProps {
+    value: string;
+    isSearchMode: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus: () => void;
+    onClear: () => void;
+}
+
+const SearchBar = ({value, isSearchMode, onChange, onFocus, onClear}: SearchBarProps) => {
+    const showClearBtn = isSearchMode || value.length > 0;
+
     return (
         <Container>
-            <Input placeholder="찾고 싶은 동아리를 입력하세요"/>
-            <IconBtn src={search} alt='검색'/>
+            <Input 
+                placeholder="찾고 싶은 동아리를 입력하세요"
+                value={value}
+                onChange={onChange}
+                onFocus={onFocus}
+                />
+
+                <ActionBtn
+                    onClick={(e) => {
+                        if (showClearBtn) {
+                            e.stopPropagation();
+                            onClear();
+                        }
+                    }}
+                    type="button"
+                >
+                    <IconBtn
+                        src={showClearBtn ? clear : search}
+                        alt={showClearBtn ? '닫기' : '검색'}
+                    />
+                </ActionBtn>
         </Container>
-    )
-}
+    );
+};
 
 export default SearchBar;
