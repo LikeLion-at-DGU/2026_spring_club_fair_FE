@@ -111,9 +111,40 @@ const EmptyState = styled.div`
   line-height: 1.5;
 `;
 
+ const SearchResultOverlay = styled.div`
+    flex: 1;
+    background-color: ${(props) => props.theme.colors.white};
+    z-index: 50;
+    padding: 0 16px;
+    overflow-y: auto;
+  `
+
+  const ResultItem = styled.div`
+    padding: 16px 0;
+    border-bottom: 1px solid ${(props) => props.theme.colors.grey100};
+    ${({ theme }) => theme.fonts.R_16};
+    cursor: pointer;
+    
+    span {
+      color: ${(props) => props.theme.colors.green900}; /* 검색어 강조색 */
+      font-weight: bold;
+    }
+  `;
+
+  const ResultLabel = styled.div`
+    padding-top: 20px;
+    padding-bottom: 8px;
+    color: ${(props) => props.theme.colors.grey600};
+    ${({ theme }) => theme.fonts.SB_16};
+  `;
+
 // ----- ui ----- //
 
 const BoothMap = () => {
+
+  // 검색 관련 상태
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // location
   const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,}; 
@@ -146,9 +177,9 @@ const BoothMap = () => {
     location_id: LOCATION_ID_MAP[activeLocation],
     division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
     booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB', 
+    q: searchTerm,
     // TODO : 아무 필터도 선택되지 않은 초기 상태일 때 FOODTRUCK과 CLUB을 모두 반환해야 한다면?
     // locnum (marker 띄우기)
-    // q (검색)
   });
   // 부스 호출 (분과명 카테고리로 추출)
   const divisionList = React.useMemo(() => {
@@ -175,8 +206,6 @@ const boothsByLocation = React.useMemo(() => {
     type: b.type
   }));
 }, [boothCards]); // boothCards가 바뀔 때마다 마커도 100% 동기화됨*/
-
-
 
 
 
@@ -225,8 +254,56 @@ const boothsByLocation = React.useMemo(() => {
     const newScale = Math.max(0.4, 1 - scrollTop / 200); 
     setMapScale(newScale);
   };
-  
 
+  // 검색
+  const [isInternalChange, setIsInternalChange] = useState(false);
+
+  const handleClear = () => {
+    setIsInternalChange(true);
+    setSearchTerm("");
+    setSelectedBoothId(null);
+    setIsSearchMode(false);
+  };
+
+  const SearchResults = React.useMemo(() => {
+    if (!searchTerm) return [];
+    const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
+    return allData.filter((b: any) => b.name.includes(searchTerm));
+  }, [searchTerm, allBooths]);
+
+  const handleSearchResultClick = (booth: any) => {
+    // 1. 검색어 상태 업데이트 (useBoothCards의 q 파라미터로 전달)
+    setIsInternalChange(true);
+    setSearchTerm(booth.name);
+    setIsSearchMode(false);
+
+    // 2. 장소 동기화
+    const locationKey = booth.location_name === "팔정도" ? 'paljeongdo' : 'manhae' ;
+    setActiveLocation(locationKey);
+    // 3. 날짜 동기화    
+    if (booth.dates && booth.dates.length > 0) {
+      const firstDate = booth.dates[0];
+      setActiveDay(firstDate === '2026-03-04' ? 1 : 2);
+    }
+    
+    // 4. 카테고리 동기화
+    if (booth.booth_type === 'FOODTRUCK') {
+      handleFoodTruckClick();
+    } else{
+      //handleBoothClick;
+      //handleBoothCardClick;
+    }
+    setSelectedBoothId(booth.booth_id);
+  }
+
+  React.useEffect(() => {
+    if (!isInternalChange) {
+      setSelectedBoothId(null);
+    }
+    setIsInternalChange(false);
+  }, [activeLocation, activeDay, selectedDivision]);
+
+  
   // 마우스 드래그
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
@@ -270,7 +347,32 @@ const boothsByLocation = React.useMemo(() => {
 
   return (
       <PageContent>
-        <SearchBar />
+        <SearchBar
+          value={searchTerm}
+          isSearchMode={isSearchMode}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={() => setIsSearchMode(true)} 
+          onClear={handleClear}       
+        />
+        {isSearchMode ? (
+          /* 2. 검색 모드 UI (왼쪽 화면) */
+          <SearchResultOverlay>
+            <ResultLabel>검색 결과</ResultLabel>
+            {SearchResults.length > 0 ? (
+              SearchResults.map((result: any) => (
+                <ResultItem 
+                  key={result.booth_id} 
+                  onClick={() => handleSearchResultClick(result)}
+                >
+                  {result.name}
+                </ResultItem>
+              ))
+            ) : (
+              <EmptyState>검색 결과가 없습니다.</EmptyState>
+            )}
+          </SearchResultOverlay>
+        ) : (
+          <>
         <LocationTabSection>
         <button
           className={activeLocation === 'manhae' ? 'active' : ''}
@@ -346,6 +448,7 @@ const boothsByLocation = React.useMemo(() => {
             </EmptyState>
           )}
         </CardSection>
+        </>)}
       </PageContent>
   );
 };
