@@ -7,7 +7,7 @@ import FullLayout from '@components/Layout/FullLayout';
 
 import Splash from '@/pages/Splash';
 import Main from '@pages/Main';
-import BoothMap from '@pages/BoothMap';
+import BoothMap from '@/pages/boothMap/BoothMap';
 import Test from '@pages/Test';
 import TestResult from '@pages/TestResult';
 import BoothDetail from '@/pages/boothDetail/BoothDetail';
