@@ -157,7 +157,9 @@ const BoothDetail = () => {
               </S.CardRecruitGap>
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>신청 방법</S.CardBodyText>
-                <S.CardBodyText>{booth.recruit_detail}</S.CardBodyText>
+                <S.CardBodyText>
+                  {booth.recruit_detail?.replaceAll('\\n', '\n')}
+                </S.CardBodyText>
               </S.CardRecruitGap>
               <S.CardRecruitGap>
                 <S.CardBodyText className='grey500'>인스타그램</S.CardBodyText>
