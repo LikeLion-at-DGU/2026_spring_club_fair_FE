@@ -15,8 +15,30 @@ import * as S from './BoothMap.styled';
 
 const BoothMap = () => {
 
+
+  /** 주요 데이터 흐름 요약 ***************************************************************
+   * 
+   * 1. 검색 처리 
+   *    - 사용자가 탭을 클릭하여 상태 변경
+   *    - activeDay, activeLocation, activeCategory
+   * 
+   * 2. 필터 선택
+   *    - allBooths에서 현재 장소와 날짜에 맞는 부스만 필터링하여 marker로 전달
+   *    - boothByLocation
+   * 
+   * 3. 데이터 매칭
+   *    - 필터링된 조건으로 API 호출하여 하단 카드 섹션 구성
+   *    - boothCards
+   * 
+   * 4. 리스트 로드
+   *    - 검색 결과 클릭 시 해당 부스의 day,loc,cat 상태를 강제로 동기화하고 지도의 포커스 이동
+   *    - handleSearchResultClick
+   * 
+   **************************************************************************************/
+
+
   /**
-   * 검색 및 UI 모드 관리
+   * 검색 시 UI 모드 관리
    */
   const [isSearchMode, setIsSearchMode] = useState(false); // 검색 모드 || 지도 모드 결정
   const [searchTerm, setSearchTerm] = useState(""); // 검색창에 입력한 텍스트값
@@ -37,25 +59,23 @@ const BoothMap = () => {
       )}
     </>
     );
-  };
-  
+  };  
+
   /**
    * 위치 및 날짜 필터링
+   * - activeDay
+   * - activeLocation
    */
-  // location
+  const [activeDay, setActiveDay] = React.useState(1); // 현재 선택된 날짜
   const [activeLocation, setActiveLocation] = useState<'manhae' | 'paljeongdo'>( 'manhae' ); // 현재 선택된 장소
   const isPaljeongdo = activeLocation === 'paljeongdo';
   const LOCATION_ID_MAP = { manhae: 1, paljeongdo: 2,};
-  // day
-  const [activeDay, setActiveDay] = React.useState(1); // 현재 선택된 날짜
-  // BOOTH id
-  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
   
-  const handleCardToggle = (id: number) => {
-    setSelectedBoothId((prev) => (prev === id ? null : id));
-  };
-
-  // category 훅
+  /**
+   * 카테고리 필터링
+   * : 부스/푸드트럭 카테고리 탭 전환 + 분과 선택 상태 관리
+   * - activeCategory (useCategory)
+   */
   const {
     activeCategory,
     selectedDivision,
@@ -64,25 +84,37 @@ const BoothMap = () => {
     handleFoodTruckClick,
   } = useCategory();
 
-  const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
-  const allBooths = useBooths(currentDayStr);
-
-  // 부스카드 호출
+  /**
+   * useBoothCards
+   * : 현재 선택된 필터(loc,day,div,q)에 맞는 카드 리스트 데이터 호출
+   */
   const { boothCards, isLoading } = useBoothCards({
-    day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     location_id: LOCATION_ID_MAP[activeLocation],
+    day: activeDay === 1 ? '2026-03-04' : '2026-03-05',
     division_id: selectedDivision ? DIVISION_ID_MAP[selectedDivision] : undefined,
     booth_type: activeCategory === 'FOODTRUCK' ? 'FOODTRUCK' : 'CLUB', 
     q: searchTerm,
-    // TODO : 아무 필터도 선택되지 않은 초기 상태일 때 FOODTRUCK과 CLUB을 모두 반환해야 한다면?
-    // locnum (marker 띄우기)
+    // locnum (marker 띄우기) ㄴㄴ
   });
-  // 부스 호출 (분과명 카테고리로 추출)
-  const divisionList = React.useMemo(() => {
+
+  /**
+   * useBooth
+   * : 모든 부스 데이터 호출
+   */
+  const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
+  const allBooths = useBooths(currentDayStr);
+
+  /**
+   * 분과명 추출 (카테고리화)
+   */
+  const divisionList = React.useMemo(() => { 
     const dataArray = (allBooths as any).results || allBooths; 
     return getDivisionFromBooths(dataArray);
   }, [allBooths]);
 
+  /**
+   * 
+   */
   const boothsByLocation = React.useMemo(() => {
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
     
@@ -105,18 +137,16 @@ const BoothMap = () => {
       }));
   }, [allBooths, activeLocation, activeDay]);
 
-  // 지도 확대/축소
-  const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
-    // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
-    const newScale = Math.max(0.4, 1 - scrollTop / 200); 
-    setMapScale(newScale);
-  };
-
-  // 검색
+  
+/****************
+ * 검색 기능 관련
+ ****************/
   const [isInternalChange, setIsInternalChange] = useState(false);
+  const [pendingBoothId, setPendingBoothId] = useState<number | null>(null);
 
+  /**
+   * 검색 필드 초기화
+   */
   const handleClear = () => {
     setIsInternalChange(true);
     setSearchTerm("");
@@ -124,31 +154,34 @@ const BoothMap = () => {
     setIsSearchMode(false);
   };
 
+  /**
+   * 검색 결과
+   * (allBooths 전체 데이터에서 searchTerm이 포함된 부스만 필터링한 결과)
+   */
   const SearchResults = React.useMemo(() => {
     if (!searchTerm) return [];
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
-    
     return allData.filter((b: any) => 
       b.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [searchTerm, allBooths]);
 
+  /**
+   * 검색 결과 클릭 시
+   * @param booth
+   */
   const handleSearchResultClick = (booth: any) => {
     // 1. 검색어 상태 업데이트 (useBoothCards의 q 파라미터로 전달)
     setIsInternalChange(true);
     setSearchTerm(booth.name);
     setIsSearchMode(false);
 
-    // 2. 장소 동기화
+    // 2. loc, day 동기화
     const locationKey = booth.location_name === "팔정도" ? 'paljeongdo' : 'manhae' ;
+    const dayNum = booth.dates?.includes('2026-03-04') ? 1 : 2;
     setActiveLocation(locationKey);
-
-    // 3. 날짜 동기화    
-    if (booth.dates && booth.dates.length > 0) {
-      const firstDate = booth.dates[0];
-      setActiveDay(firstDate === '2026-03-04' ? 1 : 2);
-    }
+    setActiveDay(dayNum);
     
-    // 4. 카테고리 동기화
+    // 3. 카테고리 동기화
     if (booth.booth_type === 'FOODTRUCK') {
       handleFoodTruckClick();
     } else{
@@ -158,7 +191,35 @@ const BoothMap = () => {
   }
 
   
-  // 마우스 드래그
+  /**********************************
+   * Interaction (상호작용 및 시각효과)
+   **********************************/
+  
+  /**
+   * 카드 클릭 시 강조(card,marker) 로직
+   * - BoothId 기반
+   */
+  const [selectedBoothId, setSelectedBoothId] = useState<number | null>(null);
+  const handleCardToggle = (id: number) => {
+    setSelectedBoothId((prev) => (prev === id ? null : id));
+  };
+
+  /**
+   * 지도 확대/축소 로직
+   * - CardSection을 아래로 스크롤하면 지도가 축소되는 효과 관리
+   * - 스크롤 양에 따라 1.0에서 0.4까지 축소
+   */
+  const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    const newScale = Math.max(0.4, 1 - scrollTop / 200); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    setMapScale(newScale);
+  };
+  
+  /**
+   * isDrag 관련 상태
+   * : 마우스 드래그 (카테고리 가로 탭)
+   */
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -177,9 +238,10 @@ const BoothMap = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  
+  /**
+   * 부스카드 상세이동 연결 로직
+   */
   const navigate = useNavigate();
-
   const handleBoothCardClick = (id: number, type: string) => {
     if (type === 'FOODTRUCK') {
       navigate(`/foodtruck/${id}`);
@@ -189,10 +251,20 @@ const BoothMap = () => {
   };
 
   React.useEffect(() => {
-    // activated 해제 관련
-    setSelectedBoothId(null);    
-  }, [activeLocation, activeDay, selectedDivision]);
+  // 1. 만약 검색 클릭으로 인한 변경(isInternalChange가 true)이라면,
+  //    ID를 초기화하지 않고 그냥 넘어감
+  if (isInternalChange) {
+    setIsInternalChange(false); // 다음 번을 위해 다시 false로 돌려놓기
+    return; 
+  }
+  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
+  setSelectedBoothId(null);  
+}, [activeDay, selectedDivision]); 
+// isInternalChange는 의존성 배열에 넣지 않거나, 
+// 넣더라도 로직 내부에서 위와 같이 분기 처리를 해야 함
   
+
+  // ======================== return ============================ //
 
   return (
       <S.PageContent>
