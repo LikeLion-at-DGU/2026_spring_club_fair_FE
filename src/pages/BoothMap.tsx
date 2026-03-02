@@ -351,6 +351,9 @@ const BoothMap = () => {
         {isSearchMode ? (
           /* 2. 검색 모드 UI (왼쪽 화면) */
           <SearchResultOverlay>
+            {searchTerm.trim() !== "" ? (
+              <>
+              
             <ResultLabel>검색 결과</ResultLabel>
             {SearchResults.length > 0 ? (
               SearchResults.map((result: any) => (
@@ -363,6 +366,10 @@ const BoothMap = () => {
               ))
             ) : (
               <EmptyState>해당 요일에 일치하는 검색 결과가 없습니다.</EmptyState>
+            )}
+            </>
+            ) : (
+              <EmptyState></EmptyState>
             )}
           </SearchResultOverlay>
         ) : (
