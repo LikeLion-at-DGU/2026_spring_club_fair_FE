@@ -12,6 +12,7 @@ import { useBoothCards } from '@/hooks/useBoothCards';
 import { useBooths } from '@/hooks/useBooths';
 import { DIVISION_ID_MAP } from '@/utils/boothUtils';
 import * as S from './BoothMap.styled';
+import { useAllBooths } from '@/hooks/useAllBooths';
 
 const BoothMap = () => {
 
@@ -86,7 +87,7 @@ const BoothMap = () => {
 
   /**
    * useBoothCards
-   * : 현재 선택된 필터(loc,day,div,q)에 맞는 카드 리스트 데이터 호출
+   * - 현재 선택된 필터(loc,day,div,q)에 맞는 카드 리스트 데이터 호출
    */
   const { boothCards, isLoading } = useBoothCards({
     location_id: LOCATION_ID_MAP[activeLocation],
@@ -103,6 +104,7 @@ const BoothMap = () => {
    */
   const currentDayStr = activeDay === 1 ? '2026-03-04' : '2026-03-05';
   const allBooths = useBooths(currentDayStr);
+  const totalBooths = useAllBooths(); // day 관계없이 검색 결과 띄울 용도
 
   /**
    * 분과명 추출 (카테고리화)
@@ -157,13 +159,16 @@ const BoothMap = () => {
   /**
    * 검색 결과
    * (allBooths 전체 데이터에서 searchTerm이 포함된 부스만 필터링한 결과)
+   * (totalBooths: useAllBooths에서 이미 중복 제거와 날짜 우선순위가 처리된 데이터)
    */
   const SearchResults = React.useMemo(() => {
-    if (!searchTerm) return [];
-    const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
-    return allData.filter((b: any) => 
-      b.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [searchTerm, allBooths]);
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+    if (!normalizedSearchTerm) return [];
+
+    return totalBooths.filter((b: any) => 
+      b.name.toLowerCase().includes(normalizedSearchTerm)
+    );
+  }, [searchTerm, totalBooths]); // totalBooths를 의존성에 추가
 
   /**
    * 검색 결과 클릭 시
@@ -259,7 +264,8 @@ const BoothMap = () => {
   }
   // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
   setSelectedBoothId(null);  
-}, [activeDay, selectedDivision]); 
+}, [selectedDivision]); 
+// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO ?)
 // isInternalChange는 의존성 배열에 넣지 않거나, 
 // 넣더라도 로직 내부에서 위와 같이 분기 처리를 해야 함
   
