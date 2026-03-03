@@ -222,7 +222,10 @@ const BoothMap = () => {
   };
 
   const handleCardToggle = (name: string) => {
-    setSelectedBoothName((prev) => (prev === name ? null : name));
+    setSelectedBoothName((prev) => {
+      if (prev === name) return null;
+      return name;
+    });
   };
 
   useEffect(() => {
