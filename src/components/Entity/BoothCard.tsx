@@ -1,11 +1,11 @@
-import type { BoothCardData } from '@/types/booth';
-import arrowRight from '@assets/icons/fi-sr-caret-right.svg';
-import lion from '@assets/images/lion.png';
-import clock from '@assets/icons/fi-sr-clock.svg';
-import marker from '@assets/icons/fi-sr-marker.svg';
-import { flexStart, flexColumn, ellipsis, flexEnd } from '@styles/mixins';
-import styled from 'styled-components';
-import { testResults } from '@/mocks/testResults';
+import type { BoothCardData } from "@/types/booth";
+import arrowRight from "@assets/icons/fi-sr-caret-right.svg";
+import lion from "@assets/images/lion.png";
+import clock from "@assets/icons/fi-sr-clock.svg";
+import marker from "@assets/icons/fi-sr-marker.svg";
+import { flexStart, flexColumn, ellipsis, flexEnd } from "@styles/mixins";
+import styled from "styled-components";
+import { testResults } from "@/mocks/testResults";
 
 interface Props {
   booth: BoothCardData;
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const formatDate = (dateStr: string) => {
-  const [, month, day] = dateStr.split('-');
+  const [, month, day] = dateStr.split("-");
   return `${Number(month)}월 ${Number(day)}일`;
 };
 
@@ -29,14 +29,14 @@ const BoothCard = ({
   onClick,
   onDetailClick,
 }: Props) => {
-  const isFoodTruck = booth.type === 'FOODTRUCK';
+  const isFoodTruck = booth.type === "FOODTRUCK";
 
   // type = 푸드트럭/부스 기준으로 분리
   const divisionInfo = Object.values(testResults).find(
     (res) => res.division === booth.division,
   );
-  const bgColor = isFoodTruck ? '#FF823F' : divisionInfo?.color;
-  const labelText = isFoodTruck ? '푸드트럭' : booth.division;
+  const bgColor = isFoodTruck ? "#FF823F" : divisionInfo?.color;
+  const labelText = isFoodTruck ? "푸드트럭" : booth.division;
 
   return (
     <BoothCardWrapper
@@ -48,35 +48,36 @@ const BoothCard = ({
       <ContentContainer>
         <BoothImage src={booth.image || lion} alt={booth.name} />
         <BoothInfo>
-          <BoothDivison $bgColor={bgColor} id='booth_division'>
+          <BoothDivison $bgColor={bgColor} id="booth_division">
             {labelText}
           </BoothDivison>
           <BoothTitle>{booth.name}</BoothTitle>
           <BoothDate>
-            <img src={clock} alt='clock' />
-            {booth.dates.map(formatDate).join(', ')}
+            <img src={clock} alt="clock" />
+            {booth.dates.map(formatDate).join(", ")}
           </BoothDate>
 
           <BoothLocation>
-            <img src={marker} alt='marker' />
+            <img src={marker} alt="marker" />
             {isFoodTruck
               ? // 임시로 .. TODO
-                booth.location.split(' ')[0]
+                booth.location.split(" ")[0]
               : booth.location}
           </BoothLocation>
-
-          {booth.hasDetail && (
-            <DetailButton
-              onClick={(e) => {
-                e.stopPropagation();
-                const handleDetail = onDetailClick || onClick;
-                handleDetail?.();
-              }}
-            >
-              자세히 보기
-              <img src={arrowRight} alt='arrow-right' />
-            </DetailButton>
-          )}
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {booth.hasDetail && (
+              <DetailButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const handleDetail = onDetailClick || onClick;
+                  handleDetail?.();
+                }}
+              >
+                자세히 보기
+                <img src={arrowRight} alt="arrow-right" />
+              </DetailButton>
+            )}
+          </div>
         </BoothInfo>
       </ContentContainer>
     </BoothCardWrapper>
@@ -100,13 +101,13 @@ const BoothCardWrapper = styled.div<{
     ${(props) =>
       props.$isActive
         ? props.theme.colors.green500
-        : 'var(--Grey-grey-400, #bdbebf)'};
+        : "var(--Grey-grey-400, #bdbebf)"};
 
   background: ${(props) =>
-    props.$isActive ? props.theme.colors.green50 : 'var(--whie, #fff)'};
+    props.$isActive ? props.theme.colors.green50 : "var(--whie, #fff)"};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   //overflow: hidden;
-  cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
+  cursor: ${(props) => (props.onClick ? "pointer" : "default")};
   transition: box-shadow 0.15s;
   &:hover {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.18);
@@ -142,7 +143,7 @@ const BoothDivison = styled.div<{ $bgColor?: string }>`
   padding: 4px 8px;
   ${({ theme }) => theme.fonts.R_12};
   color: #fff;
-  background-color: ${(props) => props.$bgColor || '#E67979'};
+  background-color: ${(props) => props.$bgColor || "#E67979"};
   border-radius: 4px;
   ${ellipsis}
 `;
@@ -182,6 +183,7 @@ const BoothLocation = styled.div`
 `;
 
 const DetailButton = styled.button`
+  width: fit-content;
   ${flexEnd}
   align-items: center;
   background: none;
