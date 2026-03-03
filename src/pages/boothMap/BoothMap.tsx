@@ -225,7 +225,7 @@ const BoothMap = () => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    const newScale = Math.max(0.4, 1 - scrollTop / 10); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    const newScale = Math.max(0.4, 1 - scrollTop / 0.05); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
     setMapScale(newScale);
   };
   
@@ -310,7 +310,7 @@ const BoothMap = () => {
                 </S.ItemContainer>
               ))
             ) : (
-              <S.EmptyState>해당 요일에 일치하는 검색 결과가 없습니다.</S.EmptyState>
+              <S.EmptyState>일치하는 검색 결과가 없습니다.</S.EmptyState>
             )}
             </>
             ) : (
@@ -382,8 +382,7 @@ const BoothMap = () => {
         </S.FixedHeaderSection>
       
         {/* 카드 리스트 섹션 */}
-        <S.CardSection>
-          
+        <S.CardSection $isEmpty={boothCards.length <= 2}>
           {isLoading ? (
             <S.EmptyState>loading...</S.EmptyState>
           ) : boothCards.length > 0? (

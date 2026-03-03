@@ -135,6 +135,7 @@ export const CategorySection = styled.div`
   overflow-y: hidden;
   align-items: center;
   white-space: nowrap;
+  position: relative;
 
   cursor: grab;
   &:active {
@@ -146,15 +147,18 @@ export const CategorySection = styled.div`
  * 카드 리스트
  */
 
-export const CardSection = styled.div`
+export const CardSection = styled.div<{ $isEmpty: boolean }>`
   /* flex: 1; 이나 overflow-y: auto; 를 제거합니다. */
   /* 페이지 전체 스크롤에 따라 내용이 늘어나야 하므로 높이 제한을 풉니다. */
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px 0 100px 0;
+  margin-top: 10px;
+  padding: 0 0 100px 0;
   //overflow-y: scroll;
   flex: 1;
+
+  min-height: 30vh;
 `;
 
 /**
