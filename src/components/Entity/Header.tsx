@@ -16,7 +16,7 @@ const HeaderContainer = styled.header`
   gap: 10px;
   background-color: ${(props) => props.theme.colors.white};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: 200;
   position: fixed;
   top: 0;
 `;
