@@ -26,7 +26,7 @@ export const StickySearchArea = styled.div`
 
 export const FixedHeaderSection = styled.div`
   position: sticky;
-  top: 100px; /* SearchBar 높이만큼 띄움 */
+  top: 103.5px; /* SearchBar 높이만큼 띄움 */
   z-index: 100;
   background-color: white;
   display: flex;
@@ -99,12 +99,11 @@ export const MapContainer = styled.div<{ $scale: number }>`
   flex-shrink: 0;
   width: 100%;
   height: ${(props) => 500 * props.$scale}px; 
-  transition: height 0.3s ease-out;
+  transition: height 0.5s ease-out;
   display: flex;
   align-items: center;
   justify-content: center;
   padding-top: 30px;
-  margin-bottom: 24px;
   overflow: hidden;
   background-color: ${(props) => props.theme.colors.grey50};
   border-top: 1px solid ${(props) => props.theme.colors.green900};
@@ -119,7 +118,7 @@ export const MapContainer = styled.div<{ $scale: number }>`
 
     transform: scale(${(props) => props.$scale});
     transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
-    transition: transform 0.3s ease-out;
+    transition: transform 0.1s ease-out;
     width: 100%;
   }
 `;
