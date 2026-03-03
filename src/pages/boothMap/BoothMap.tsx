@@ -225,7 +225,7 @@ const BoothMap = () => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    const newScale = Math.max(0.4, 1 - scrollTop / 0.05); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    const newScale = Math.max(0.65, 1 - scrollTop / 1); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
     setMapScale(newScale);
   };
   
