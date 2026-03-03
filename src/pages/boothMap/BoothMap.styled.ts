@@ -7,21 +7,24 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-height: calc(var(--vh, 1vh) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 `;
 
 export const PageContent = styled.main`
   display: flex;
   flex-direction: column;
-  height: 100%; /* 부모 Wrapper가 flex:1 일 때 꽉 차게 */
-  overflow-y: auto; /* 전체 스크롤 감지 */
+  height: 100%;
+  overflow-y: auto;
+  /* 아이폰에서 스크롤이 더 부드럽게 작동하도록 설정 */
+  -webkit-overflow-scrolling: touch;
 `;
 
 export const StickySearchArea = styled.div`
   position: sticky;
   top: 0;
-  z-index: 90;
+  z-index: 110;
   background-color: white;
+  max-width: 540px;
 `;
 
 export const FixedHeaderSection = styled.div`
@@ -36,33 +39,32 @@ export const FixedHeaderSection = styled.div`
 /**
  * 검색
  */
- export const SearchResultOverlay = styled.div`
-    flex: 1;
-    background-color: ${(props) => props.theme.colors.white};
-    z-index: 50;
-    padding: 0 16px;
-    overflow-y: auto;
-  `
+export const SearchResultOverlay = styled.div`
+  flex: 1;
+  background-color: ${(props) => props.theme.colors.white};
+  z-index: 50;
+  padding: 0 16px;
+  overflow-y: auto;
+`;
 
-  export const ItemContainer = styled.div`
-    padding: 16px 0;
-    border-bottom: 1px solid ${(props) => props.theme.colors.grey100};
-    ${({ theme }) => theme.fonts.R_16};
-    cursor: pointer;
-    
-    span.highlight {
-      color: ${(props) => props.theme.colors.green500};
-      font-weight: bold;
-    }
-  `;
+export const ItemContainer = styled.div`
+  padding: 16px 0;
+  border-bottom: 1px solid ${(props) => props.theme.colors.grey100};
+  ${({ theme }) => theme.fonts.R_16};
+  cursor: pointer;
 
-  export const ResultLabel = styled.div`
-    padding-top: 20px;
-    padding-bottom: 8px;
-    color: ${(props) => props.theme.colors.grey600};
-    ${({ theme }) => theme.fonts.SB_16};
-  `;
+  span.highlight {
+    color: ${(props) => props.theme.colors.green500};
+    font-weight: bold;
+  }
+`;
 
+export const ResultLabel = styled.div`
+  padding-top: 20px;
+  padding-bottom: 8px;
+  color: ${(props) => props.theme.colors.grey600};
+  ${({ theme }) => theme.fonts.SB_16};
+`;
 
 /**
  * 위치탭
@@ -98,28 +100,36 @@ export const LocationTabSection = styled.div`
 export const MapContainer = styled.div<{ $scale: number }>`
   flex-shrink: 0;
   width: 100%;
-  height: ${(props) => 500 * props.$scale}px; 
-  transition: height 0.5s ease-out;
+  /* 스크롤에 따라 높이가 직접 변하면 레이아웃이 깨질 수 있으므로 scale에 비례하여 조정 */
+  height: ${(props) => 400 * props.$scale}px;
+  min-height: 200px; /* 너무 작아지지 않게 방지 */
+  transition: height 0.1s ease-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 30px;
+  padding-top: 20px;
   overflow: hidden;
   background-color: ${(props) => props.theme.colors.grey50};
   border-top: 1px solid ${(props) => props.theme.colors.green900};
   border-bottom: 1px solid ${(props) => props.theme.colors.green900};
 
+  @media (min-width: 540px) {
+    padding: 40px 0;
+    height: ${(props) =>
+      500 * props.$scale}px; // PC에서는 지도를 조금 더 크게 봐도 시원합니다.
+  }
   @media (max-width: 450px) {
     height: ${(props) => 350 * props.$scale}px;
   }
-  
+
   & > div:first-child {
     flex-shrink: 0;
-
-    transform: scale(${(props) => props.$scale});
-    transform-origin: center center; /* 탭 버튼 바로 아래에서부터 축소 시작 */
-    transition: transform 0.1s ease-out;
     width: 100%;
+    transform: scale(${(props) => props.$scale});
+    transform-origin: center center;
+    transition: transform 0.1s ease-out;
+    /* 하드웨어 가속 활용 */
+    will-change: transform;
   }
 `;
 
@@ -135,6 +145,11 @@ export const CategorySection = styled.div`
   align-items: center;
   white-space: nowrap;
   position: relative;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   cursor: grab;
   &:active {
@@ -147,17 +162,13 @@ export const CategorySection = styled.div`
  */
 
 export const CardSection = styled.div<{ $isEmpty: boolean }>`
-  /* flex: 1; 이나 overflow-y: auto; 를 제거합니다. */
-  /* 페이지 전체 스크롤에 따라 내용이 늘어나야 하므로 높이 제한을 풉니다. */
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 10px;
-  padding: 0 0 100px 0;
-  //overflow-y: scroll;
+  padding: 0 16px 100px 16px;
   flex: 1;
-
-  min-height: 30vh;
+  min-height: 40vh;
 `;
 
 /**

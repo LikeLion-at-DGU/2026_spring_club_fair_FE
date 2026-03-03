@@ -7,17 +7,17 @@ import Home from '@assets/icons/fi-sr-home.svg';
 
 const HeaderContainer = styled.header`
   width: 100%;
-  height: 56px; 
+  max-width: 540px;
+  margin: 0 auto;
+  height: 56px;
   display: flex;
   align-items: center;
   padding: 16px;
   gap: 10px;
   background-color: ${(props) => props.theme.colors.white};
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
+  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   z-index: 100;
   position: fixed;
-  top: 0;
-  left: 0; // TODO
 `;
 
 const Title = styled.span`
@@ -42,14 +42,18 @@ interface HeaderProps {
 
 // ----- ui ----- //
 
-const Header = ({ title: propsTitle, showHome = true, onBack }: HeaderProps) => {
+const Header = ({
+  title: propsTitle,
+  showHome = true,
+  onBack,
+}: HeaderProps) => {
   const navigate = useNavigate();
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
 
   const PAGE_TITLES: Record<string, string> = {
-    '/boothmap' : '부스 지도',
-    '/test/result' : '결과 보기',
-    '/timetable' : '타임테이블',
+    '/boothmap': '부스 지도',
+    '/test/result': '결과 보기',
+    '/timetable': '타임테이블',
   };
   const displayTitle = propsTitle || PAGE_TITLES[pathname] || '뒤로가기';
 
@@ -63,18 +67,10 @@ const Header = ({ title: propsTitle, showHome = true, onBack }: HeaderProps) => 
 
   return (
     <HeaderContainer>
-      <IconBtn
-        src={arrowleft}
-        alt="뒤로가기"
-        onClick={handleBackClick}
-      />
+      <IconBtn src={arrowleft} alt='뒤로가기' onClick={handleBackClick} />
       <Title>{displayTitle}</Title>
       {showHome && (
-        <IconBtn
-          src={Home}
-          alt="홈"
-          onClick={() => navigate('/main')}
-        />
+        <IconBtn src={Home} alt='홈' onClick={() => navigate('/main')} />
       )}
     </HeaderContainer>
   );
