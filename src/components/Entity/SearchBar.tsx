@@ -8,6 +8,7 @@ const Container = styled.div<{$isHighlighted: boolean}>`
     height: 56px;
     display : flex;
     align-items: center;
+    justify-content: space-between;
     margin: 24px 16px;
     padding: 16px;
     gap: 10px;
@@ -26,13 +27,14 @@ const Container = styled.div<{$isHighlighted: boolean}>`
             ? '#fafff7'
             : props.theme.colors.white
     };
+    box-sizing: border-box;
     transition: all 0.2s ease-in-out;
 
     
 
 `
 const Input = styled.input`
-    flex-grow: 1;
+    //flex-grow: 1;
     border: none;
     outline: none;
     font-size: 16px;

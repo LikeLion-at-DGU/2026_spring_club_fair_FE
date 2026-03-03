@@ -53,25 +53,28 @@ const BoothMarker = styled.div<MarkerProps>`
 
     /* 3. activated 상태 */
     ${props => props.$status === 'activated' && css`
-        border: 1px solid var(--whie, #FFF);
-        background-color: ${props.$type === 'CLUB' ? '#FF7474' : '#FF782F'};
-        box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
-        z-index: 20;
-        animation: ${pulse} 1.2 infinite ease-in-out;
+    border: 1px solid var(--whie, #FFF);
+    background-color: ${props.$type === 'CLUB' ? '#FF7474' : '#FF782F'};
+    box-shadow: 0 0 5px 1px ${props.$type === 'CLUB' ? '#B5C340' : '#FF7327'};
+    z-index: 20;
+    /* 1.2 뒤에 단위를 s로 수정하세요 (1.2s) */
+    animation: ${pulse} 1.2s infinite ease-in-out;
 
-        &::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background-color: inherit;
-            animation: ${ring} 1.5s infinite ease-out;
-            z-index: -1;
-            }
-    `}
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: inherit;
+        animation: ${ring} 1.5s infinite ease-out;
+        z-index: -1;
+        will-change: transform, opacity;
+        pointer-events: none;
+    }
+`}
 `;
 
 export default BoothMarker;
