@@ -18,6 +18,7 @@ const HeaderContainer = styled.header`
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   z-index: 100;
   position: fixed;
+  top: 0;
 `;
 
 const Title = styled.span`
