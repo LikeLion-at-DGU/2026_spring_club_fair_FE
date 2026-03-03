@@ -21,9 +21,16 @@ const formatDate = (dateStr: string) => {
   return `${Number(month)}월 ${Number(day)}일`;
 };
 
-const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetailClick }: Props) => {
+const BoothCard = ({
+  booth,
+  isActive,
+  width = 100,
+  height = 144,
+  onClick,
+  onDetailClick,
+}: Props) => {
   const isFoodTruck = booth.type === 'FOODTRUCK';
-  
+
   // type = 푸드트럭/부스 기준으로 분리
   const divisionInfo = Object.values(testResults).find(
     (res) => res.division === booth.division,
@@ -32,7 +39,12 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
   const labelText = isFoodTruck ? '푸드트럭' : booth.division;
 
   return (
-    <BoothCardWrapper $width={width} $height={height} $isActive={isActive} onClick={onClick}>
+    <BoothCardWrapper
+      $width={width}
+      $height={height}
+      $isActive={isActive}
+      onClick={onClick}
+    >
       <ContentContainer>
         <BoothImage src={booth.image || lion} alt={booth.name} />
         <BoothInfo>
@@ -47,20 +59,20 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
 
           <BoothLocation>
             <img src={marker} alt='marker' />
-            {isFoodTruck ? (
-              // 임시로 .. TODO
-              booth.location.split(' ')[0] 
-            ) : (
-              booth.location
-            )}
+            {isFoodTruck
+              ? // 임시로 .. TODO
+                booth.location.split(' ')[0]
+              : booth.location}
           </BoothLocation>
-          
+
           {booth.hasDetail && (
-            <DetailButton onClick={(e) => {
-              e.stopPropagation();
-              const handleDetail = onDetailClick || onClick;
-              handleDetail?.();
-            }}>
+            <DetailButton
+              onClick={(e) => {
+                e.stopPropagation();
+                const handleDetail = onDetailClick || onClick;
+                handleDetail?.();
+              }}
+            >
               자세히 보기
               <img src={arrowRight} alt='arrow-right' />
             </DetailButton>
@@ -73,18 +85,25 @@ const BoothCard = ({ booth, isActive, width = 91, height = 144, onClick, onDetai
 
 export default BoothCard;
 
-const BoothCardWrapper = styled.div<{ $width?: number; $height?: number; $isActive? : boolean }>`
+const BoothCardWrapper = styled.div<{
+  $width?: number;
+  $height?: number;
+  $isActive?: boolean;
+}>`
   ${flexColumn}
   width: ${(props) => props.$width}%;
   height: ${(props) => props.$height}px;
   margin: 0 auto;
   padding: var(--M, 8px);
   border-radius: var(--XL, 16px);
-  border: 1px solid ${(props) => 
-    props.$isActive ? props.theme.colors.green500 : "var(--Grey-grey-400, #bdbebf)"};
-  
-  background: ${(props) => 
-    props.$isActive ? props.theme.colors.green50 : "var(--whie, #fff)"};
+  border: 1px solid
+    ${(props) =>
+      props.$isActive
+        ? props.theme.colors.green500
+        : 'var(--Grey-grey-400, #bdbebf)'};
+
+  background: ${(props) =>
+    props.$isActive ? props.theme.colors.green50 : 'var(--whie, #fff)'};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
   //overflow: hidden;
   cursor: ${(props) => (props.onClick ? 'pointer' : 'default')};
@@ -95,9 +114,9 @@ const BoothCardWrapper = styled.div<{ $width?: number; $height?: number; $isActi
 `;
 
 const ContentContainer = styled.div`
-    ${flexStart}
-    width: 100%;
-    gap: 16px;
+  ${flexStart}
+  width: 100%;
+  gap: 16px;
 `;
 
 const BoothImage = styled.img`
