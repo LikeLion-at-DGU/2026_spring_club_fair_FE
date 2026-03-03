@@ -47,6 +47,7 @@ const DayText = styled.span<ActiveProps>`
 const Badge = styled.span<ActiveProps>`
     background-color: ${(props) => (props.$isActive ? props.theme.colors.green400 : props.theme.colors.grey400)};
     color: white;
+    ${({ theme }) => theme.fonts.R_12};
     display: flex;
     justify-content: center;
     align-items: center;

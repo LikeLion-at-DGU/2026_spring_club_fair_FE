@@ -82,7 +82,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #f5f5f5;
     display: flex;
     justify-content: center;
-    font-family: 'PyeojinGothic-Regular', sans-serif; /* TODO : 폰트 설정 */
+    //font-family: 'PyeojinGothic-Regular', sans-serif;
   }
 
   /* GlobalStyle에서는 모바일 사이즈 외부 규격만 지정해둠

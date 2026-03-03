@@ -4,13 +4,14 @@ export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* height: 100%; */
+height: calc(var(--vh, 1vh) * 100);
 `;
 
 export const PageContent = styled.main`
   display: flex;
   height: 100%;
   flex-direction: column;
+  overflow-y: scroll;
 `;
 
 export const LocationTabSection = styled.div`

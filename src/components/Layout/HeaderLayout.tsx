@@ -12,6 +12,7 @@ const Wrapper = styled.div`
 `;
 
 const ContentArea = styled.div`
+  margin-top: 56px;
   flex: 1;
   overflow-y: scroll;
 `;

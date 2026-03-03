@@ -115,7 +115,8 @@ const BoothMap = () => {
   }, [allBooths]);
 
   /**
-   * 
+   * 지도 marker 표시
+   * : loc, day에 일치하는 부스 데이터만 필터링하여 지도 위에 marker로 뿌리기 위해 만든 정제된 데이터 배열
    */
   const boothsByLocation = React.useMemo(() => {
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
@@ -155,6 +156,7 @@ const BoothMap = () => {
     setSearchTerm("");
     setSelectedBoothId(null);
     setIsSearchMode(false);
+    setSelectedBoothName(null);
   };
 
   /**
@@ -260,17 +262,20 @@ const BoothMap = () => {
     }
   };
 
+  /**
+   * 강조 상태 초기화 관련
+   */
   React.useEffect(() => {
   // 1. 만약 검색 클릭으로 인한 변경(isInternalChange가 true)이라면,
-  //    ID를 초기화하지 않고 그냥 넘어감
+  //    name을 초기화하지 않고 그냥 넘어감
   if (isInternalChange) {
     setIsInternalChange(false); // 다음 번을 위해 다시 false로 돌려놓기
     return; 
   }
-  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
+  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 name를 초기화
   setSelectedBoothName(null);  
 }, [selectedDivision]); 
-// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO ?)
+// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO  ?*******)
 // isInternalChange는 의존성 배열에 넣지 않거나, 
 // 넣더라도 로직 내부에서 위와 같이 분기 처리를 해야 함
   
