@@ -60,6 +60,7 @@ const BoothMarker = styled.div<MarkerProps>`
     /* 1.2 뒤에 단위를 s로 수정하세요 (1.2s) */
     animation: ${pulse} 1.2s infinite ease-in-out;
 
+    /*
     &::after {
         content: "";
         position: absolute;
@@ -73,7 +74,7 @@ const BoothMarker = styled.div<MarkerProps>`
         z-index: -1;
         will-change: transform, opacity;
         pointer-events: none;
-    }
+    }*/
 `}
 `;
 
