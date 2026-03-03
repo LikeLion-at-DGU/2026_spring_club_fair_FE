@@ -115,7 +115,8 @@ const BoothMap = () => {
   }, [allBooths]);
 
   /**
-   * 
+   * 지도 marker 표시
+   * : loc, day에 일치하는 부스 데이터만 필터링하여 지도 위에 marker로 뿌리기 위해 만든 정제된 데이터 배열
    */
   const boothsByLocation = React.useMemo(() => {
     const allData = (allBooths as any).results || (Array.isArray(allBooths) ? allBooths : []);
@@ -155,6 +156,7 @@ const BoothMap = () => {
     setSearchTerm("");
     setSelectedBoothId(null);
     setIsSearchMode(false);
+    setSelectedBoothName(null);
   };
 
   /**
@@ -220,9 +222,10 @@ const BoothMap = () => {
    * - 스크롤 양에 따라 1.0에서 0.4까지 축소
    */
   const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    const newScale = Math.max(0.4, 1 - scrollTop / 200); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    const newScale = Math.max(0.4, 1 - scrollTop / 10); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
     setMapScale(newScale);
   };
   
@@ -230,7 +233,6 @@ const BoothMap = () => {
    * isDrag 관련 상태
    * : 마우스 드래그 (카테고리 가로 탭)
    */
-  const scrollRef = React.useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -260,17 +262,20 @@ const BoothMap = () => {
     }
   };
 
+  /**
+   * 강조 상태 초기화 관련
+   */
   React.useEffect(() => {
   // 1. 만약 검색 클릭으로 인한 변경(isInternalChange가 true)이라면,
-  //    ID를 초기화하지 않고 그냥 넘어감
+  //    name을 초기화하지 않고 그냥 넘어감
   if (isInternalChange) {
     setIsInternalChange(false); // 다음 번을 위해 다시 false로 돌려놓기
     return; 
   }
-  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 ID를 초기화
+  // 2. 사용자가 직접 탭을 눌러서 이동했을 때만 name를 초기화
   setSelectedBoothName(null);  
 }, [selectedDivision]); 
-// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO ?)
+// 의존성 배열에서 activeDay, activeLocation 제거함 (스크롤 고친 후 TODO  ?*******)
 // isInternalChange는 의존성 배열에 넣지 않거나, 
 // 넣더라도 로직 내부에서 위와 같이 분기 처리를 해야 함
   
@@ -278,7 +283,9 @@ const BoothMap = () => {
   // ======================== return ============================ //
 
   return (
-      <S.PageContent>
+      <S.PageContent onScroll={handleScroll} ref={scrollRef}>
+
+      <S.StickySearchArea>
         <SearchBar
           value={searchTerm}
           isSearchMode={isSearchMode}
@@ -286,12 +293,12 @@ const BoothMap = () => {
           onFocus={() => setIsSearchMode(true)} 
           onClear={handleClear}       
         />
+      </S.StickySearchArea>
         {isSearchMode ? (
           /* 2. 검색 모드 UI (왼쪽 화면) */
           <S.SearchResultOverlay>
             {searchTerm.trim() !== "" ? (
               <>
-              
             <S.ResultLabel>검색 결과</S.ResultLabel>
             {SearchResults.length > 0 ? (
               SearchResults.map((result: any) => (
@@ -312,6 +319,8 @@ const BoothMap = () => {
           </S.SearchResultOverlay>
         ) : (
           <>
+          
+       <S.FixedHeaderSection>
         <S.LocationTabSection>
         <button
           className={activeLocation === 'manhae' ? 'active' : ''}
@@ -334,8 +343,10 @@ const BoothMap = () => {
             activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
         </S.MapContainer>
+
+        {/* 요일탭 섹션 */}
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
-        {/* 부스/푸드트럭 카테고리 섹션 */}
+        {/* 카테고리탭 섹션 */}
         <S.CategorySection
           ref={scrollRef}
           onMouseDown={onDragStart}
@@ -368,8 +379,11 @@ const BoothMap = () => {
             }}
           />
         </S.CategorySection>
+        </S.FixedHeaderSection>
+      
         {/* 카드 리스트 섹션 */}
-        <S.CardSection onScroll={handleScroll}>
+        <S.CardSection>
+          
           {isLoading ? (
             <S.EmptyState>loading...</S.EmptyState>
           ) : boothCards.length > 0? (

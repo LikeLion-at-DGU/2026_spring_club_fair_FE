@@ -15,6 +15,9 @@ const HeaderContainer = styled.header`
   background-color: ${(props) => props.theme.colors.white};
   box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.10);
   z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0; // TODO
 `;
 
 const Title = styled.span`
