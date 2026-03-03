@@ -29,9 +29,6 @@ const Container = styled.div<{$isHighlighted: boolean}>`
     };
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
-
-    
-
 `
 const Input = styled.input`
     //flex-grow: 1;
@@ -55,6 +52,7 @@ const ActionBtn = styled.button`
 
 const IconBtn = styled.img`
     cursor: pointer;
+    display: flex;
 `
 
 const ClearBtn = styled.button`
