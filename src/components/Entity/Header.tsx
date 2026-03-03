@@ -17,6 +17,7 @@ const HeaderContainer = styled.header`
   z-index: 100;
   position: fixed;
   top: 0;
+  left: 0; // TODO
 `;
 
 const Title = styled.span`

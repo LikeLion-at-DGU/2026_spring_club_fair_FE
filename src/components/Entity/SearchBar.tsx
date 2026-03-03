@@ -28,6 +28,8 @@ const Container = styled.div<{$isHighlighted: boolean}>`
     };
     transition: all 0.2s ease-in-out;
 
+    
+
 `
 const Input = styled.input`
     flex-grow: 1;

@@ -222,9 +222,10 @@ const BoothMap = () => {
    * - 스크롤 양에 따라 1.0에서 0.4까지 축소
    */
   const [mapScale, setMapScale] = useState(1); // 1 (100%) ~ 0.7 (70%) 사이값
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    const newScale = Math.max(0.4, 1 - scrollTop / 200); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
+    const newScale = Math.max(0.4, 1 - scrollTop / 10); // 스크롤이 0~100px 움직일 때 비율이 1~0.7로 변하도록 계산
     setMapScale(newScale);
   };
   
@@ -232,7 +233,6 @@ const BoothMap = () => {
    * isDrag 관련 상태
    * : 마우스 드래그 (카테고리 가로 탭)
    */
-  const scrollRef = React.useRef<HTMLDivElement>(null);
   const [isDrag, setIsDrag] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -283,7 +283,9 @@ const BoothMap = () => {
   // ======================== return ============================ //
 
   return (
-      <S.PageContent>
+      <S.PageContent onScroll={handleScroll} ref={scrollRef}>
+
+      <S.StickySearchArea>
         <SearchBar
           value={searchTerm}
           isSearchMode={isSearchMode}
@@ -291,12 +293,12 @@ const BoothMap = () => {
           onFocus={() => setIsSearchMode(true)} 
           onClear={handleClear}       
         />
+      </S.StickySearchArea>
         {isSearchMode ? (
           /* 2. 검색 모드 UI (왼쪽 화면) */
           <S.SearchResultOverlay>
             {searchTerm.trim() !== "" ? (
               <>
-              
             <S.ResultLabel>검색 결과</S.ResultLabel>
             {SearchResults.length > 0 ? (
               SearchResults.map((result: any) => (
@@ -317,6 +319,8 @@ const BoothMap = () => {
           </S.SearchResultOverlay>
         ) : (
           <>
+          
+       <S.FixedHeaderSection>
         <S.LocationTabSection>
         <button
           className={activeLocation === 'manhae' ? 'active' : ''}
@@ -339,8 +343,10 @@ const BoothMap = () => {
             activeCategory={activeCategory as 'BOOTH' | 'FOODTRUCK'}
           />
         </S.MapContainer>
+
+        {/* 요일탭 섹션 */}
         <DayTab activeDay={activeDay} onTabClick={(id) => setActiveDay(id)} />
-        {/* 부스/푸드트럭 카테고리 섹션 */}
+        {/* 카테고리탭 섹션 */}
         <S.CategorySection
           ref={scrollRef}
           onMouseDown={onDragStart}
@@ -373,8 +379,11 @@ const BoothMap = () => {
             }}
           />
         </S.CategorySection>
+        </S.FixedHeaderSection>
+      
         {/* 카드 리스트 섹션 */}
-        <S.CardSection onScroll={handleScroll}>
+        <S.CardSection>
+          
           {isLoading ? (
             <S.EmptyState>loading...</S.EmptyState>
           ) : boothCards.length > 0? (
